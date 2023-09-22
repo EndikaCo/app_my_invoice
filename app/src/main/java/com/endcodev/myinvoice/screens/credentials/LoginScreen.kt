@@ -50,10 +50,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.viewmodels.LoginViewModel
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginContent(
+fun LoginScreen(
     onLoginClick: () -> Unit,
     onSignUpClick: () -> Unit,
     onForgotClick: () -> Unit,
@@ -67,23 +66,6 @@ fun LoginContent(
         )
 }
 
-
-@Composable
-fun LoginFooter(onSignUpClick: () -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Divider(
-            Modifier
-                .background(Color(0xFFF9F9F9))
-                .height(1.dp)
-                .fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.size(24.dp))
-        SignUp(onSignUpClick)
-        Spacer(modifier = Modifier.size(24.dp))
-    }
-}
-
-
 @Composable
 fun LoginHeader() {
     val activity = LocalContext.current as Activity
@@ -92,7 +74,6 @@ fun LoginHeader() {
         contentDescription = "close app",
         modifier = Modifier.clickable { activity.finish() })
 }
-
 
 @Composable
 fun LoginBody(
@@ -130,9 +111,24 @@ fun LoginBody(
 
 
 @Composable
+fun LoginFooter(onSignUpClick: () -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Divider(
+            Modifier
+                .background(Color(0xFFF9F9F9))
+                .height(1.dp)
+                .fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.size(24.dp))
+        SignUp(onSignUpClick)
+        Spacer(modifier = Modifier.size(24.dp))
+    }
+}
+
+@Composable
 fun ImageLogo(modifier: Modifier) {
     Image(
-        painter = painterResource(id = R.drawable.ic_facebook),
+        painter = painterResource(id = R.drawable.invoice_logo),
         contentDescription = "logo",
         modifier = modifier
             .height(100.dp)

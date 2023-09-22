@@ -49,32 +49,27 @@ import com.endcodev.myinvoice.viewmodels.SignUpViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpContent(onAlreadyLoggedClick: () -> Unit
-                  ,onSignUpClick : () -> Unit) {
-    val viewModel: SignUpViewModel = viewModel()
+fun SignUpScreen(
+    onSignUpClick : () -> Unit,
+    viewModel: SignUpViewModel = viewModel()
+) {
 
     Scaffold(
-        topBar = { SignUpTopAppBar() },
-        content = { innerPadding ->
-            SignUpBody(
-                innerPadding,
-                viewModel = viewModel, onSignUpClick
-
-            )
-        },
-        bottomBar = { SignUpFooter(onAlreadyLoggedClick) }
+        topBar = { SignUpTopBar(onSignUpClick) },
+        content = { innerPadding -> SignUpBody(innerPadding, viewModel, onSignUpClick) },
+        bottomBar = { SignUpFooter(onSignUpClick) }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpTopAppBar() {
+fun SignUpTopBar(onSignUpClick : () -> Unit) {
     androidx.compose.material3.TopAppBar(
         title = {
             Text("Sign Up") },
         navigationIcon = {
             IconButton(
-                onClick = { }
+                onClick = {onSignUpClick()}
             ) {
                 Icon(Icons.Filled.KeyboardArrowLeft, contentDescription = "Go back")
             }
@@ -117,7 +112,6 @@ fun SignUpBody(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepeatPassWord(password: String, onTextChanged: (String) -> Unit) {
@@ -156,7 +150,6 @@ fun RepeatPassWord(password: String, onTextChanged: (String) -> Unit) {
     )
 }
 
-
 @Composable
 fun SignUpButton(loginEnabled: Boolean, onSignUpClick: () -> Unit) {
     Button(
@@ -178,7 +171,6 @@ fun SignUpButton(loginEnabled: Boolean, onSignUpClick: () -> Unit) {
 fun SignUpDivider(modifier: Modifier) {
     Text(text = "OR", modifier = modifier, fontSize = 14.sp, color = Color(R.color.grey))
 }
-
 
 @Composable
 fun SocialSignUp() {
@@ -203,7 +195,6 @@ fun SocialSignUp() {
         )
     }
 }
-
 
 @Composable
 fun ToLogIn(onAlreadyLoggedClick: () -> Unit) {
