@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.endcodev.myinvoice.R
+import com.endcodev.myinvoice.UiText
 import com.endcodev.myinvoice.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,9 +62,10 @@ fun LoginScreen(
     Scaffold(
         topBar = { LoginHeader() },
         content = { innerPadding ->
-            LoginBody(innerPadding, viewModel, onLoginClick,onForgotClick) },
+            LoginBody(innerPadding, viewModel, onLoginClick, onForgotClick)
+        },
         bottomBar = { LoginFooter(onSignUpClick) }
-        )
+    )
 }
 
 @Composable
@@ -86,8 +88,13 @@ fun LoginBody(
     val password by viewModel.password.observeAsState(initial = "")
     val isLoginEnabled by viewModel.isLoginEnabled.observeAsState(initial = false)
 
-    Column (Modifier.padding(innerPadding).padding(start = 16.dp, end = 16.dp).fillMaxHeight(),
-        verticalArrangement = Arrangement.Center){
+    Column(
+        Modifier
+            .padding(innerPadding)
+            .padding(start = 16.dp, end = 16.dp)
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.Center
+    ) {
         ImageLogo(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
         Email(email) {
@@ -101,7 +108,7 @@ fun LoginBody(
         Spacer(modifier = Modifier.size(16.dp))
         ForgotPassword(Modifier.align(Alignment.End), onForgotClick)
         Spacer(modifier = Modifier.size(16.dp))
-        LoginButton(loginEnabled = isLoginEnabled, onLoginClick = onLoginClick)
+        LoginButton(loginEnabled = isLoginEnabled, onLoginClick = onLoginClick, viewModel)
         Spacer(modifier = Modifier.size(16.dp))
         LoginDivider(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
@@ -207,9 +214,12 @@ fun ForgotPassword(modifier: Modifier, onForgotClick: () -> Unit) {
 }
 
 @Composable
-fun LoginButton(loginEnabled: Boolean, onLoginClick: () -> Unit) {
+fun LoginButton(loginEnabled: Boolean, onLoginClick: () -> Unit, viewModel: LoginViewModel) {
     Button(
-        onClick = { onLoginClick() },
+        onClick = {
+            viewModel.login()
+            onLoginClick()
+        },
         enabled = loginEnabled,
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
@@ -255,9 +265,11 @@ fun SocialLogin() {
 
 @Composable
 fun SignUp(onSignUpClick: () -> Unit) {
-    Row(Modifier.fillMaxWidth()
-        .clickable { onSignUpClick() }
-        , horizontalArrangement = Arrangement.Center) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable { onSignUpClick() }, horizontalArrangement = Arrangement.Center
+    ) {
 
         Text(
             text = "Don't have an account?",

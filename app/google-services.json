@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "123406782433",
+    "project_id": "my-invoice-39547",
+    "storage_bucket": "my-invoice-39547.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123406782433:android:94517335b5b25e1b06cca0",
+        "android_client_info": {
+          "package_name": "com.endcodev.myinvoice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAziaiT5880O1nLxGnjIaPXADY4AEHYVTI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

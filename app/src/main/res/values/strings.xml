@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">My Invoice</string>
     <string name="no_error">Account creating success</string>
+    <string name="error_mail_or_pass">Mail or pass not correct</string>
 </resources>

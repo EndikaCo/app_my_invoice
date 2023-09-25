@@ -50,7 +50,11 @@ fun ForgotBody(innerPadding: PaddingValues, viewModel: ForgotViewModel, onLoginC
         Spacer(modifier = Modifier.size(16.dp))
         Email(email) { viewModel.onLoginChanged(email = it) }
         Spacer(modifier = Modifier.size(4.dp))
-        LoginButton(loginEnabled = isForgotEnabled, onLoginClick = onLoginClick)
+        LoginButton(
+            loginEnabled = isForgotEnabled,
+            onLoginClick = onLoginClick,
+            viewModel = viewModel
+        )
     }
 }
 

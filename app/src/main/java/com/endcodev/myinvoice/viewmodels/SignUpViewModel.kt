@@ -1,6 +1,5 @@
 package com.endcodev.myinvoice.viewmodels
 
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -45,7 +44,6 @@ class SignUpViewModel @Inject constructor(
             auth.createUser(mail, pass, onCreateUser = {
                 if (it == AuthError.NoError.error)
                     UiText.StringResource(resId = R.string.no_error)
-                Log.v("***", "$it")
             })
         }
     }
