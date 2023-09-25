@@ -8,6 +8,9 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 
+    //google services
+    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -58,7 +61,7 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
     implementation("androidx.activity:activity-compose:1.7.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
@@ -77,6 +80,10 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    //firebase
+    implementation("com.google.firebase:firebase-auth-ktx:22.1.2")
+    implementation("com.google.firebase:firebase-database-ktx:20.2.2")
+    implementation("com.google.firebase:firebase-common-ktx:20.3.3")
 
     //navigation
     implementation("androidx.navigation:navigation-compose:2.7.2")

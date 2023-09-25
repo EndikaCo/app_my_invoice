@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">My Invoice</string>
+    <string name="no_error">Account creating success</string>
 </resources>

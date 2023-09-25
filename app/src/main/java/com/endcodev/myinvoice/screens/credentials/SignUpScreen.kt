@@ -99,12 +99,12 @@ fun SignUpBody(
         Spacer(modifier = Modifier.size(4.dp))
         PassWord(password) {
             viewModel.onSignUpChanged(password = it, email = email)
-            viewModel.enableSignUp(email, password)
+            viewModel.isValidCredentials(email, password)
         }
         Spacer(modifier = Modifier.size(4.dp))
         RepeatPassWord(repeatPassword) {}
         Spacer(modifier = Modifier.size(16.dp))
-        SignUpButton(loginEnabled = isSignUpEnabled, onSignUpClick)
+        SignUpButton(loginEnabled = isSignUpEnabled, onSignUpClick, viewModel)
         Spacer(modifier = Modifier.size(16.dp))
         SignUpDivider(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
@@ -151,9 +151,10 @@ fun RepeatPassWord(password: String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun SignUpButton(loginEnabled: Boolean, onSignUpClick: () -> Unit) {
+fun SignUpButton(loginEnabled: Boolean, onSignUpClick: () -> Unit, viewModel: SignUpViewModel) {
     Button(
-        onClick = { onSignUpClick()},
+        onClick = { viewModel.createAccount()
+            onSignUpClick()},
         enabled = loginEnabled,
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
