@@ -1,13 +1,18 @@
 package com.endcodev.myinvoice.viewmodels
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.UiText
 import com.endcodev.myinvoice.network.AuthenticationService
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,8 +27,11 @@ class LoginViewModel @Inject constructor(
     private val _password = MutableLiveData<String>()
     val password: LiveData<String> = _password
 
-    private val _isLoginEnabled = MutableLiveData<Boolean>(false)
+    private val _isLoginEnabled = MutableLiveData(false)
     val isLoginEnabled: LiveData<Boolean> = _isLoginEnabled
+
+    private val errorChannel = Channel<UiText>()
+    val errors = errorChannel.receiveAsFlow()
 
     fun onLoginChanged(email: String, password: String) {
         _email.value = email
@@ -32,21 +40,24 @@ class LoginViewModel @Inject constructor(
     }
 
     fun enableLogin(email: String, password: String) =
-        Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 6
+        Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > MIN_PASS_LENGTH
 
     fun login() {
-
         val mail= _email.value
         val pass = _password.value
 
         if (pass != null  && mail != null) {
             auth.mailPassLogin(mail, pass, completionHandler = {
+                viewModelScope.launch {
                 if (it == 0)
-                    UiText.StringResource(resId = R.string.no_error)
+                    errorChannel.send(UiText.StringResource(resId = R.string.no_error))
                 else
-                    UiText.StringResource(resId = R.string.error_mail_or_pass)
+                    errorChannel.send(UiText.StringResource(resId = R.string.error_mail_or_pass))}
             } )
         }
+    }
 
+    companion object {
+        const val MIN_PASS_LENGTH = 6
     }
 }

@@ -1,5 +1,7 @@
 package com.endcodev.myinvoice.screens.credentials
 
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,7 +49,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.viewmodels.SignUpViewModel
 
@@ -51,8 +57,17 @@ import com.endcodev.myinvoice.viewmodels.SignUpViewModel
 @Composable
 fun SignUpScreen(
     onSignUpClick : () -> Unit,
-    viewModel: SignUpViewModel = viewModel()
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.errors.collect { error ->
+            error.asString(context)
+            Toast.makeText(context, error.asString(context), Toast.LENGTH_LONG).show()
+        }
+    }
 
     Scaffold(
         topBar = { SignUpTopBar(onSignUpClick) },
@@ -77,6 +92,19 @@ fun SignUpTopBar(onSignUpClick : () -> Unit) {
     )
 }
 
+
+@Composable
+fun VerificationProgressBar() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        CircularProgressIndicator()
+        Text(text = "Waiting for verification...")
+    }
+}
+
 @Composable
 fun SignUpBody(
     innerPadding: PaddingValues,
@@ -87,29 +115,39 @@ fun SignUpBody(
     val password by viewModel.password.observeAsState(initial = "")
     val repeatPassword by viewModel.repeatPassword.observeAsState(initial = "")
     val isSignUpEnabled by viewModel.isSignUpEnabled.observeAsState(initial = false)
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(innerPadding).padding(start = 16.dp, end = 16.dp).fillMaxHeight(),    ) {
-        ImageLogo(Modifier.align(Alignment.CenterHorizontally))
-        Spacer(modifier = Modifier.size(16.dp))
-        Email(email) {
-            viewModel.onSignUpChanged(email = it, password = password)
+    if(isLoading)
+        Column {
+            VerificationProgressBar()
         }
-        Spacer(modifier = Modifier.size(4.dp))
-        PassWord(password) {
-            viewModel.onSignUpChanged(password = it, email = email)
-            viewModel.isValidCredentials(email, password)
+    else
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(start = 16.dp, end = 16.dp)
+                .fillMaxHeight()
+        ) {
+            ImageLogo(Modifier.align(Alignment.CenterHorizontally))
+            Spacer(modifier = Modifier.size(16.dp))
+            Email(email) {
+                viewModel.onSignUpChanged(email = it, password = password)
+            }
+            Spacer(modifier = Modifier.size(4.dp))
+            PassWord(password) {
+                viewModel.onSignUpChanged(password = it, email = email)
+                viewModel.isValidCredentials(email, password)
+            }
+            Spacer(modifier = Modifier.size(4.dp))
+            RepeatPassWord(repeatPassword) {}
+            Spacer(modifier = Modifier.size(16.dp))
+            SignUpButton(loginEnabled = isSignUpEnabled, onSignUpClick, viewModel)
+            Spacer(modifier = Modifier.size(16.dp))
+            SignUpDivider(Modifier.align(Alignment.CenterHorizontally))
+            Spacer(modifier = Modifier.size(16.dp))
+            SocialSignUp()
         }
-        Spacer(modifier = Modifier.size(4.dp))
-        RepeatPassWord(repeatPassword) {}
-        Spacer(modifier = Modifier.size(16.dp))
-        SignUpButton(loginEnabled = isSignUpEnabled, onSignUpClick, viewModel)
-        Spacer(modifier = Modifier.size(16.dp))
-        SignUpDivider(Modifier.align(Alignment.CenterHorizontally))
-        Spacer(modifier = Modifier.size(16.dp))
-        SocialSignUp()
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -153,8 +191,10 @@ fun RepeatPassWord(password: String, onTextChanged: (String) -> Unit) {
 @Composable
 fun SignUpButton(loginEnabled: Boolean, onSignUpClick: () -> Unit, viewModel: SignUpViewModel) {
     Button(
-        onClick = { viewModel.createAccount()
-            onSignUpClick()},
+        onClick = {
+                    viewModel.createAccount()
+                    onSignUpClick()
+                  },
         enabled = loginEnabled,
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
@@ -199,8 +239,12 @@ fun SocialSignUp() {
 
 @Composable
 fun ToLogIn(onAlreadyLoggedClick: () -> Unit) {
-    Row(Modifier.fillMaxWidth().clickable {
-        onAlreadyLoggedClick() }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clickable {
+                onAlreadyLoggedClick()
+            }
         , horizontalArrangement = Arrangement.Center) {
 
         Text(

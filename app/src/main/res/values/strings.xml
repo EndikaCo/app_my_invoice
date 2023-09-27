@@ -2,4 +2,7 @@
     <string name="app_name">My Invoice</string>
     <string name="no_error">Account creating success</string>
     <string name="error_mail_or_pass">Mail or pass not correct</string>
+    <string name="pass_changed">Password changed correctly.</string>
+    <string name="pass_change_error">Error while changing password.</string>
+    <string name="error_creating_account">Error occurred creating account.</string>
 </resources>

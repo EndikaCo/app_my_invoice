@@ -1,6 +1,7 @@
 package com.endcodev.myinvoice.screens.credentials
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -46,9 +48,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.*
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.UiText
 import com.endcodev.myinvoice.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,13 +59,22 @@ fun LoginScreen(
     onLoginClick: () -> Unit,
     onSignUpClick: () -> Unit,
     onForgotClick: () -> Unit,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.errors.collect { error ->
+            error.asString(context)
+            Toast.makeText(context, error.asString(context), Toast.LENGTH_LONG).show()
+
+        }
+    }
+
     Scaffold(
         topBar = { LoginHeader() },
-        content = { innerPadding ->
-            LoginBody(innerPadding, viewModel, onLoginClick, onForgotClick)
-        },
+        content = { innerPadding -> LoginBody(innerPadding, viewModel, onLoginClick, onForgotClick) },
         bottomBar = { LoginFooter(onSignUpClick) }
     )
 }
@@ -258,7 +269,6 @@ fun SocialLogin() {
             modifier = Modifier.padding(horizontal = 8.dp),
             color = Color(R.color.black),
             textDecoration = TextDecoration.Underline
-
         )
     }
 }
