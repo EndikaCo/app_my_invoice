@@ -1,6 +1,5 @@
 package com.endcodev.myinvoice.screens.credentials
 
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -193,7 +192,7 @@ fun SignUpButton(loginEnabled: Boolean, onSignUpClick: () -> Unit, viewModel: Si
     Button(
         onClick = {
                     viewModel.createAccount()
-                    onSignUpClick()
+                    onSignUpClick()                                                                 //todo
                   },
         enabled = loginEnabled,
         modifier = Modifier.fillMaxWidth(),

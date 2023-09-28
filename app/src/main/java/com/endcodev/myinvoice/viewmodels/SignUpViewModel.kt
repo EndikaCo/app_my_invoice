@@ -1,5 +1,7 @@
 package com.endcodev.myinvoice.viewmodels
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
@@ -19,8 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val auth : AuthenticationService,
-    private val client : FirebaseClient
+    private val auth: AuthenticationService,
+    private val client: FirebaseClient
 ) : ViewModel() {
 
     private val _email = MutableLiveData<String>()
@@ -54,28 +56,47 @@ class SignUpViewModel @Inject constructor(
         val mail = _email.value
         val pass = _password.value
         if (pass != null && mail != null) {
-            auth.createUser(mail, pass, onCreateUser = {
+            auth.createUser(mail, pass, onCreateUser = { it ->
+                Log.v("***", "OncreateUser:$it, currentUser: ${client.auth.currentUser}")
+                if (it == NoError.error) {
+                    //auth.mailPassLogin(mail, pass, completionHandler = {Log.v("***", it.toString())})
+                    Log.v("***", " currentUser: ${client.auth.currentUser}")
 
-                viewModelScope.launch {
-                    if (it == NoError.error)
-                        auth.mailPassLogin(mail, pass, completionHandler = {})
-                        checkVerification()
-                        errorChannel.send(UiText.StringResource(resId = R.string.no_error))
-                    if (it == ErrorCreatingAccount.error)
-                        errorChannel.send(UiText.StringResource(resId = R.string.error_creating_account))
+                    checkMailVerification()
                 }
-
+                sendToUi(it)
             })
         }
     }
 
-    private fun checkVerification() {
-        val client = client.auth.currentUser
-        Log.v("***", client.toString())
-        if (client?.isEmailVerified == false){
-            Log.v("***", "${client.isEmailVerified}")
-
-            _isLoading.postValue(true)
+    private fun sendToUi(error: Int) {
+        viewModelScope.launch {
+            if (error == NoError.error)
+                errorChannel.send(UiText.StringResource(resId = R.string.no_error))
+            if (error == ErrorCreatingAccount.error)
+                errorChannel.send(UiText.StringResource(resId = R.string.error_creating_account))
         }
+    }
+    private fun checkMailVerification() {
+
+        val handler = Handler(Looper.getMainLooper())
+
+        val runnableCode: Runnable = object : Runnable {
+            override fun run() {
+
+                client.auth.currentUser?.reload()
+
+                val mClient = client.auth.currentUser
+
+                if (mClient?.isEmailVerified == false) { // Check user's email verified
+                    _isLoading.postValue(true)
+
+                    handler.postDelayed(this, 2000) // Repeat block every 2s
+                } else
+                    _isLoading.postValue(false)
+                Log.v("***", "loop currentUser: $mClient s ${mClient?.isEmailVerified}")
+            }
+        }
+        handler.post(runnableCode)
     }
 }

@@ -26,7 +26,8 @@ class AuthenticationService @Inject constructor(
         auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
             if (it.isSuccessful) {
                 sendMailVerification()
-                Log.v(authTag, "OK: createUserWithEmail:success ${auth.currentUser?.toString()}")
+                Log.v(authTag, "OK: createUserWithEmail:success ${auth.currentUser}")
+                onCreateUser(AuthError.NoError.error)
             } else if (it.isCanceled) {
                 Log.e(authTag, "Error: createUserWithEmail:canceled -->${it.exception}")
                 onCreateUser(AuthError.ErrorCreatingAccount.error)
