@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.network
+package com.endcodev.myinvoice.data.network
 
 import android.util.Log
 import com.google.firebase.auth.ktx.auth

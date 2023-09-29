@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 plugins {
     id("com.android.application")
@@ -99,4 +98,13 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     kapt("com.google.dagger:hilt-compiler:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0-alpha02")
+
+    //room
+    val roomVersion = "2.5.2"
+
+
+    implementation ("androidx.room:room-ktx:$roomVersion")
+    implementation ("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor ("androidx.room:room-compiler:$roomVersion")
+    kapt ("androidx.room:room-compiler:$roomVersion")
 }

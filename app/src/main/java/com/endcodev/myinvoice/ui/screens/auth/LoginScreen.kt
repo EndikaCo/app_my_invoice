@@ -1,5 +1,6 @@
-package com.endcodev.myinvoice.screens.credentials
+package com.endcodev.myinvoice.ui.screens.auth
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,17 +11,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -49,14 +49,17 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.*
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.viewmodels.SignUpViewModel
+import com.endcodev.myinvoice.ui.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(
-    onSignUpClick : () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+fun LoginScreen(
+    onLoginClick: () -> Unit,
+    onSignUpClick: () -> Unit,
+    onForgotClick: () -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
 
     val context = LocalContext.current
@@ -65,93 +68,114 @@ fun SignUpScreen(
         viewModel.errors.collect { error ->
             error.asString(context)
             Toast.makeText(context, error.asString(context), Toast.LENGTH_LONG).show()
+
         }
     }
 
     Scaffold(
-        topBar = { SignUpTopBar(onSignUpClick) },
-        content = { innerPadding -> SignUpBody(innerPadding, viewModel, onSignUpClick) },
-        bottomBar = { SignUpFooter(onSignUpClick) }
+        topBar = { LoginHeader() },
+        content = { innerPadding -> LoginBody(innerPadding, viewModel, onLoginClick, onForgotClick) },
+        bottomBar = { LoginFooter(onSignUpClick) }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpTopBar(onSignUpClick : () -> Unit) {
-    androidx.compose.material3.TopAppBar(
-        title = {
-            Text("Sign Up") },
-        navigationIcon = {
-            IconButton(
-                onClick = {onSignUpClick()}
-            ) {
-                Icon(Icons.Filled.KeyboardArrowLeft, contentDescription = "Go back")
-            }
-        },
-    )
+fun LoginHeader() {
+    val activity = LocalContext.current as Activity
+    Icon(
+        imageVector = Icons.Default.Close,
+        contentDescription = "close app",
+        modifier = Modifier.clickable { activity.finish() })
 }
 
-
 @Composable
-fun VerificationProgressBar() {
+fun LoginBody(
+    innerPadding: PaddingValues,
+    viewModel: LoginViewModel,
+    onLoginClick: () -> Unit,
+    onForgotClick: () -> Unit,
+) {
+    val email by viewModel.email.observeAsState(initial = "")
+    val password by viewModel.password.observeAsState(initial = "")
+    val isLoginEnabled by viewModel.isLoginEnabled.observeAsState(initial = false)
+
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        Modifier
+            .padding(innerPadding)
+            .padding(start = 16.dp, end = 16.dp)
+            .fillMaxHeight(),
         verticalArrangement = Arrangement.Center
     ) {
-        CircularProgressIndicator()
-        Text(text = "Waiting for verification...")
+        ImageLogo(Modifier.align(Alignment.CenterHorizontally))
+        Spacer(modifier = Modifier.size(16.dp))
+        Email(email) {
+            viewModel.onLoginChanged(email = it, password = password)
+        }
+        Spacer(modifier = Modifier.size(4.dp))
+        PassWord(password) {
+            viewModel.onLoginChanged(password = it, email = email)
+            viewModel.enableLogin(email, password)
+        }
+        Spacer(modifier = Modifier.size(16.dp))
+        ForgotPassword(Modifier.align(Alignment.End), onForgotClick)
+        Spacer(modifier = Modifier.size(16.dp))
+        LoginButton(loginEnabled = true, onLoginClick = onLoginClick, viewModel)
+        Spacer(modifier = Modifier.size(16.dp))
+        LoginDivider(Modifier.align(Alignment.CenterHorizontally))
+        Spacer(modifier = Modifier.size(16.dp))
+        SocialLogin()
+    }
+}
+
+
+@Composable
+fun LoginFooter(onSignUpClick: () -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Divider(
+            Modifier
+                .background(Color(0xFFF9F9F9))
+                .height(1.dp)
+                .fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.size(24.dp))
+        SignUp(onSignUpClick)
+        Spacer(modifier = Modifier.size(24.dp))
     }
 }
 
 @Composable
-fun SignUpBody(
-    innerPadding: PaddingValues,
-    viewModel: SignUpViewModel,
-    onSignUpClick: () -> Unit
-) {
-    val email by viewModel.email.observeAsState(initial = "")
-    val password by viewModel.password.observeAsState(initial = "")
-    val repeatPassword by viewModel.repeatPassword.observeAsState(initial = "")
-    val isSignUpEnabled by viewModel.isSignUpEnabled.observeAsState(initial = false)
-    val isLoading by viewModel.isLoading.observeAsState(initial = false)
-
-    if(isLoading)
-        Column {
-            VerificationProgressBar()
-        }
-    else
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(start = 16.dp, end = 16.dp)
-                .fillMaxHeight()
-        ) {
-            ImageLogo(Modifier.align(Alignment.CenterHorizontally))
-            Spacer(modifier = Modifier.size(16.dp))
-            Email(email) {
-                viewModel.onSignUpChanged(email = it, password = password)
-            }
-            Spacer(modifier = Modifier.size(4.dp))
-            PassWord(password) {
-                viewModel.onSignUpChanged(password = it, email = email)
-                viewModel.isValidCredentials(email, password)
-            }
-            Spacer(modifier = Modifier.size(4.dp))
-            RepeatPassWord(repeatPassword) {}
-            Spacer(modifier = Modifier.size(16.dp))
-            SignUpButton(loginEnabled = isSignUpEnabled, onSignUpClick, viewModel)
-            Spacer(modifier = Modifier.size(16.dp))
-            SignUpDivider(Modifier.align(Alignment.CenterHorizontally))
-            Spacer(modifier = Modifier.size(16.dp))
-            SocialSignUp()
-        }
+fun ImageLogo(modifier: Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.invoice_logo),
+        contentDescription = "logo",
+        modifier = modifier
+            .height(100.dp)
+            .width(100.dp)
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RepeatPassWord(password: String, onTextChanged: (String) -> Unit) {
+fun Email(email: String, onTextChanged: (String) -> Unit) {
+    TextField(
+        value = email,
+        onValueChange = { onTextChanged(it) },
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = { Text(text = "Email") },
+        maxLines = 1,
+        singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color(0xFF222020),
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        )
+    )
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PassWord(password: String, onTextChanged: (String) -> Unit) {
 
     var passwordVisibility by remember {
         mutableStateOf(false)
@@ -160,7 +184,7 @@ fun RepeatPassWord(password: String, onTextChanged: (String) -> Unit) {
         value = password,
         onValueChange = { onTextChanged(it) },
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Repeat password") },
+        placeholder = { Text(text = "Password") },
         maxLines = 1,
         singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         colors = TextFieldDefaults.textFieldColors(
@@ -187,13 +211,26 @@ fun RepeatPassWord(password: String, onTextChanged: (String) -> Unit) {
     )
 }
 
+
 @Composable
-fun SignUpButton(loginEnabled: Boolean, onSignUpClick: () -> Unit, viewModel: SignUpViewModel) {
+fun ForgotPassword(modifier: Modifier, onForgotClick: () -> Unit) {
+    Text(
+        text = "Forgot password",
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color(R.color.black),
+        modifier = modifier.clickable { onForgotClick() },
+        textDecoration = TextDecoration.Underline,
+    )
+}
+
+@Composable
+fun LoginButton(loginEnabled: Boolean, onLoginClick: () -> Unit, viewModel: LoginViewModel) {
     Button(
         onClick = {
-                    viewModel.createAccount()
-                    onSignUpClick()                                                                 //todo
-                  },
+            viewModel.login()
+            onLoginClick()
+        },
         enabled = loginEnabled,
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
@@ -203,17 +240,18 @@ fun SignUpButton(loginEnabled: Boolean, onSignUpClick: () -> Unit, viewModel: Si
             contentColor = Color.White
         )
     ) {
-        Text(text = "Sign Up", fontSize = 20.sp)
+        Text(text = "Log In", fontSize = 20.sp)
     }
 }
 
+
 @Composable
-fun SignUpDivider(modifier: Modifier) {
+fun LoginDivider(modifier: Modifier) {
     Text(text = "OR", modifier = modifier, fontSize = 14.sp, color = Color(R.color.grey))
 }
 
 @Composable
-fun SocialSignUp() {
+fun SocialLogin() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -221,7 +259,7 @@ fun SocialSignUp() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_facebook),
-            contentDescription = "Social Sign in",
+            contentDescription = "Social login",
             modifier = Modifier.size(16.dp)
         )
         Text(
@@ -231,48 +269,30 @@ fun SocialSignUp() {
             modifier = Modifier.padding(horizontal = 8.dp),
             color = Color(R.color.black),
             textDecoration = TextDecoration.Underline
-
         )
     }
 }
 
 @Composable
-fun ToLogIn(onAlreadyLoggedClick: () -> Unit) {
+fun SignUp(onSignUpClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable {
-                onAlreadyLoggedClick()
-            }
-        , horizontalArrangement = Arrangement.Center) {
+            .clickable { onSignUpClick() }, horizontalArrangement = Arrangement.Center
+    ) {
 
         Text(
-            text = "Already have an account?",
+            text = "Don't have an account?",
             fontSize = 15.sp,
             color = Color(0xFF8B8C8F)
         )
         Text(
-            text = "Log in",
+            text = "Sign up",
             fontSize = 15.sp,
             modifier = Modifier.padding(horizontal = 8.dp),
             color = Color(R.color.black),
             fontWeight = FontWeight.Bold,
             textDecoration = TextDecoration.Underline
         )
-    }
-}
-
-@Composable
-fun SignUpFooter( onAlreadyLoggedClick: () -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Divider(
-            Modifier
-                .background(Color(0xFFF9F9F9))
-                .height(1.dp)
-                .fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.size(24.dp))
-        ToLogIn(onAlreadyLoggedClick)
-        Spacer(modifier = Modifier.size(24.dp))
     }
 }

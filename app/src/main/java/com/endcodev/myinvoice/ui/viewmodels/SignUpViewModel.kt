@@ -1,18 +1,17 @@
-package com.endcodev.myinvoice.viewmodels
+package com.endcodev.myinvoice.ui.viewmodels
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.UiText
-import com.endcodev.myinvoice.network.AuthError.*
-import com.endcodev.myinvoice.network.AuthenticationService
-import com.endcodev.myinvoice.network.FirebaseClient
+import com.endcodev.myinvoice.ui.utils.UiText
+import com.endcodev.myinvoice.data.network.AuthError.*
+import com.endcodev.myinvoice.data.network.AuthenticationService
+import com.endcodev.myinvoice.data.network.FirebaseClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -43,6 +42,9 @@ class SignUpViewModel @Inject constructor(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _isSuccess = MutableLiveData<Boolean>()
+    val isSuccess: LiveData<Boolean> = _isSuccess
+
     fun onSignUpChanged(email: String, password: String) {
         _email.value = email
         _password.value = password
@@ -56,14 +58,12 @@ class SignUpViewModel @Inject constructor(
         val mail = _email.value
         val pass = _password.value
         if (pass != null && mail != null) {
-            auth.createUser(mail, pass, onCreateUser = { it ->
-                Log.v("***", "OncreateUser:$it, currentUser: ${client.auth.currentUser}")
-                if (it == NoError.error) {
-                    //auth.mailPassLogin(mail, pass, completionHandler = {Log.v("***", it.toString())})
-                    Log.v("***", " currentUser: ${client.auth.currentUser}")
 
-                    checkMailVerification()
-                }
+            auth.createUser(mail, pass, onCreateUser = {
+
+                if (it == NoError.error)
+                    listenerMailVerification()
+
                 sendToUi(it)
             })
         }
@@ -77,7 +77,8 @@ class SignUpViewModel @Inject constructor(
                 errorChannel.send(UiText.StringResource(resId = R.string.error_creating_account))
         }
     }
-    private fun checkMailVerification() {
+
+    private fun listenerMailVerification() {
 
         val handler = Handler(Looper.getMainLooper())
 
@@ -92,9 +93,10 @@ class SignUpViewModel @Inject constructor(
                     _isLoading.postValue(true)
 
                     handler.postDelayed(this, 2000) // Repeat block every 2s
-                } else
+                } else{
                     _isLoading.postValue(false)
-                Log.v("***", "loop currentUser: $mClient s ${mClient?.isEmailVerified}")
+                    _isSuccess.postValue(true)
+                }
             }
         }
         handler.post(runnableCode)

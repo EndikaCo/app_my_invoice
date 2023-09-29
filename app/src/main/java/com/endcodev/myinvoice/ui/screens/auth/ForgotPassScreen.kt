@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.screens.credentials
+package com.endcodev.myinvoice.ui.screens.auth
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -30,10 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
-import com.endcodev.myinvoice.viewmodels.ForgotViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.endcodev.myinvoice.ui.viewmodels.ForgotViewModel
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.viewmodels.LoginViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

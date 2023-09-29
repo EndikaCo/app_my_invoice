@@ -1,11 +1,11 @@
-package com.endcodev.myinvoice.graphs
+package com.endcodev.myinvoice.ui.graphs
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.endcodev.myinvoice.screens.HomeScreen
+import com.endcodev.myinvoice.ui.screens.home.HomeScreen
 
 
 @Composable

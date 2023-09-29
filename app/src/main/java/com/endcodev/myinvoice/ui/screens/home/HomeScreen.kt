@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.screens
+package com.endcodev.myinvoice.ui.screens.home
 
 import android.util.Log
 import androidx.compose.material.icons.Icons
@@ -18,13 +18,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.endcodev.myinvoice.graphs.HomeNavGraph
-import com.endcodev.myinvoice.graphs.Routes
+import com.endcodev.myinvoice.ui.graphs.HomeNavGraph
+import com.endcodev.myinvoice.ui.graphs.Routes
+import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +50,7 @@ fun NavigationBar(navController: NavHostController) {
             hasNews = false,
         ),
         NavBarItem(
-            route = Routes.ProfileScreen.routes,
+            route = Routes.CustomerScreen.routes,
             selectedIcon = Icons.Filled.Email,
             unselectedIcon = Icons.Outlined.Email,
             hasNews = false,
@@ -125,3 +127,11 @@ data class NavBarItem(
     val hasNews: Boolean,
     val badgeCount: Int? = null
 )
+
+@Preview
+@Composable
+fun HomePreview() {
+    MyInvoiceTheme {
+        HomeScreen()
+    }
+}
