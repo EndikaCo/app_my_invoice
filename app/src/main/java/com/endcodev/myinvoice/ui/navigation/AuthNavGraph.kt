@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.graphs
+package com.endcodev.myinvoice.ui.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController

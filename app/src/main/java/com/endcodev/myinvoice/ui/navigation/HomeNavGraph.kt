@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.graphs
+package com.endcodev.myinvoice.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.endcodev.myinvoice.ui.screens.home.CustomersScreen
 import com.endcodev.myinvoice.ui.screens.ScreenContent
+import com.endcodev.myinvoice.ui.screens.home.InvoicesContent
 
 sealed class Routes(val routes: String) {
     object HomeScreen : Routes("home")
@@ -25,12 +26,7 @@ fun HomeNavGraph(navController: NavHostController) {
     ) {
         //HOME
         composable(route = Routes.HomeScreen.routes) {
-            ScreenContent(
-                name = Routes.HomeScreen.routes,
-                onClick = {
-                    navController.navigate(Graph.DETAILS)
-                }
-            )
+            InvoicesContent()
         }
         //CUSTOMERS
         composable(route = Routes.CustomerScreen.routes) {
@@ -50,6 +46,7 @@ fun HomeNavGraph(navController: NavHostController) {
         detailsNavGraph(navController = navController)
     }
 }
+
 
 
 fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {

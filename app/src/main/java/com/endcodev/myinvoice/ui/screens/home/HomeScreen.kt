@@ -24,13 +24,13 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.endcodev.myinvoice.ui.graphs.HomeNavGraph
-import com.endcodev.myinvoice.ui.graphs.Routes
+import com.endcodev.myinvoice.ui.navigation.HomeNavGraph
+import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavHostController = rememberNavController()) {
+fun InvoicesContent(navController: NavHostController = rememberNavController()) {
     Scaffold(
         bottomBar = { NavigationBar(navController = navController) }
     ) {
@@ -132,6 +132,6 @@ data class NavBarItem(
 @Composable
 fun HomePreview() {
     MyInvoiceTheme {
-        HomeScreen()
+        InvoicesContent()
     }
 }

@@ -63,12 +63,10 @@ fun LoginScreen(
 ) {
 
     val context = LocalContext.current
-
     LaunchedEffect(key1 = viewModel) {
         viewModel.errors.collect { error ->
             error.asString(context)
             Toast.makeText(context, error.asString(context), Toast.LENGTH_LONG).show()
-
         }
     }
 

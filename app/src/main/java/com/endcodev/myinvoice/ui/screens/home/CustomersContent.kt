@@ -43,9 +43,10 @@ import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 
 @Composable
-fun CustomersScreen(onClick: () -> Unit, viewModel: CustomersViewModel = hiltViewModel()) {
-
-
+fun CustomersScreen(
+    onClick: () -> Unit,
+    viewModel: CustomersViewModel = hiltViewModel()
+) {
     val customersList by viewModel.customersList.observeAsState()
     val isLoading by viewModel.isLoading.observeAsState(initial = false)
 

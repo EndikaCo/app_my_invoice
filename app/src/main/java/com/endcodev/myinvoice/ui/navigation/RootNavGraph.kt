@@ -1,11 +1,11 @@
-package com.endcodev.myinvoice.ui.graphs
+package com.endcodev.myinvoice.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.endcodev.myinvoice.ui.screens.home.HomeScreen
+import com.endcodev.myinvoice.ui.screens.home.InvoicesContent
 
 
 @Composable
@@ -23,7 +23,7 @@ fun RootNavigationGraph(navController: NavHostController) {
     ) {
         authNavGraph(navController = navController)
         composable(route = Graph.HOME) {
-            HomeScreen()
+            InvoicesContent()
         }
     }
 }
