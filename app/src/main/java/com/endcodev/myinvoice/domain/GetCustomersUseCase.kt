@@ -1,7 +1,7 @@
 package com.endcodev.myinvoice.domain
 
 import android.util.Log
-import com.endcodev.myinvoice.data.CustomerModel
+import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.data.database.CustomersEntity
 import com.endcodev.myinvoice.data.repository.CustomersRepository
 import javax.inject.Inject

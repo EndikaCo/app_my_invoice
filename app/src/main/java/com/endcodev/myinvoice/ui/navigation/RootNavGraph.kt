@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.endcodev.myinvoice.ui.screens.home.InvoicesContent
+import com.endcodev.myinvoice.ui.screens.home.HomeScreen
 
 
 @Composable
@@ -23,7 +23,7 @@ fun RootNavigationGraph(navController: NavHostController) {
     ) {
         authNavGraph(navController = navController)
         composable(route = Graph.HOME) {
-            InvoicesContent()
+            HomeScreen()
         }
     }
 }

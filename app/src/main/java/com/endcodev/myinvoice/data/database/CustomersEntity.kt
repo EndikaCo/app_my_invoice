@@ -3,7 +3,7 @@ package com.endcodev.myinvoice.data.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.endcodev.myinvoice.data.CustomerModel
+import com.endcodev.myinvoice.data.model.CustomerModel
 
 @Entity(tableName = "customer_table")
 data class CustomersEntity(

@@ -7,8 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.endcodev.myinvoice.ui.screens.home.CustomersScreen
-import com.endcodev.myinvoice.ui.screens.ScreenContent
 import com.endcodev.myinvoice.ui.screens.home.InvoicesContent
+import com.endcodev.myinvoice.ui.screens.home.ItemsContent
 
 sealed class Routes(val routes: String) {
     object HomeScreen : Routes("home")
@@ -38,7 +38,7 @@ fun HomeNavGraph(navController: NavHostController) {
         }
         //SETTINGS
         composable(route = Routes.SettingsScreen.routes) {
-            ScreenContent(
+            ItemsContent(
                 name = Routes.SettingsScreen.routes,
                 onClick = { }
             )
@@ -56,13 +56,13 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
     ) {
         //INFORMATION SCREEN
         composable(route = DetailsScreen.Information.route) {
-            ScreenContent(name = DetailsScreen.Information.route) {
+            ItemsContent(name = DetailsScreen.Information.route) {
                 navController.navigate(DetailsScreen.Overview.route)
             }
         }
         //OVERVIEW SCREEN
         composable(route = DetailsScreen.Overview.route) {
-            ScreenContent(name = DetailsScreen.Overview.route) {
+            ItemsContent(name = DetailsScreen.Overview.route) {
                 navController.popBackStack(
                     route = DetailsScreen.Information.route,
                     inclusive = false

@@ -37,7 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.endcodev.myinvoice.data.CustomerModel
+import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import androidx.lifecycle.viewModelScope
+import com.endcodev.myinvoice.data.model.InvoiceModel
 import kotlinx.coroutines.flow.*
 
 @OptIn(FlowPreview::class)
@@ -23,16 +24,16 @@ class InvoicesViewModel: ViewModel() {
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
 
-    private val _persons = MutableStateFlow(allPersons)
-    val persons = searchText
+    private val _persons = MutableStateFlow(allInvoices)
+    val invoices = searchText
         .debounce(1000L)
         .onEach { _isSearching.update { true } }
-        .combine(_persons) { text, persons ->
+        .combine(_persons) { text, invoices ->
             if(text.isBlank()) {
-                persons
+                invoices
             } else {
-                delay(2000L)
-                persons.filter {
+                delay(500L)
+                invoices.filter {
                     it.doesMatchSearchQuery(text)
                 }
             }
@@ -50,38 +51,21 @@ class InvoicesViewModel: ViewModel() {
     }
 }
 
-data class Person(
-    val firstName: String,
-    val lastName: String
-) {
-    fun doesMatchSearchQuery(query: String): Boolean {
-        val matchingCombinations = listOf(
-            "$firstName$lastName",
-            "$firstName $lastName",
-            "${firstName.first()} ${lastName.first()}",
-        )
-
-        return matchingCombinations.any {
-            it.contains(query, ignoreCase = true)
-        }
-    }
-}
-
-private val allPersons = listOf(
-    Person(
-        firstName = "Philipp",
-        lastName = "Lackner"
+private val allInvoices = listOf(
+    InvoiceModel(
+        iId = 1,
+        iCustomer = "Lackner"
     ),
-    Person(
-        firstName = "Beff",
-        lastName = "Jezos"
+    InvoiceModel(
+        iId = 2,
+        iCustomer = "Jezos"
     ),
-    Person(
-        firstName = "Chris P.",
-        lastName = "Bacon"
+    InvoiceModel(
+        iId = 3,
+        iCustomer =  "Bacon"
     ),
-    Person(
-        firstName = "Jeve",
-        lastName = "Stops"
-    ),
+    InvoiceModel(
+        iId = 4,
+        iCustomer =  "Stops"
+    )
 )

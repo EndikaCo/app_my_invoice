@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens
+package com.endcodev.myinvoice.ui.screens.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ScreenContent(name: String, onClick: () -> Unit) {
+fun ItemsContent(name: String, onClick: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

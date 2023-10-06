@@ -1,6 +1,6 @@
 package com.endcodev.myinvoice.data.repository
 
-import com.endcodev.myinvoice.data.CustomerModel
+import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.data.database.CustomersDao
 import com.endcodev.myinvoice.data.database.CustomersEntity
 import com.endcodev.myinvoice.data.database.toDomain

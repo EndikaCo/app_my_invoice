@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.CustomerModel
+import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.domain.GetPlayersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

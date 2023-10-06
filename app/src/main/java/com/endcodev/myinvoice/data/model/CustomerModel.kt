@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.data
+package com.endcodev.myinvoice.data.model
 
 data class CustomerModel(
     val cId : Int,
