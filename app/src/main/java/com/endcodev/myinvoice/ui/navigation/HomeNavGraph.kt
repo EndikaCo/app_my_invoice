@@ -6,14 +6,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.endcodev.myinvoice.ui.screens.home.CustomersScreen
-import com.endcodev.myinvoice.ui.screens.home.InvoicesContent
-import com.endcodev.myinvoice.ui.screens.home.ItemsContent
+import com.endcodev.myinvoice.ui.screens.customers.CustomersContent
+import com.endcodev.myinvoice.ui.screens.invoice.InvoicesContent
+import com.endcodev.myinvoice.ui.screens.items.ItemsContent
 
 sealed class Routes(val routes: String) {
-    object HomeScreen : Routes("home")
-    object CustomerScreen : Routes("customer")
-    object SettingsScreen : Routes("settings")
+    object InvoicesContent : Routes("invoices")
+    object CustomerContent : Routes("customers")
+    object ItemsContent : Routes("items")
 }
 
 //BOTTOM BAR
@@ -22,24 +22,20 @@ fun HomeNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
         route = Graph.HOME,
-        startDestination = Routes.HomeScreen.routes
+        startDestination = Routes.InvoicesContent.routes
     ) {
         //HOME
-        composable(route = Routes.HomeScreen.routes) {
+        composable(route = Routes.InvoicesContent.routes) {
             InvoicesContent()
         }
         //CUSTOMERS
-        composable(route = Routes.CustomerScreen.routes) {
-            CustomersScreen(
-                onClick = {
-                    navController.navigate(Graph.DETAILS)
-                }
-            )
+        composable(route = Routes.CustomerContent.routes) {
+            CustomersContent()
         }
         //SETTINGS
-        composable(route = Routes.SettingsScreen.routes) {
+        composable(route = Routes.ItemsContent.routes) {
             ItemsContent(
-                name = Routes.SettingsScreen.routes,
+                name = Routes.ItemsContent.routes,
                 onClick = { }
             )
         }
@@ -48,6 +44,10 @@ fun HomeNavGraph(navController: NavHostController) {
 }
 
 
+sealed class DetailsScreen(val route: String) {
+    object Information : DetailsScreen(route = "INFORMATION")
+    object Overview : DetailsScreen(route = "OVERVIEW")
+}
 
 fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
     navigation(
@@ -72,7 +72,4 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
     }
 }
 
-sealed class DetailsScreen(val route: String) {
-    object Information : DetailsScreen(route = "INFORMATION")
-    object Overview : DetailsScreen(route = "OVERVIEW")
-}
+

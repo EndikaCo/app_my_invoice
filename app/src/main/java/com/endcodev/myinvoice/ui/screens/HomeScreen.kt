@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens.home
+package com.endcodev.myinvoice.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.height
@@ -33,6 +33,7 @@ import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.navigation.Graph
 import com.endcodev.myinvoice.ui.navigation.HomeNavGraph
 import com.endcodev.myinvoice.ui.navigation.Routes
+import com.endcodev.myinvoice.ui.screens.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,15 +42,22 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
     Scaffold(
         bottomBar = { NavigationBar(navController = navController) },
-        floatingActionButton = {FloatingActionButton(onButtonClick = {
+        floatingActionButton = {
+            FloatingActionButton(onButtonClick = {
 
             val currentRoute = navController.currentBackStackEntry?.destination?.route
 
-            if(currentRoute == Routes.CustomerScreen.routes) {
+            if(currentRoute == Routes.CustomerContent.routes)
                 navController.navigate(DetailsScreen.Overview.route)
-                //todo
-            }
-        })}
+
+            else if(currentRoute == Routes.InvoicesContent.routes)
+                navController.navigate(Graph.DETAILS)
+
+            else if(currentRoute == Routes.ItemsContent.routes)
+                navController.navigate(Graph.DETAILS)
+
+        })
+        }
     ) {
         Log.v("AD", "$it")
         HomeNavGraph(navController = navController)
@@ -74,20 +82,20 @@ fun NavigationBar(navController: NavHostController) {
 
     val items = listOf(
         NavBarItem(
-            route = Routes.HomeScreen.routes,
+            route = Routes.InvoicesContent.routes,
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home,
             hasNews = false,
         ),
         NavBarItem(
-            route = Routes.CustomerScreen.routes,
+            route = Routes.CustomerContent.routes,
             selectedIcon = Icons.Filled.Email,
             unselectedIcon = Icons.Outlined.Email,
             hasNews = false,
             badgeCount = 45
         ),
         NavBarItem(
-            route = Routes.SettingsScreen.routes,
+            route = Routes.ItemsContent.routes,
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
             hasNews = true,

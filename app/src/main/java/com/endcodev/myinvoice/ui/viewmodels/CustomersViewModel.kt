@@ -1,30 +1,75 @@
 package com.endcodev.myinvoice.ui.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.domain.GetPlayersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class CustomersViewModel @Inject constructor(
     private val getPlayersUseCase: GetPlayersUseCase,
 ) : ViewModel() {
 
-    private val _customersList = MutableLiveData<MutableList<CustomerModel>>()
-    val customersList: LiveData<MutableList<CustomerModel>> get() = _customersList
+    private val _searchText = MutableStateFlow("")
+    val searchText = _searchText.asStateFlow()
 
-    val isLoading = MutableLiveData<Boolean>()
+    private val _isSearching = MutableStateFlow(false)
+    val isSearching = _isSearching.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            isLoading.postValue(true)
-            _customersList.value = getPlayersUseCase.invoke()?.toMutableList()
-            isLoading.postValue(false)
+    private val _customers = MutableStateFlow(allCustomers)
+
+    val customers = searchText
+        .debounce(1000L)
+        .onEach { _isSearching.update { true } }
+        .combine(_customers) { text, customers ->
+            if(text.isBlank()) {
+                customers
+            } else {
+                delay(500L)
+                customers.filter {
+                    it.doesMatchSearchQuery(text)
+                }
+            }
         }
+
+        .onEach { _isSearching.update { false } }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            _customers.value
+        )
+
+    /*init {
+        viewModelScope.launch {
+            _isSearching.value = true
+            val players = getPlayersUseCase.invoke()
+            if (players != null) {
+                _customers.value = players.toMutableList()
+            }
+            _isSearching.value = false
+        }
+    }*/
+
+    fun onSearchTextChange(text: String) {
+        _searchText.value = text
     }
 }
+
+private val allCustomers = listOf(
+    CustomerModel(1, null,"Example 1", "B95768523", "+34623213213"),
+    CustomerModel(2, null,"Example 2", "1608876623V", "+86732132133"),
+    CustomerModel(3, null,"Example 3", "A323145125212", "+51624223213")
+)

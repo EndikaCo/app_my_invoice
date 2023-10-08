@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens.home
+package com.endcodev.myinvoice.ui.screens.customers
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,21 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,43 +28,53 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.endcodev.myinvoice.data.model.CustomerModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.endcodev.myinvoice.R
+import com.endcodev.myinvoice.data.model.CustomerModel
+import com.endcodev.myinvoice.data.model.InvoiceModel
+import com.endcodev.myinvoice.ui.screens.invoice.InvoiceItem
+import com.endcodev.myinvoice.ui.screens.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.screens.invoice.SearchBar
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 
 @Composable
-fun CustomersScreen(
-    onClick: () -> Unit,
-    viewModel: CustomersViewModel = hiltViewModel()
+fun CustomersContent(
 ) {
-    val customersList by viewModel.customersList.observeAsState()
-    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    val viewModel: CustomersViewModel = hiltViewModel()
+    val searchText by viewModel.searchText.collectAsState()
+    val customers by viewModel.customers.collectAsState()
+    val isSearching by viewModel.isSearching.collectAsState()
 
-    Column {
-        SearchBar(onClick)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    )
+    {
+        SearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
         Spacer(modifier = Modifier.size(16.dp))
-        LazyColumn(Modifier.fillMaxWidth()) {
-            if(customersList != null)
-                items(customersList!!) { customer ->
-                CustomerItem(customer = customer)
-            }
-        }
+
+        if (isSearching)
+            ProgressBar()
+        else
+            CustomersList(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f), customers
+            )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(onClick: () -> Unit) {
-    var text by remember { mutableStateOf("") }
-
-    TextField(
-        value = text,
-        onValueChange = { text = it },
-        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-        trailingIcon = { IconButton(onClick = { onClick() }) { Icon(Icons.Rounded.AddCircle, "Clear Icon") } },
-        modifier = Modifier.fillMaxWidth()
-    )
+fun CustomersList(modifier: Modifier, customers: List<CustomerModel>) {
+    LazyColumn(
+        modifier = modifier
+    ) {
+        items(customers) { customer ->
+            CustomerItem(customer)
+        }
+    }
 }
 
 @Composable
@@ -101,14 +102,17 @@ fun CustomerItem(customer: CustomerModel) {
             .padding(bottom = 8.dp)
             .fillMaxWidth()
             .clickable { }
-    ){
-        Row(modifier = Modifier
-            .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)) {
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
+        ) {
             CustomerImage()
             CustomerPreviewData(
                 Modifier
                     .padding(start = 12.dp)
-                    .weight(1f), customer)
+                    .weight(1f), customer
+            )
         }
     }
 }
@@ -137,7 +141,7 @@ fun CustomerPreviewData(modifier: Modifier, customer: CustomerModel) {
 @Composable
 fun MPreview() {
     MyInvoiceTheme {
-        CustomersScreen(onClick = {})
+        CustomersContent()
     }
 }
 

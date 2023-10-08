@@ -33,13 +33,11 @@ class InvoicesViewModel: ViewModel() {
                 invoices
             } else {
                 delay(500L)
-                invoices.filter {
-                    it.doesMatchSearchQuery(text)
+                invoices.filter { invoice ->
+                    invoice.doesMatchSearchQuery(text)
                 }
             }
-        }
-
-        .onEach { _isSearching.update { false } }
+        }.onEach { _isSearching.update { false } }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),

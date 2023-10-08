@@ -1,7 +1,6 @@
-package com.endcodev.myinvoice.ui.screens.home
+package com.endcodev.myinvoice.ui.screens.invoice
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,29 +9,27 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.endcodev.myinvoice.data.model.InvoiceModel
 import com.endcodev.myinvoice.ui.viewmodels.InvoicesViewModel
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvoicesContent() {
     val viewModel = viewModel<InvoicesViewModel>()
@@ -45,31 +42,33 @@ fun InvoicesContent() {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        SearchBar(searchText, viewModel)
-
+        SearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
         Spacer(modifier = Modifier.height(16.dp))
 
-        if(isSearching) {
+        if (isSearching)
             ProgressBar()
-        } else {
-            InvoiceList(Modifier.fillMaxWidth().weight(1f), invoices)
-        }
+        else
+            InvoiceList(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f), invoices)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(searchText: String, viewModel: InvoicesViewModel) {
+fun SearchBar(searchText: String, valueChanged : (String) -> Unit) {
     TextField(
         value = searchText,
-        onValueChange = viewModel::onSearchTextChange,
+        onValueChange = { valueChanged(it) },
+        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
         modifier = Modifier.fillMaxWidth(),
         placeholder = { Text(text = "Search") }
     )
 }
 
 @Composable
-fun ProgressBar(){
+fun ProgressBar() {
     Box(modifier = Modifier.fillMaxSize()) {
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center)
@@ -78,7 +77,7 @@ fun ProgressBar(){
 }
 
 @Composable
-fun InvoiceList(modifier: Modifier, invoices: List<InvoiceModel>){
+fun InvoiceList(modifier: Modifier, invoices: List<InvoiceModel>) {
     LazyColumn(
         modifier = modifier
     ) {
@@ -95,15 +94,18 @@ fun InvoiceItem(invoice: InvoiceModel) {
             .padding(bottom = 8.dp) //between items
             .fillMaxWidth()
             .clickable { }
-    ){
+    ) {
 
 
-        Row(modifier = Modifier
-            .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
+        ) {
             InvoicePreviewData(
                 Modifier
                     .padding(start = 12.dp)
-                    .weight(1f), invoice)
+                    .weight(1f), invoice
+            )
         }
     }
 }
@@ -125,4 +127,10 @@ fun InvoicePreviewData(modifier: Modifier, invoice: InvoiceModel) {
                 .height(25.dp)
         )
     }
+}
+
+@Preview
+@Composable
+fun InvoicesContentPreview() {
+    InvoicesContent()
 }

@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens.home
+package com.endcodev.myinvoice.ui.screens.items
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
