@@ -79,6 +79,9 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    //constrait layout
+    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
     //firebase
     implementation("com.google.firebase:firebase-auth-ktx:22.1.2")
     implementation("com.google.firebase:firebase-database-ktx:20.2.2")

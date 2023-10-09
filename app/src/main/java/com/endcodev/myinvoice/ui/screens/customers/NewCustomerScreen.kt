@@ -24,6 +24,9 @@ import com.endcodev.myinvoice.ui.screens.auth.ImageLogo
 @Composable
 fun DetailsCustomer(){
 
+    //constrait layout
+
+
     Column {
         Row {
             Column {
