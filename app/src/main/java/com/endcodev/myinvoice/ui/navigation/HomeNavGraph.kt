@@ -6,7 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.endcodev.myinvoice.ui.screens.customers.CustomerInfoScreen
 import com.endcodev.myinvoice.ui.screens.customers.CustomersContent
+import com.endcodev.myinvoice.ui.screens.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.screens.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.screens.items.ItemsContent
 
@@ -32,7 +34,7 @@ fun HomeNavGraph(navController: NavHostController) {
         composable(route = Routes.CustomerContent.routes) {
             CustomersContent()
         }
-        //SETTINGS
+        //ITEMS
         composable(route = Routes.ItemsContent.routes) {
             ItemsContent(
                 name = Routes.ItemsContent.routes,
@@ -45,26 +47,29 @@ fun HomeNavGraph(navController: NavHostController) {
 
 
 sealed class DetailsScreen(val route: String) {
-    object Information : DetailsScreen(route = "INFORMATION")
-    object Overview : DetailsScreen(route = "OVERVIEW")
+    object Customer : DetailsScreen(route = "CUSTOMER")
+    object Invoice : DetailsScreen(route = "INVOICE")
+    object Item : DetailsScreen(route = "ITEM")
 }
 
 fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
     navigation(
         route = Graph.DETAILS,
-        startDestination = DetailsScreen.Information.route
+        startDestination = DetailsScreen.Customer.route
     ) {
-        //INFORMATION SCREEN
-        composable(route = DetailsScreen.Information.route) {
-            ItemsContent(name = DetailsScreen.Information.route) {
-                navController.navigate(DetailsScreen.Overview.route)
-            }
+        //CUSTOMER SCREEN
+        composable(route = DetailsScreen.Customer.route) {
+            CustomerInfoScreen(onAcceptClick = {}, onCancelClick = {})
         }
-        //OVERVIEW SCREEN
-        composable(route = DetailsScreen.Overview.route) {
-            ItemsContent(name = DetailsScreen.Overview.route) {
+        //INVOICE SCREEN
+        composable(route = DetailsScreen.Invoice.route) {
+            InvoiceInfoScreen()
+        }
+        //ITEMS SCREEN
+        composable(route = DetailsScreen.Item.route) {
+            ItemsContent(name = DetailsScreen.Item.route) {
                 navController.popBackStack(
-                    route = DetailsScreen.Information.route,
+                    route = DetailsScreen.Item.route,
                     inclusive = false
                 )
             }

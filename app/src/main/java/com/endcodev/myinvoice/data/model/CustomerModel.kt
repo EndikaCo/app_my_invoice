@@ -1,7 +1,6 @@
 package com.endcodev.myinvoice.data.model
 
 data class CustomerModel(
-    val cId : Int,
     val cImage: Int?,
     val cIdentifier : String,
     val cFiscalName : String,
@@ -9,7 +8,6 @@ data class CustomerModel(
 ){
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
-            "$cId",
             cIdentifier,
             cFiscalName,
             cTelephone

@@ -39,14 +39,12 @@ fun ForgotPassScreen(
     onBackClick: () ->Unit,
     viewModel: ForgotViewModel = hiltViewModel()
 ) {
-
     val context = LocalContext.current
 
     LaunchedEffect(key1 = viewModel) {
         viewModel.errors.collect { error ->
             error.asString(context)
             Toast.makeText(context, error.asString(context), Toast.LENGTH_LONG).show()
-
         }
     }
 
@@ -76,7 +74,6 @@ fun ForgotBody(innerPadding: PaddingValues, viewModel: ForgotViewModel, onLoginC
         )
     }
 }
-
 
 @Composable
 fun ForgotButton(loginEnabled: Boolean, onLoginClick: () -> Unit, viewModel: ForgotViewModel) {
@@ -115,8 +112,8 @@ fun ForgotHeader(onBackClick: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun ForgotPassScreenPreview() {
     MyInvoiceTheme {
-        //ForgotPassScreen()
+        ForgotPassScreen(onBackClick = {})
     }
 }

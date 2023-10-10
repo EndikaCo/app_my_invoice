@@ -21,6 +21,6 @@ interface CustomersDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPlayer(player: CustomersEntity)
 
-    @Query("DELETE FROM customer_table WHERE cId = :cId")
+    @Query("DELETE FROM customer_table WHERE cIdentifier = :cId")
     fun deletePlayer(cId: String)
 }

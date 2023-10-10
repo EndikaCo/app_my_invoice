@@ -149,6 +149,6 @@ fun MPreview() {
 @Composable
 fun MPreview2() {
     MyInvoiceTheme {
-        CustomerItem(CustomerModel(1, null, "21321312A", "Example name", "688873827"))
+        CustomerItem(CustomerModel(1,  "21321312A", "Example name", "688873827"))
     }
 }

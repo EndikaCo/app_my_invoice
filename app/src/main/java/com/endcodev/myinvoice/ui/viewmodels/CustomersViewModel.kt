@@ -3,7 +3,7 @@ package com.endcodev.myinvoice.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.domain.GetPlayersUseCase
+import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class CustomersViewModel @Inject constructor(
-    private val getPlayersUseCase: GetPlayersUseCase,
+    private val getCustomersUseCase: GetCustomersUseCase,
 ) : ViewModel() {
 
     private val _searchText = MutableStateFlow("")
@@ -69,7 +69,7 @@ class CustomersViewModel @Inject constructor(
 }
 
 private val allCustomers = listOf(
-    CustomerModel(1, null,"Example 1", "B95768523", "+34623213213"),
-    CustomerModel(2, null,"Example 2", "1608876623V", "+86732132133"),
-    CustomerModel(3, null,"Example 3", "A323145125212", "+51624223213")
+    CustomerModel(1, "B95768523", "Volkwagermit", "+34623213213"),
+    CustomerModel(2, "1608876623V", "Opel motors", "+86732132133"),
+    CustomerModel(3, "A323145125212", "Bar Paco", "+51624223213")
 )

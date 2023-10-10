@@ -6,7 +6,7 @@ import com.endcodev.myinvoice.data.database.CustomersEntity
 import com.endcodev.myinvoice.data.repository.CustomersRepository
 import javax.inject.Inject
 
-class GetPlayersUseCase @Inject constructor(
+class GetCustomersUseCase @Inject constructor(
     private val repository: CustomersRepository
 ) {
 
@@ -32,20 +32,20 @@ class GetPlayersUseCase @Inject constructor(
 
     private fun exampleCustomers(): MutableList<CustomersEntity> {
         return arrayListOf(
-            CustomersEntity(1, "Example 1", "B95768523", "+34623213213"),
-            CustomersEntity(2, "Example 2", "1608876623V", "+86732132133"),
-            CustomersEntity(3, "Example 3", "A323145125212", "+51624223213")
+            CustomersEntity( cFiscalName = "Example 1", cIdentifier="B95768523", cTelephone = "+34623213213"),
+            CustomersEntity( cFiscalName = "Example 2", cIdentifier="1608876623V", cTelephone = "+86732132133"),
+            CustomersEntity( cFiscalName = "Example 3", cIdentifier="A323145125212", cTelephone = "+51624223213")
         )
     }
 
-    fun savePlayer(customer: CustomersEntity?) {
+    fun saveCustomer(customer: CustomersEntity?) {
         if (customer != null) {
             repository.insertCustomer(customer)
             Log.e(TAG, "customer ${customer.cFiscalName} inserted")
         }
     }
 
-    fun deletePlayer(id: String) {
+    fun deleteCustomer(id: String) {
         repository.deleteCustomer(id)
         Log.e(TAG, "customer with $id deleted ")
     }

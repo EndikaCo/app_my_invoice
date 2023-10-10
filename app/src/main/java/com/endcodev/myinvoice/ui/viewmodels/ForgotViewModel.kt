@@ -22,7 +22,7 @@ class ForgotViewModel @Inject constructor(
     private val _email = MutableLiveData<String>()
     val email: LiveData<String> = _email
 
-    private val _isForgotEnabled = MutableLiveData<Boolean>(false)
+    private val _isForgotEnabled = MutableLiveData(false)
     val isForgotEnabled: LiveData<Boolean> = _isForgotEnabled
 
     private val errorChannel = Channel<UiText>()
@@ -37,7 +37,6 @@ class ForgotViewModel @Inject constructor(
         Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
     fun forgotPass() {
-
         val mail = _email.value
         if (mail != null) {
 

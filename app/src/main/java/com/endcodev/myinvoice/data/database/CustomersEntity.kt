@@ -7,11 +7,10 @@ import com.endcodev.myinvoice.data.model.CustomerModel
 
 @Entity(tableName = "customer_table")
 data class CustomersEntity(
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "cId") val cId: Int = 0,
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "cIdentifier") val cIdentifier: String,
     @ColumnInfo(name = "cFiscalName") val cFiscalName : String,
     @ColumnInfo(name = "cTelephone") val cTelephone : String
     )
 
-fun CustomersEntity.toDomain() = CustomerModel(cId = cId, null, cIdentifier, cFiscalName, cTelephone)
+fun CustomersEntity.toDomain() = CustomerModel(null, cIdentifier = cIdentifier, cFiscalName =  cFiscalName, cTelephone = cTelephone)

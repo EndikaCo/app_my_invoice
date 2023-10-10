@@ -45,16 +45,11 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
         floatingActionButton = {
             FloatingActionButton(onButtonClick = {
 
-            val currentRoute = navController.currentBackStackEntry?.destination?.route
-
-            if(currentRoute == Routes.CustomerContent.routes)
-                navController.navigate(DetailsScreen.Overview.route)
-
-            else if(currentRoute == Routes.InvoicesContent.routes)
-                navController.navigate(Graph.DETAILS)
-
-            else if(currentRoute == Routes.ItemsContent.routes)
-                navController.navigate(Graph.DETAILS)
+            when (navController.currentBackStackEntry?.destination?.route) {
+                    Routes.CustomerContent.routes -> navController.navigate(DetailsScreen.Customer.route)
+                    Routes.InvoicesContent.routes -> navController.navigate(DetailsScreen.Invoice.route)
+                    Routes.ItemsContent.routes -> navController.navigate(Graph.DETAILS)
+                }
 
         })
         }
