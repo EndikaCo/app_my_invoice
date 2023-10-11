@@ -1,6 +1,10 @@
 package com.endcodev.myinvoice.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,6 +15,7 @@ import com.endcodev.myinvoice.ui.screens.customers.CustomersContent
 import com.endcodev.myinvoice.ui.screens.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.screens.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.screens.items.ItemsContent
+import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
 
 sealed class Routes(val routes: String) {
     object InvoicesContent : Routes("invoices")

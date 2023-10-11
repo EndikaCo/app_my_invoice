@@ -23,6 +23,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,29 +40,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.CustomerModel
+import com.endcodev.myinvoice.data.model.CustomerUiState
+import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerInfoScreen(
-    onAcceptClick : (CustomerModel) -> Unit,
-    onCancelClick : () -> Unit
+    viewModel: CustomerInfoViewModel = hiltViewModel(),
+    onAcceptClick: (CustomerModel) -> Unit,
+    onCancelClick: () -> Unit
 ) {
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = { },
         content = { innerPadding ->
-            CustomerContent(innerPadding)
+            CustomerContent(innerPadding, uiState, viewModel)
         },
         bottomBar = {
-            BottomButtons(onAcceptClick, onCancelClick)
+            BottomButtons(uiState.isAcceptEnabled, onAcceptClick, onCancelClick)
         }
     )
 }
 
 @Composable
-fun CustomerContent(innerPadding: PaddingValues) {
+fun CustomerContent(
+    innerPadding: PaddingValues,
+    uiState: CustomerUiState,
+    viewModel: CustomerInfoViewModel
+) {
 
     Column(
         Modifier
@@ -82,7 +92,13 @@ fun CustomerContent(innerPadding: PaddingValues) {
                 }
             )
 
-            CompanyIdNum(
+            CompanyIdNum(uiState.cIdentifier, onTextChanged = {
+                viewModel.onDataChanged(
+                    identifier = it,
+                    fiscalName = uiState.cFiscalName,
+                    telephone = uiState.cTelephone
+                )
+            },
                 modifier = Modifier.constrainAs(nif) {
                     top.linkTo(title.bottom, margin = 4.dp)
                     start.linkTo(parent.start, margin = 20.dp)
@@ -98,7 +114,13 @@ fun CustomerContent(innerPadding: PaddingValues) {
             })
         }
 
-        CompanyName()
+        CompanyName(uiState.cFiscalName, onTextChanged = {
+            viewModel.onDataChanged(
+                identifier = it,
+                fiscalName = uiState.cFiscalName,
+                telephone = uiState.cTelephone
+            )
+        }
         CompanyEmail()
     }
 
@@ -106,15 +128,98 @@ fun CustomerContent(innerPadding: PaddingValues) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CompanyIdNum(modifier: Modifier) {
-    var text by remember { mutableStateOf("") }
+fun CompanyIdNum(idNum: String, onTextChanged: (String) -> Unit, modifier: Modifier) {
 
     OutlinedTextField(modifier = modifier.fillMaxWidth(),
-        value = text,
-        onValueChange = { text = it },
+        value = idNum,
+        onValueChange = { onTextChanged(it) },
         label = { Text("Company ID") }
     )
 }
+
+@Composable
+fun CustomerTitle(modifier: Modifier) {
+    Text(
+        modifier = modifier.fillMaxWidth(),
+        text = "Customer Info",
+        color = Color.Black,
+        fontSize = 26.sp,
+        textAlign = TextAlign.Start,
+        fontFamily = FontFamily.Serif,
+        fontWeight = FontWeight.Bold
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CompanyName(cFiscalName: String, onTextChanged: (String) -> Unit) {
+
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp),
+        value = cFiscalName,
+        onValueChange = { onTextChanged(it) },
+        label = { Text("Company name") }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CompanyEmail() {
+    var text by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 20.dp, end = 20.dp),
+        value = text,
+        onValueChange = { text = it },
+        label = { Text("Email") }
+    )
+}
+
+@Composable
+fun ImageCustomer(modifier: Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.person_24),
+        contentDescription = "logo",
+        modifier = modifier
+            .width(150.dp)
+            .height(140.dp)
+    )
+}
+
+@Composable
+fun BottomButtons(
+    enabled: Boolean,
+    onAcceptClick: (CustomerModel) -> Unit,
+    onCancelClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp)
+            .fillMaxWidth()
+    ) {
+        MyButton("Cancel", Modifier.weight(1F), true)
+        Spacer(modifier = Modifier.width(25.dp))
+        MyButton("Accept", Modifier.weight(1F), enabled)
+    }
+}
+
+@Composable
+fun MyButton(text: String, modifier: Modifier, enabled: Boolean) {
+    Button(
+        onClick = { /*TODO*/ },
+        modifier = modifier.height(50.dp),
+        enabled = enabled,
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+    ) {
+        Text(text = text)
+    }
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -191,88 +296,9 @@ fun DropDownList(
     }
 }
 
-@Composable
-fun CustomerTitle(modifier: Modifier) {
-    Text(
-        modifier = modifier.fillMaxWidth(),
-        text = "Customer Info",
-        color = Color.Black,
-        fontSize = 26.sp,
-        textAlign = TextAlign.Start,
-        fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CompanyName() {
-    var text by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp),
-        value = text,
-        onValueChange = { text = it },
-        label = { Text("Company name") }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CompanyEmail() {
-    var text by remember { mutableStateOf("") }
-
-    OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp),
-        value = text,
-        onValueChange = { text = it },
-        label = { Text("Email") }
-    )
-}
-
-@Composable
-fun ImageCustomer(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.person_24),
-        contentDescription = "logo",
-        modifier = modifier
-            .width(150.dp)
-            .height(140.dp)
-    )
-}
-
-@Composable
-fun BottomButtons(onAcceptClick: (CustomerModel) -> Unit, onCancelClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp)
-            .fillMaxWidth()
-    ) {
-        MyButton("Cancel", Modifier.weight(1F))
-        Spacer(modifier = Modifier.width(25.dp))
-        MyButton("Accept", Modifier.weight(1F))
-    }
-}
-
-@Composable
-fun MyButton(text: String, modifier: Modifier) {
-    Button(
-        onClick = { /*TODO*/ },
-        modifier = modifier.height(50.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
-    ) {
-        Text(text = text)
-    }
-}
-
 
 @Preview
 @Composable
 fun PreviewDetailsCustomer() {
-    CustomerInfoScreen(onAcceptClick = {}, onCancelClick = {})
+    //CustomerInfoScreen(onAcceptClick = {}, onCancelClick = {})
 }
