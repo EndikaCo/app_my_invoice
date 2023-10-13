@@ -24,14 +24,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.InvoiceModel
+import com.endcodev.myinvoice.ui.screens.FloatingActionButton
 import com.endcodev.myinvoice.ui.viewmodels.InvoicesViewModel
 
 @Composable
-fun InvoicesContent() {
+fun InvoicesContent(onButtonClick: () -> Unit) {
     val viewModel = viewModel<InvoicesViewModel>()
     val searchText by viewModel.searchText.collectAsState()
     val invoices by viewModel.invoices.collectAsState()
@@ -51,13 +54,21 @@ fun InvoicesContent() {
             InvoiceList(
                 Modifier
                     .fillMaxWidth()
-                    .weight(1f), invoices)
+                    .weight(1f), invoices
+            )
+
+        FloatingActionButton(
+            Modifier
+                .weight(1f),
+            painter = painterResource(id = R.drawable.invoice_add_24),
+            onButtonClick
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(searchText: String, valueChanged : (String) -> Unit) {
+fun SearchBar(searchText: String, valueChanged: (String) -> Unit) {
     TextField(
         value = searchText,
         onValueChange = { valueChanged(it) },
@@ -132,5 +143,5 @@ fun InvoicePreviewData(modifier: Modifier, invoice: InvoiceModel) {
 @Preview
 @Composable
 fun InvoicesContentPreview() {
-    InvoicesContent()
+    //InvoicesContent()
 }

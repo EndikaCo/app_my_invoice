@@ -50,19 +50,15 @@ import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
 @Composable
 fun CustomerInfoScreen(
     viewModel: CustomerInfoViewModel = hiltViewModel(),
-    onAcceptClick: (CustomerModel) -> Unit,
+    onAcceptClick: () -> Unit,
     onCancelClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = { },
-        content = { innerPadding ->
-            CustomerContent(innerPadding, uiState, viewModel)
-        },
-        bottomBar = {
-            BottomButtons(uiState.isAcceptEnabled, onAcceptClick, onCancelClick)
-        }
+        content = { innerPadding -> CustomerContent(innerPadding, uiState, viewModel) },
+        bottomBar = { BottomButtons(uiState.isAcceptEnabled, onAcceptClick, onCancelClick)}
     )
 }
 
@@ -116,11 +112,11 @@ fun CustomerContent(
 
         CompanyName(uiState.cFiscalName, onTextChanged = {
             viewModel.onDataChanged(
-                identifier = it,
-                fiscalName = uiState.cFiscalName,
+                identifier = uiState.cIdentifier,
+                fiscalName = it,
                 telephone = uiState.cTelephone
             )
-        }
+        })
         CompanyEmail()
     }
 
@@ -193,7 +189,7 @@ fun ImageCustomer(modifier: Modifier) {
 @Composable
 fun BottomButtons(
     enabled: Boolean,
-    onAcceptClick: (CustomerModel) -> Unit,
+    onAcceptClick: () -> Unit,
     onCancelClick: () -> Unit
 ) {
     Row(
@@ -201,16 +197,16 @@ fun BottomButtons(
             .padding(start = 20.dp, end = 20.dp, bottom = 16.dp)
             .fillMaxWidth()
     ) {
-        MyButton("Cancel", Modifier.weight(1F), true)
+        MyButton("Cancel", Modifier.weight(1F), true, onCancelClick)
         Spacer(modifier = Modifier.width(25.dp))
-        MyButton("Accept", Modifier.weight(1F), enabled)
+        MyButton("Accept", Modifier.weight(1F), enabled, onAcceptClick)
     }
 }
 
 @Composable
-fun MyButton(text: String, modifier: Modifier, enabled: Boolean) {
+fun MyButton(text: String, modifier: Modifier, enabled: Boolean, onButtonClick: () -> Unit) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = { onButtonClick() },
         modifier = modifier.height(50.dp),
         enabled = enabled,
         shape = RoundedCornerShape(16.dp),

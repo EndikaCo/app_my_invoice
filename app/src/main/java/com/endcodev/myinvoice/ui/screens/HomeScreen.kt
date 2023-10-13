@@ -2,7 +2,6 @@ package com.endcodev.myinvoice.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
@@ -21,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,10 +29,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.endcodev.myinvoice.ui.navigation.DetailsScreen
-import com.endcodev.myinvoice.ui.navigation.Graph
 import com.endcodev.myinvoice.ui.navigation.HomeNavGraph
-import com.endcodev.myinvoice.ui.navigation.Routes
+import com.endcodev.myinvoice.ui.navigation.Routes.*
 import com.endcodev.myinvoice.ui.screens.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
@@ -42,17 +40,6 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
     Scaffold(
         bottomBar = { NavigationBar(navController = navController) },
-        floatingActionButton = {
-            FloatingActionButton(onButtonClick = {
-
-            when (navController.currentBackStackEntry?.destination?.route) {
-                    Routes.CustomerContent.routes -> navController.navigate(DetailsScreen.Customer.route)
-                    Routes.InvoicesContent.routes -> navController.navigate(DetailsScreen.Invoice.route)
-                    Routes.ItemsContent.routes -> navController.navigate(Graph.DETAILS)
-                }
-
-        })
-        }
     ) {
         Log.v("AD", "$it")
         HomeNavGraph(navController = navController)
@@ -61,14 +48,20 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
 @Composable
 fun FloatingActionButton(
-    onButtonClick: () -> Unit,
+    modifier: Modifier,
+    painter: Painter,
+    onAddButtonClick: () -> Unit,
 ) {
     ExtendedFloatingActionButton(
         onClick = {
-            onButtonClick()
-        }, modifier = Modifier.height(50.dp)
+            onAddButtonClick()
+        },
+        modifier = modifier.height(50.dp),
     ) {
-        Text("add", Modifier.padding(start = 10.dp, end = 10.dp))
+        Icon(
+            painter = painter,
+            contentDescription = ""
+        )
     }
 }
 
@@ -77,20 +70,20 @@ fun NavigationBar(navController: NavHostController) {
 
     val items = listOf(
         NavBarItem(
-            route = Routes.InvoicesContent.routes,
+            route = InvoicesContent.routes,
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home,
             hasNews = false,
         ),
         NavBarItem(
-            route = Routes.CustomerContent.routes,
+            route = CustomerContent.routes,
             selectedIcon = Icons.Filled.Email,
             unselectedIcon = Icons.Outlined.Email,
             hasNews = false,
             badgeCount = 45
         ),
         NavBarItem(
-            route = Routes.ItemsContent.routes,
+            route = ItemsContent.routes,
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
             hasNews = true,
@@ -165,6 +158,6 @@ data class NavBarItem(
 @Composable
 fun HomePreview() {
     MyInvoiceTheme {
-        InvoicesContent()
+        InvoicesContent(onButtonClick = {})
     }
 }

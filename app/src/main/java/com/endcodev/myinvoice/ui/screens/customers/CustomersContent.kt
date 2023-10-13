@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ElevatedCard
@@ -28,19 +29,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.data.model.InvoiceModel
-import com.endcodev.myinvoice.ui.screens.invoice.InvoiceItem
+import com.endcodev.myinvoice.ui.screens.FloatingActionButton
 import com.endcodev.myinvoice.ui.screens.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.screens.invoice.SearchBar
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 
 @Composable
-fun CustomersContent(
-) {
+fun CustomersContent(onButtonClick: () -> Unit) {
     val viewModel: CustomersViewModel = hiltViewModel()
     val searchText by viewModel.searchText.collectAsState()
     val customers by viewModel.customers.collectAsState()
@@ -60,9 +58,16 @@ fun CustomersContent(
         else
             CustomersList(
                 Modifier
-                    .fillMaxWidth()
                     .weight(1f), customers
             )
+        FloatingActionButton(
+            Modifier
+                .weight(0.1f)
+                .align(Alignment.End),
+            painter = painterResource(id = R.drawable.customer_add_24),
+            onButtonClick
+        )
+        Spacer(modifier = Modifier.size(70.dp))
     }
 }
 
@@ -141,14 +146,30 @@ fun CustomerPreviewData(modifier: Modifier, customer: CustomerModel) {
 @Composable
 fun MPreview() {
     MyInvoiceTheme {
-        CustomersContent()
+        CustomersContent(onButtonClick = {})
     }
+}
+
+@Composable
+fun Filters(){
+    
+    val filterList = listOf("Add filter")
+    LazyRow(){
+        items(filterList){ filter ->
+            FilterItem(filter)
+        }
+    }
+}
+
+@Composable
+fun FilterItem(filter: String) {
+    Box(modifier = Modifier.height(20.dp).width(50.dp))
 }
 
 @Preview
 @Composable
 fun MPreview2() {
-    MyInvoiceTheme {
-        CustomerItem(CustomerModel(1,  "21321312A", "Example name", "688873827"))
+    MyInvoiceTheme {Filters()
+        //CustomerItem(CustomerModel(1,  "21321312A", "Example name", "688873827"))
     }
 }

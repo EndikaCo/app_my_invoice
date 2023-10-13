@@ -1,10 +1,6 @@
 package com.endcodev.myinvoice.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -15,7 +11,6 @@ import com.endcodev.myinvoice.ui.screens.customers.CustomersContent
 import com.endcodev.myinvoice.ui.screens.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.screens.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.screens.items.ItemsContent
-import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
 
 sealed class Routes(val routes: String) {
     object InvoicesContent : Routes("invoices")
@@ -33,11 +28,11 @@ fun HomeNavGraph(navController: NavHostController) {
     ) {
         //HOME
         composable(route = Routes.InvoicesContent.routes) {
-            InvoicesContent()
+            InvoicesContent(onButtonClick = { navController.navigate(DetailsScreen.Invoice.route) })
         }
         //CUSTOMERS
         composable(route = Routes.CustomerContent.routes) {
-            CustomersContent()
+            CustomersContent(onButtonClick = { navController.navigate(DetailsScreen.Customer.route) })
         }
         //ITEMS
         composable(route = Routes.ItemsContent.routes) {
@@ -64,7 +59,9 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
     ) {
         //CUSTOMER SCREEN
         composable(route = DetailsScreen.Customer.route) {
-            CustomerInfoScreen(onAcceptClick = {}, onCancelClick = {})
+            CustomerInfoScreen(
+                onAcceptClick = { navController.navigate(Routes.CustomerContent.routes) },
+                onCancelClick = { navController.navigate(Routes.CustomerContent.routes) })
         }
         //INVOICE SCREEN
         composable(route = DetailsScreen.Invoice.route) {
