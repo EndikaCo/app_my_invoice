@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens.invoice
+package com.endcodev.myinvoice.ui.compose.screens.invoice
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues

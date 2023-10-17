@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens
+package com.endcodev.myinvoice.ui.compose.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.height
@@ -31,7 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.endcodev.myinvoice.ui.navigation.HomeNavGraph
 import com.endcodev.myinvoice.ui.navigation.Routes.*
-import com.endcodev.myinvoice.ui.screens.invoice.InvoicesContent
+import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +56,7 @@ fun FloatingActionButton(
         onClick = {
             onAddButtonClick()
         },
-        modifier = modifier.height(50.dp),
+        modifier = modifier,
     ) {
         Icon(
             painter = painter,

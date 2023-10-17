@@ -2,8 +2,9 @@ package com.endcodev.myinvoice.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.model.CustomerModel
+import com.endcodev.myinvoice.data.model.ItemsModel
 import com.endcodev.myinvoice.domain.GetCustomersUseCase
+import com.endcodev.myinvoice.domain.GetItemsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
@@ -18,11 +19,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(FlowPreview::class)
 @HiltViewModel
-class CustomersViewModel @Inject constructor(
-    private val getCustomersUseCase: GetCustomersUseCase,
-) : ViewModel() {
+class ItemsViewModel @Inject constructor(
+    private val getItemsUseCase: GetItemsUseCase
+    ) : ViewModel() {
 
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
@@ -30,21 +30,23 @@ class CustomersViewModel @Inject constructor(
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
 
-    private val _customers = MutableStateFlow(emptyList<CustomerModel>())
+    private val _items = MutableStateFlow(emptyList<ItemsModel>())
 
-    val customers = searchText
+    @OptIn(FlowPreview::class)
+    val items = searchText
         .debounce(1000L)
         .onEach { _isSearching.update { true } }
-        .combine(_customers) { text, customers ->
-            if (text.isBlank()) {
-                customers
+        .combine(_items) { text, item ->
+            if(text.isBlank()) {
+                item
             } else {
                 delay(500L)
-                customers.filter {
+                item.filter {
                     it.doesMatchSearchQuery(text)
                 }
             }
         }
+
         .onEach { _isSearching.update { false } }
         .stateIn(
             viewModelScope,
@@ -54,17 +56,12 @@ class CustomersViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _isSearching.update { true } // TODO not showing
-            try {
-                val customers = getCustomersUseCase.invoke()
-                if (customers != null) {
-                    _customers.value = customers.toMutableList()
-                }
-            } catch (e: Exception) {
-                // Handle the exception, if necessary
-            } finally {
-                _isSearching.update { false }
+            _isSearching.value = true
+            val items = getItemsUseCase.invoke()
+            if (items != null) {
+                _items.value = items.toMutableList()
             }
+            _isSearching.value = false
         }
     }
 

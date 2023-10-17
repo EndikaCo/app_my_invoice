@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens.invoice
+package com.endcodev.myinvoice.ui.compose.screens.invoice
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,16 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,15 +23,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.InvoiceModel
-import com.endcodev.myinvoice.ui.screens.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
+import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
 import com.endcodev.myinvoice.ui.viewmodels.InvoicesViewModel
 
 @Composable
 fun InvoicesContent(onButtonClick: () -> Unit) {
-    val viewModel = viewModel<InvoicesViewModel>()
+    val viewModel: InvoicesViewModel = hiltViewModel()
     val searchText by viewModel.searchText.collectAsState()
     val invoices by viewModel.invoices.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
@@ -45,37 +42,23 @@ fun InvoicesContent(onButtonClick: () -> Unit) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        SearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
+        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
         Spacer(modifier = Modifier.height(16.dp))
 
         if (isSearching)
             ProgressBar()
         else
-            InvoiceList(
-                Modifier
-                    .fillMaxWidth()
-                    .weight(1f), invoices
-            )
+            InvoiceList(Modifier.weight(1f), invoices)
 
         FloatingActionButton(
             Modifier
-                .weight(1f),
+                .weight(0.08f)
+                .align(Alignment.End),
             painter = painterResource(id = R.drawable.invoice_add_24),
             onButtonClick
         )
+        Spacer(modifier = Modifier.size(80.dp))
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchBar(searchText: String, valueChanged: (String) -> Unit) {
-    TextField(
-        value = searchText,
-        onValueChange = { valueChanged(it) },
-        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Search") }
-    )
 }
 
 @Composable
@@ -106,8 +89,6 @@ fun InvoiceItem(invoice: InvoiceModel) {
             .fillMaxWidth()
             .clickable { }
     ) {
-
-
         Row(
             modifier = Modifier
                 .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)

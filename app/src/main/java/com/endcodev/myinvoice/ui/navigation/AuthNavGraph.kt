@@ -4,9 +4,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.endcodev.myinvoice.ui.screens.auth.LoginScreen
-import com.endcodev.myinvoice.ui.screens.auth.ForgotPassScreen
-import com.endcodev.myinvoice.ui.screens.auth.SignUpScreen
+import com.endcodev.myinvoice.ui.compose.screens.auth.LoginScreen
+import com.endcodev.myinvoice.ui.compose.screens.auth.ForgotPassScreen
+import com.endcodev.myinvoice.ui.compose.screens.auth.SignUpScreen
 
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {

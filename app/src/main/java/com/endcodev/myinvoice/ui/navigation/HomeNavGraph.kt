@@ -6,11 +6,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.endcodev.myinvoice.ui.screens.customers.CustomerInfoScreen
-import com.endcodev.myinvoice.ui.screens.customers.CustomersContent
-import com.endcodev.myinvoice.ui.screens.invoice.InvoiceInfoScreen
-import com.endcodev.myinvoice.ui.screens.invoice.InvoicesContent
-import com.endcodev.myinvoice.ui.screens.items.ItemsContent
+import com.endcodev.myinvoice.ui.compose.screens.customers.CustomerInfoScreen
+import com.endcodev.myinvoice.ui.compose.screens.customers.CustomersContent
+import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoiceInfoScreen
+import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoicesContent
+import com.endcodev.myinvoice.ui.compose.screens.items.ItemInfoScreen
+import com.endcodev.myinvoice.ui.compose.screens.items.ItemsContent
 
 sealed class Routes(val routes: String) {
     object InvoicesContent : Routes("invoices")
@@ -36,10 +37,7 @@ fun HomeNavGraph(navController: NavHostController) {
         }
         //ITEMS
         composable(route = Routes.ItemsContent.routes) {
-            ItemsContent(
-                name = Routes.ItemsContent.routes,
-                onClick = { }
-            )
+            ItemsContent(onButtonClick = { navController.navigate(DetailsScreen.Item.route)})
         }
         detailsNavGraph(navController = navController)
     }
@@ -69,13 +67,17 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         }
         //ITEMS SCREEN
         composable(route = DetailsScreen.Item.route) {
+            ItemInfoScreen()
+        }
+        /*//ITEMS SCREEN
+        composable(route = DetailsScreen.Item.route) {
             ItemsContent(name = DetailsScreen.Item.route) {
                 navController.popBackStack(
                     route = DetailsScreen.Item.route,
                     inclusive = false
                 )
             }
-        }
+        }*/
     }
 }
 

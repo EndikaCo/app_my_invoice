@@ -38,7 +38,7 @@ class GetCustomersUseCase @Inject constructor(
         )
     }
 
-    fun saveCustomer(customer: CustomersEntity?) {
+    suspend fun saveCustomer(customer: CustomersEntity?) {
         if (customer != null) {
             repository.insertCustomer(customer)
             Log.e(TAG, "customer ${customer.cFiscalName} inserted")

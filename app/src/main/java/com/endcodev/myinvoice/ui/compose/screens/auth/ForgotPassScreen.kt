@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens.auth
+package com.endcodev.myinvoice.ui.compose.screens.auth
 
 import android.widget.Toast
 import androidx.compose.foundation.background

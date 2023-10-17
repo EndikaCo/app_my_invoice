@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens.customers
+package com.endcodev.myinvoice.ui.compose.screens.customers
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.ui.screens.FloatingActionButton
-import com.endcodev.myinvoice.ui.screens.invoice.ProgressBar
-import com.endcodev.myinvoice.ui.screens.invoice.SearchBar
+import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
+import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.screens.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 
@@ -44,30 +44,26 @@ fun CustomersContent(onButtonClick: () -> Unit) {
     val customers by viewModel.customers.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    )
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp))
     {
-        SearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
+        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
         Spacer(modifier = Modifier.size(16.dp))
 
         if (isSearching)
             ProgressBar()
         else
-            CustomersList(
-                Modifier
-                    .weight(1f), customers
-            )
+            CustomersList(Modifier.weight(1f), customers)
+
         FloatingActionButton(
             Modifier
-                .weight(0.1f)
+                .weight(0.08f)
                 .align(Alignment.End),
             painter = painterResource(id = R.drawable.customer_add_24),
             onButtonClick
         )
-        Spacer(modifier = Modifier.size(70.dp))
+        Spacer(modifier = Modifier.size(80.dp))
     }
 }
 
@@ -141,7 +137,6 @@ fun CustomerPreviewData(modifier: Modifier, customer: CustomerModel) {
     }
 }
 
-
 @Preview
 @Composable
 fun MPreview() {
@@ -151,11 +146,10 @@ fun MPreview() {
 }
 
 @Composable
-fun Filters(){
-    
+fun Filters() {
     val filterList = listOf("Add filter")
-    LazyRow(){
-        items(filterList){ filter ->
+    LazyRow {
+        items(filterList) { filter ->
             FilterItem(filter)
         }
     }
@@ -163,13 +157,16 @@ fun Filters(){
 
 @Composable
 fun FilterItem(filter: String) {
-    Box(modifier = Modifier.height(20.dp).width(50.dp))
+    Box(modifier = Modifier
+        .height(20.dp)
+        .width(50.dp))
 }
 
 @Preview
 @Composable
 fun MPreview2() {
-    MyInvoiceTheme {Filters()
+    MyInvoiceTheme {
+        Filters()
         //CustomerItem(CustomerModel(1,  "21321312A", "Example name", "688873827"))
     }
 }

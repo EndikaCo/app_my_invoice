@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.screens.items
+package com.endcodev.myinvoice.ui.compose.screens.items
 
 import androidx.compose.runtime.Composable
 
