@@ -9,8 +9,13 @@ import com.endcodev.myinvoice.data.model.CustomerModel
 data class CustomersEntity(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "cIdentifier") val cIdentifier: String,
-    @ColumnInfo(name = "cFiscalName") val cFiscalName : String,
-    @ColumnInfo(name = "cTelephone") val cTelephone : String
-    )
+    @ColumnInfo(name = "cFiscalName") val cFiscalName: String,
+    @ColumnInfo(name = "cTelephone") val cTelephone: String
+)
 
-fun CustomersEntity.toDomain() = CustomerModel(null, cIdentifier = cIdentifier, cFiscalName =  cFiscalName, cTelephone = cTelephone)
+fun CustomersEntity.toDomain() = CustomerModel(
+    cImage = null,
+    cIdentifier = cIdentifier,
+    cFiscalName = cFiscalName,
+    cTelephone = cTelephone
+)

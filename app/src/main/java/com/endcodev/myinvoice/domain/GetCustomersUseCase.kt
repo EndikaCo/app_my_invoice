@@ -11,10 +11,10 @@ class GetCustomersUseCase @Inject constructor(
 ) {
 
     companion object {
-        const val TAG = "CustomersRepository"
+        const val TAG = "GetCustomersUseCase"
     }
 
-    suspend operator fun invoke(): List<CustomerModel>? {
+    suspend operator fun invoke(): List<CustomerModel> {
         var customersList: List<CustomerModel>? = null
 
         try {

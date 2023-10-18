@@ -1,12 +1,10 @@
 package com.endcodev.myinvoice.data.model
-
-class ItemsModel (
+class ItemsModel(
     val iImage: Int?,
-    val iCode : String,
-    val iName : String,
-    val iDescription : String,
-)
-{
+    val iCode: String,
+    val iName: String,
+    val iDescription: String,
+) {
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
             iCode,
