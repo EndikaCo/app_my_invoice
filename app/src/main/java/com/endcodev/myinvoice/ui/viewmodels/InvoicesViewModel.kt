@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.model.InvoiceModel
+import com.endcodev.myinvoice.data.model.InvoicesModel
 import kotlinx.coroutines.flow.*
 
 @OptIn(FlowPreview::class)
@@ -50,19 +50,19 @@ class InvoicesViewModel: ViewModel() {
 }
 
 private val allInvoices = listOf(
-    InvoiceModel(
+    InvoicesModel(
         iId = 1,
         iCustomer = "Lackner"
     ),
-    InvoiceModel(
+    InvoicesModel(
         iId = 2,
         iCustomer = "Jezos"
     ),
-    InvoiceModel(
+    InvoicesModel(
         iId = 3,
         iCustomer =  "Bacon"
     ),
-    InvoiceModel(
+    InvoicesModel(
         iId = 4,
         iCustomer =  "Stops"
     )

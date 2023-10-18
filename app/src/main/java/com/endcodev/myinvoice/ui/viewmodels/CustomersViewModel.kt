@@ -55,15 +55,9 @@ class CustomersViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             _isSearching.update { true } // TODO not showing
-            try {
-                val customers = getCustomersUseCase.invoke()
-                if (customers != null) {
-                    _customers.value = customers.toMutableList()
-                }
-            } catch (e: Exception) {
-                // Handle the exception, if necessary
-            } finally {
-                _isSearching.update { false }
+            val customers = getCustomersUseCase.invoke()
+            if (customers != null) {
+                _customers.value = customers.toMutableList()
             }
         }
     }

@@ -1,17 +1,9 @@
 package com.endcodev.myinvoice.ui.compose.screens.customers
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -36,26 +28,36 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.CustomerUiState
+import com.endcodev.myinvoice.ui.compose.components.BottomButtons
+import com.endcodev.myinvoice.ui.compose.components.InfoImage
 import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerInfoScreen(
     viewModel: CustomerInfoViewModel = hiltViewModel(),
-    onAcceptClick: () -> Unit,
-    onCancelClick: () -> Unit
+    onAcceptButton: () -> Unit,
+    onCancelButton: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = { },
-        content = { innerPadding -> CustomerContent(innerPadding, uiState, viewModel) },
-        bottomBar = { BottomButtons(viewModel, uiState.isAcceptEnabled, onAcceptClick, onCancelClick ) }
+        content = { innerPadding -> CustomerInfoContent(innerPadding, uiState, viewModel) },
+        bottomBar = {
+            BottomButtons(
+                uiState.isAcceptEnabled,
+                onAcceptClick = {
+                    viewModel.saveCustomer() //todo return if correct or not, if correct navigate back
+                },
+                onCancelButton
+            )
+        }
     )
 }
 
 @Composable
-fun CustomerContent(
+fun CustomerInfoContent(
     innerPadding: PaddingValues,
     uiState: CustomerUiState,
     viewModel: CustomerInfoViewModel
@@ -71,9 +73,10 @@ fun CustomerContent(
         ) {
             val (title, nif, image) = createRefs()
 
-            CustomerTitle(
+            InfoTitle(
+                text = "Customer Info",
                 modifier = Modifier.constrainAs(title) {
-                    top.linkTo(image.top, margin = 16.dp)
+                    top.linkTo(parent.top, margin = 16.dp)
                     start.linkTo(parent.start, margin = 20.dp)
                     end.linkTo(image.start)
                     width = Dimension.preferredWrapContent
@@ -95,11 +98,14 @@ fun CustomerContent(
                 }
             )
 
-            ImageCustomer(modifier = Modifier.constrainAs(image) {
-                top.linkTo(parent.top, margin = 4.dp)
-                start.linkTo(nif.end, margin = 20.dp)
-                end.linkTo(parent.end, margin = 20.dp)
-            })
+            InfoImage(
+                size = 130,
+                image = painterResource(id = R.drawable.person_24),
+                modifier = Modifier.constrainAs(image) {
+                    start.linkTo(nif.end, margin = 20.dp)
+                    end.linkTo(parent.end, margin = 20.dp)
+                    bottom.linkTo(nif.bottom)
+                })
         }
 
         CompanyName(uiState.cFiscalName, onTextChanged = {
@@ -125,10 +131,10 @@ fun CompanyIdNum(idNum: String, onTextChanged: (String) -> Unit, modifier: Modif
 }
 
 @Composable
-fun CustomerTitle(modifier: Modifier) {
+fun InfoTitle(text: String, modifier: Modifier) {
     Text(
         modifier = modifier.fillMaxWidth(),
-        text = "Customer Info",
+        text = text,
         color = Color.Black,
         fontSize = 26.sp,
         textAlign = TextAlign.Start,
@@ -166,67 +172,6 @@ fun CompanyEmail() {
     )
 }
 
-@Composable
-fun ImageCustomer(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.person_24),
-        contentDescription = "logo",
-        modifier = modifier
-            .width(150.dp)
-            .height(140.dp)
-    )
-}
-
-@Composable
-fun BottomButtons(
-    viewModel: CustomerInfoViewModel,
-    enabled: Boolean,
-    onAcceptClick: () -> Unit,
-    onCancelClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp)
-            .fillMaxWidth()
-    ) {
-        CancelButton("Cancel", Modifier.weight(1F), enabled, onCancelClick)
-        Spacer(modifier = Modifier.width(25.dp))
-        AcceptButton("Accept", Modifier.weight(1F), onAcceptClick, viewModel)
-    }
-}
-
-@Composable
-fun AcceptButton(
-    text: String,
-    modifier: Modifier,
-    onButtonClick: () -> Unit,
-    viewModel: CustomerInfoViewModel
-) {
-    Button(
-        onClick = {
-            viewModel.saveCustomer()
-            onButtonClick()
-        },
-        modifier = modifier.height(50.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
-    ) {
-        Text(text = text)
-    }
-}
-
-@Composable
-fun CancelButton(text: String, modifier: Modifier, enabled: Boolean, onButtonClick: () -> Unit) {
-    Button(
-        onClick = { onButtonClick() },
-        modifier = modifier.height(50.dp),
-        enabled = enabled,
-        shape = RoundedCornerShape(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
-    ) {
-        Text(text = text)
-    }
-}
 
 @Preview
 @Composable

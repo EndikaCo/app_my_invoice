@@ -58,8 +58,8 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         //CUSTOMER SCREEN
         composable(route = DetailsScreen.Customer.route) {
             CustomerInfoScreen(
-                onAcceptClick = { navController.navigate(Routes.CustomerContent.routes) },
-                onCancelClick = { navController.navigate(Routes.CustomerContent.routes) })
+                onAcceptButton = { navController.navigate(Routes.CustomerContent.routes) },
+                onCancelButton = { navController.navigate(Routes.CustomerContent.routes) })
         }
         //INVOICE SCREEN
         composable(route = DetailsScreen.Invoice.route) {
@@ -67,7 +67,9 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         }
         //ITEMS SCREEN
         composable(route = DetailsScreen.Item.route) {
-            ItemInfoScreen()
+            ItemInfoScreen(
+                onAcceptButton = { navController.navigate(Routes.ItemsContent.routes) },
+                onCancelButton = { navController.navigate(Routes.ItemsContent.routes) })
         }
         /*//ITEMS SCREEN
         composable(route = DetailsScreen.Item.route) {

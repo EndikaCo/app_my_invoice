@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.model.InvoiceModel
+import com.endcodev.myinvoice.data.model.InvoicesModel
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
 import com.endcodev.myinvoice.ui.viewmodels.InvoicesViewModel
@@ -71,7 +71,7 @@ fun ProgressBar() {
 }
 
 @Composable
-fun InvoiceList(modifier: Modifier, invoices: List<InvoiceModel>) {
+fun InvoiceList(modifier: Modifier, invoices: List<InvoicesModel>) {
     LazyColumn(
         modifier = modifier
     ) {
@@ -82,7 +82,7 @@ fun InvoiceList(modifier: Modifier, invoices: List<InvoiceModel>) {
 }
 
 @Composable
-fun InvoiceItem(invoice: InvoiceModel) {
+fun InvoiceItem(invoice: InvoicesModel) {
     ElevatedCard(
         modifier = Modifier
             .padding(bottom = 8.dp) //between items
@@ -103,7 +103,7 @@ fun InvoiceItem(invoice: InvoiceModel) {
 }
 
 @Composable
-fun InvoicePreviewData(modifier: Modifier, invoice: InvoiceModel) {
+fun InvoicePreviewData(modifier: Modifier, invoice: InvoicesModel) {
     Column(
         modifier = modifier
 

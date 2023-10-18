@@ -1,6 +1,6 @@
 package com.endcodev.myinvoice.data.model
 
-data class InvoiceModel(
+data class InvoicesModel(
     val iId: Int,
     val iCustomer: String
     )

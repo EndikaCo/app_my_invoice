@@ -22,5 +22,13 @@ object RoomModule {
 
     @Singleton
     @Provides
-    fun provideQuestDao(db: RoomDB) = db.getCustomerDao()
+    fun provideCustomersDao(db: RoomDB) = db.getCustomerDao()
+
+    @Singleton
+    @Provides
+    fun provideItemsDao(db: RoomDB) = db.getItemsDao()
+
+    @Singleton
+    @Provides
+    fun provideInvoicesDao(db: RoomDB) = db.getInvoicesDao()
 }
