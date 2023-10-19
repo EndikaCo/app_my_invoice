@@ -58,10 +58,7 @@ class ItemsViewModel @Inject constructor(
         viewModelScope.launch {
             _isSearching.value = true
             val items = getItemsUseCase.invoke()
-            if (items != null) {
-                _items.value = items.toMutableList()
-            }
-            _isSearching.value = false
+            _items.value = items.toMutableList()
         }
     }
 

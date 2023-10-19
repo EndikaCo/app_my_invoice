@@ -13,10 +13,18 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.model.InvoicesModel
+import com.endcodev.myinvoice.domain.GetInvoicesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
-class InvoicesViewModel: ViewModel() {
+@HiltViewModel
+class InvoicesViewModel @Inject constructor(
+    private val getInvoicesUseCase: GetInvoicesUseCase
+): ViewModel(
+) {
 
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
@@ -24,11 +32,11 @@ class InvoicesViewModel: ViewModel() {
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
 
-    private val _persons = MutableStateFlow(allInvoices)
+    private val _invoices = MutableStateFlow(emptyList<InvoicesModel>())
     val invoices = searchText
         .debounce(1000L)
         .onEach { _isSearching.update { true } }
-        .combine(_persons) { text, invoices ->
+        .combine(_invoices) { text, invoices ->
             if(text.isBlank()) {
                 invoices
             } else {
@@ -41,29 +49,18 @@ class InvoicesViewModel: ViewModel() {
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
-            _persons.value
+            _invoices.value
         )
+
+    init {
+        viewModelScope.launch {
+            _isSearching.update { true }
+            _invoices.value = getInvoicesUseCase.invoke().toMutableList()
+        }
+    }
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text
     }
 }
 
-private val allInvoices = listOf(
-    InvoicesModel(
-        iId = 1,
-        iCustomer = "Lackner"
-    ),
-    InvoicesModel(
-        iId = 2,
-        iCustomer = "Jezos"
-    ),
-    InvoicesModel(
-        iId = 3,
-        iCustomer =  "Bacon"
-    ),
-    InvoicesModel(
-        iId = 4,
-        iCustomer =  "Stops"
-    )
-)

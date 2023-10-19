@@ -63,7 +63,7 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         }
         //INVOICE SCREEN
         composable(route = DetailsScreen.Invoice.route) {
-            InvoiceInfoScreen()
+            InvoiceInfoScreen(onNavButtonClick = {})
         }
         //ITEMS SCREEN
         composable(route = DetailsScreen.Item.route) {

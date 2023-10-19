@@ -73,7 +73,7 @@ fun CustomersList(modifier: Modifier, customers: List<CustomerModel>) {
         modifier = modifier
     ) {
         items(customers) { customer ->
-            CustomerItem(customer)
+            CustomerItem(customer, onItemClick = {})
         }
     }
 }
@@ -97,12 +97,12 @@ fun CustomerImage() {
 }
 
 @Composable
-fun CustomerItem(customer: CustomerModel) {
+fun CustomerItem(customer: CustomerModel, onItemClick : () -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .padding(bottom = 8.dp)
             .fillMaxWidth()
-            .clickable { }
+            .clickable { onItemClick() }
     ) {
         Row(
             modifier = Modifier
