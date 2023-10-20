@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,15 +39,20 @@ import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 
 @Composable
-fun CustomersContent(onButtonClick: () -> Unit) {
+fun CustomersContent(
+    onButtonClick: () -> Unit,
+    onItemClick: (String) -> Unit
+) {
     val viewModel: CustomersViewModel = hiltViewModel()
     val searchText by viewModel.searchText.collectAsState()
     val customers by viewModel.customers.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    )
     {
         CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
         Spacer(modifier = Modifier.size(16.dp))
@@ -54,7 +60,7 @@ fun CustomersContent(onButtonClick: () -> Unit) {
         if (isSearching)
             ProgressBar()
         else
-            CustomersList(Modifier.weight(1f), customers)
+            CustomersList(Modifier.weight(1f), customers, onItemClick)
 
         FloatingActionButton(
             Modifier
@@ -68,18 +74,18 @@ fun CustomersContent(onButtonClick: () -> Unit) {
 }
 
 @Composable
-fun CustomersList(modifier: Modifier, customers: List<CustomerModel>) {
+fun CustomersList(modifier: Modifier, customers: List<CustomerModel>, onItemClick: (String) -> Unit) {
     LazyColumn(
         modifier = modifier
     ) {
         items(customers) { customer ->
-            CustomerItem(customer, onItemClick = {})
+            CustomerItem(customer, onItemClick = {onItemClick(customer.cIdentifier)})
         }
     }
 }
 
 @Composable
-fun CustomerImage() {
+fun CustomerImage(image: Painter) {
     Box(
         modifier = Modifier
             .size(50.dp) // Size of the Box (background)
@@ -87,17 +93,17 @@ fun CustomerImage() {
         , contentAlignment = Alignment.Center // Center content in the Box
     ) {
         Image(
-            painter = painterResource(id = R.drawable.person_24),
+            painter = image,
             contentDescription = "logo",
             modifier = Modifier
-                .height(30.dp)
-                .width(30.dp)
+                .height(50.dp)
+                .width(50.dp)
         )
     }
 }
 
 @Composable
-fun CustomerItem(customer: CustomerModel, onItemClick : () -> Unit) {
+fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .padding(bottom = 8.dp)
@@ -108,7 +114,7 @@ fun CustomerItem(customer: CustomerModel, onItemClick : () -> Unit) {
             modifier = Modifier
                 .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
         ) {
-            CustomerImage()
+            CustomerImage(uriToPainterImage(customer.cImage))
             CustomerPreviewData(
                 Modifier
                     .padding(start = 12.dp)
@@ -141,7 +147,7 @@ fun CustomerPreviewData(modifier: Modifier, customer: CustomerModel) {
 @Composable
 fun MPreview() {
     MyInvoiceTheme {
-        CustomersContent(onButtonClick = {})
+        CustomersContent(onButtonClick = {}, onItemClick = {})
     }
 }
 
@@ -157,9 +163,11 @@ fun Filters() {
 
 @Composable
 fun FilterItem(filter: String) {
-    Box(modifier = Modifier
-        .height(20.dp)
-        .width(50.dp))
+    Box(
+        modifier = Modifier
+            .height(20.dp)
+            .width(50.dp)
+    )
 }
 
 @Preview

@@ -1,10 +1,12 @@
 package com.endcodev.myinvoice.data.model
 
+import android.net.Uri
+
 data class CustomerModel(
-    val cImage: Int?,
-    val cIdentifier : String,
-    val cFiscalName : String,
-    val cTelephone : String
+    val cImage: Uri?,
+    val cIdentifier: String,
+    val cFiscalName: String,
+    val cTelephone: String
 ){
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(

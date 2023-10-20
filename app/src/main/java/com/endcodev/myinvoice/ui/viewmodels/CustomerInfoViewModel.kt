@@ -1,5 +1,6 @@
 package com.endcodev.myinvoice.ui.viewmodels
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.database.CustomersEntity
@@ -38,15 +39,29 @@ class CustomerInfoViewModel @Inject constructor(
     fun saveCustomer() {
 
         viewModelScope.launch {
-        with(_uiState.value) {
+            with(_uiState.value) {
 
-            val customer = CustomersEntity(
-                cIdentifier = cIdentifier,
-                cFiscalName = cFiscalName,
-                cTelephone = cTelephone
-            )
-            getCustomersUseCase.saveCustomer(customer)
+                val customer = CustomersEntity(
+                    cImage = cImage.toString(),
+                    cIdentifier = cIdentifier,
+                    cFiscalName = cFiscalName,
+                    cTelephone = cTelephone
+                )
+                getCustomersUseCase.saveCustomer(customer)
+            }
         }
-    }}
+    }
+
+    fun updateUri(uri: Uri?) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                cImage = uri
+            )
+        }
+    }
+
+    fun getCustomerByName(customerIdentifier: String?) {
+
+    }
 }
 

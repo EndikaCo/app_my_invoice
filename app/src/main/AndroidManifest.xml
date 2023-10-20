@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!--to take picture of items, customers-->
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+
     <application
         android:name=".MyInvoiceApp"
         android:allowBackup="true"

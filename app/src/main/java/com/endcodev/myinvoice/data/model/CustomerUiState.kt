@@ -1,7 +1,9 @@
 package com.endcodev.myinvoice.data.model
 
+import android.net.Uri
+
 data class CustomerUiState (
-    val cImage: Int? = null,
+    val cImage: Uri? = null,
     val cIdentifier : String = "",
     val cFiscalName : String = "",
     val cTelephone : String = "",

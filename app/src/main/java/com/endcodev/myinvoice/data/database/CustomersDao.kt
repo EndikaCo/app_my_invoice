@@ -23,4 +23,7 @@ interface CustomersDao {
 
     @Query("DELETE FROM customer_table WHERE cIdentifier = :cId")
     fun deleteCustomer(cId: String)
+
+    @Query("SELECT * FROM customer_table WHERE cIdentifier = :id")
+    fun getCustomerById(id: String): CustomersEntity
 }

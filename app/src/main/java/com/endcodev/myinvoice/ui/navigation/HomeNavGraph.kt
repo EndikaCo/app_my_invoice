@@ -3,8 +3,10 @@ package com.endcodev.myinvoice.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.endcodev.myinvoice.ui.compose.screens.customers.CustomerInfoScreen
 import com.endcodev.myinvoice.ui.compose.screens.customers.CustomersContent
@@ -33,11 +35,15 @@ fun HomeNavGraph(navController: NavHostController) {
         }
         //CUSTOMERS
         composable(route = Routes.CustomerContent.routes) {
-            CustomersContent(onButtonClick = { navController.navigate(DetailsScreen.Customer.route) })
+            CustomersContent(
+                onButtonClick = { navController.navigate(DetailsScreen.Customer.route) },
+                onItemClick = { cIdentifier ->
+                    navController.navigate("${DetailsScreen.Customer.route}/${cIdentifier ?: ""}")
+                })
         }
         //ITEMS
         composable(route = Routes.ItemsContent.routes) {
-            ItemsContent(onButtonClick = { navController.navigate(DetailsScreen.Item.route)})
+            ItemsContent(onButtonClick = { navController.navigate(DetailsScreen.Item.route) })
         }
         detailsNavGraph(navController = navController)
     }
@@ -55,11 +61,27 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         route = Graph.DETAILS,
         startDestination = DetailsScreen.Customer.route
     ) {
-        //CUSTOMER SCREEN
-        composable(route = DetailsScreen.Customer.route) {
+        // CUSTOMER SCREEN
+        composable(
+            route = "${DetailsScreen.Customer.route}/{cIdentifier}",
+            arguments = listOf(navArgument("cIdentifier") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val customerIdentifier = backStackEntry.arguments?.getString("cIdentifier")
+            CustomerInfoScreen(
+                customerIdentifier = customerIdentifier,
+                onAcceptButton = { navController.navigate(Routes.CustomerContent.routes) },
+                onCancelButton = { navController.navigate(Routes.CustomerContent.routes) }
+            )
+        }
+        // CUSTOMER SCREEN (Without Arguments)
+        composable(
+            route = DetailsScreen.Customer.route,
+        ) {
             CustomerInfoScreen(
                 onAcceptButton = { navController.navigate(Routes.CustomerContent.routes) },
-                onCancelButton = { navController.navigate(Routes.CustomerContent.routes) })
+                onCancelButton = { navController.navigate(Routes.CustomerContent.routes) },
+                customerIdentifier = null
+            )
         }
         //INVOICE SCREEN
         composable(route = DetailsScreen.Invoice.route) {

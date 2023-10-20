@@ -1,6 +1,9 @@
 package com.endcodev.myinvoice.ui.compose.screens.invoice
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,11 +23,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.endcodev.myinvoice.R
+import com.endcodev.myinvoice.data.model.ItemsModel
 import com.endcodev.myinvoice.ui.compose.components.BottomButtons
+import com.endcodev.myinvoice.ui.compose.screens.items.ItemsList
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -42,9 +48,11 @@ fun InvoiceInfoScreen(
         content = { innerPadding ->
             InvoiceContent(innerPadding)
         },
-        bottomBar = { BottomButtons(enabled = true, onAcceptClick = { /*TODO*/ }) {
-            
-        }}
+        bottomBar = {
+            BottomButtons(enabled = true, onAcceptClick = { /*TODO*/ }) {
+
+            }
+        }
     )
 }
 
@@ -76,64 +84,52 @@ fun InvoiceContent(innerPadding: PaddingValues) {
             )
         }
         SelectCustomer()
+        val list = listOf(
+            ItemsModel(null,"1","dsadsa","fsafasf"),
+            ItemsModel(null,"12","dsadsa","fsafasf"),
+            ItemsModel(null,"12","dsadsa","fsafasf"),
+            ItemsModel(null,"12","dsadsa","fsafasf"),
+            ItemsModel(null,"12","dsadsa","fsafasf"),
+            ItemsModel(null,"12","dsadsa","fsafasf"),
+            ItemsModel(null,"12","dsadsa","fsafasf"),
+            ItemsModel(null,"12","dsadsa","fsafasf"),
+            ItemsModel(null,"7","dsadsa","fsafasf"),
+            ItemsModel(null,"8","dsadsa","fsafasf"),
+            ItemsModel(null,"9","dsadsa","fsafasf"),
+
+        )
+        ItemsList(Modifier, list)
     }
 }
 
 @Composable
 fun SelectCustomer(
     content: String = "select customer",
-    contentColor: Color = Color.LightGray,
-    borderColor: Color = Color.Black
 ) {
     val shape = RoundedCornerShape(20)
-    Card(
+    Row(
         modifier = Modifier
-            .wrapContentSize()
+            .fillMaxWidth()
             .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-            .border(shape = shape, width = 1.dp, color = borderColor)
-            ,
-        shape = shape
+            .border(shape = shape, width = 1.dp, color = Color.Black)
+            .clickable {  }
+        , verticalAlignment = Alignment.CenterVertically
+        , horizontalArrangement = Arrangement.Center
+
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp),
-        ) {
+            Image(painter = painterResource(id = R.drawable.image_search_24), contentDescription = "")
             Text(
                 text = content,
                 color = Color.Black,
                 fontWeight = FontWeight.W300,
                 modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
             )
-        }
     }
 }
 
-@Composable
-fun CustomDialog() {
-    Dialog(onDismissRequest = { }) {
-        CustomDialogUI()
-    }
-}
 
-@Composable
-fun CustomDialogUI() {
-    Card(
-        //shape = MaterialTheme.shapes.medium,
-        shape = RoundedCornerShape(10.dp),
-        // modifier = modifier.size(280.dp, 240.dp)
-        modifier = Modifier.padding(10.dp, 5.dp, 10.dp, 10.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 20.dp)
-    ) {
-        Text(
-            text = "dssdadsad",
-            color = Color.Black,
-            fontWeight = FontWeight.W300,
-            modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
-        )
-    }
-}
+
+
 
 @Preview
 @Composable

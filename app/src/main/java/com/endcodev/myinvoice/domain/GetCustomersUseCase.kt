@@ -30,18 +30,20 @@ class GetCustomersUseCase @Inject constructor(
         return customersList
     }
 
+
+
     private fun exampleCustomers(): MutableList<CustomersEntity> {
         return arrayListOf(
-            CustomersEntity( cFiscalName = "Example 1", cIdentifier="B95768523", cTelephone = "+34623213213"),
-            CustomersEntity( cFiscalName = "Example 2", cIdentifier="1608876623V", cTelephone = "+86732132133"),
-            CustomersEntity( cFiscalName = "Example 3", cIdentifier="A323145125212", cTelephone = "+51624223213")
+            CustomersEntity( cImage = null, cFiscalName = "Example 1", cIdentifier="B95768523", cTelephone = "+34623213213"),
+            CustomersEntity( cImage = null, cFiscalName = "Example 2", cIdentifier="1608876623V", cTelephone = "+86732132133"),
+            CustomersEntity( cImage = null, cFiscalName = "Example 3", cIdentifier="A323145125212", cTelephone = "+51624223213")
         )
     }
 
     suspend fun saveCustomer(customer: CustomersEntity?) {
         if (customer != null) {
             repository.insertCustomer(customer)
-            Log.e(TAG, "customer ${customer.cFiscalName} inserted")
+            Log.v(TAG, "customer ${customer.cFiscalName} inserted")
         }
     }
 

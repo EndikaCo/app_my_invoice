@@ -82,7 +82,7 @@ fun MyItem(item: ItemsModel) {
             modifier = Modifier
                 .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
         ) {
-            CustomerImage()
+            CustomerImage(painterResource(id = R.drawable.image_search_24))
             ItemPreviewData(
                 Modifier
                     .padding(start = 12.dp)

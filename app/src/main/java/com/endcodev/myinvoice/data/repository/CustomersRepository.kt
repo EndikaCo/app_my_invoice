@@ -14,6 +14,11 @@ class CustomersRepository @Inject constructor(
         return customersList.map { it.toDomain() }
     }
 
+    suspend fun getCustomerById(id : String) : CustomerModel {
+        val customer : CustomersEntity = customersDao.getCustomerById(id)
+        return customer.toDomain()
+    }
+
     suspend fun insertAllCustomers(customersList: MutableList<CustomersEntity>) {
         customersDao.insertAllCustomers(customersList)
     }
