@@ -24,8 +24,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,13 +51,13 @@ fun CustomersContent(
     val isSearching by viewModel.isSearching.collectAsState()
 
     Column(
-        modifier = Modifier
+        Modifier
             .fillMaxSize()
             .padding(16.dp)
     )
     {
-        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
-        Spacer(modifier = Modifier.size(16.dp))
+        CommonSearchBar(searchText, viewModel::onSearchTextChange)
+        Spacer(Modifier.size(16.dp))
 
         if (isSearching)
             ProgressBar()
@@ -66,20 +68,24 @@ fun CustomersContent(
             Modifier
                 .weight(0.08f)
                 .align(Alignment.End),
-            painter = painterResource(id = R.drawable.customer_add_24),
+            painterResource(R.drawable.customer_add_24),
             onButtonClick
         )
-        Spacer(modifier = Modifier.size(80.dp))
+        Spacer(Modifier.size(80.dp))
     }
 }
 
 @Composable
-fun CustomersList(modifier: Modifier, customers: List<CustomerModel>, onItemClick: (String) -> Unit) {
+fun CustomersList(
+    modifier: Modifier,
+    customers: List<CustomerModel>,
+    onItemClick: (String) -> Unit
+) {
     LazyColumn(
         modifier = modifier
     ) {
         items(customers) { customer ->
-            CustomerItem(customer, onItemClick = {onItemClick(customer.cIdentifier)})
+            CustomerItem(customer, onItemClick = { onItemClick(customer.cIdentifier) })
         }
     }
 }
@@ -98,6 +104,8 @@ fun CustomerImage(image: Painter) {
             modifier = Modifier
                 .height(50.dp)
                 .width(50.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
     }
 }
@@ -114,8 +122,13 @@ fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
             modifier = Modifier
                 .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
         ) {
-            CustomerImage(uriToPainterImage(customer.cImage))
-            CustomerPreviewData(
+            CustomerImage(
+                uriToPainterImage(
+                    uri = customer.cImage,
+                    default = painterResource(id = R.drawable.image_search_24)
+                )
+            )
+            CustomerNameAndIdentifier(
                 Modifier
                     .padding(start = 12.dp)
                     .weight(1f), customer
@@ -125,7 +138,7 @@ fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
 }
 
 @Composable
-fun CustomerPreviewData(modifier: Modifier, customer: CustomerModel) {
+fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
     Column(
         modifier = modifier
 

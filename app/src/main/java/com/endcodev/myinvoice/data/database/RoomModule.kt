@@ -19,7 +19,6 @@ object RoomModule {
     fun provideRoom(@ApplicationContext context: Context) =
         Room.databaseBuilder(context, RoomDB::class.java, DB).fallbackToDestructiveMigration().build()
 
-
     @Singleton
     @Provides
     fun provideCustomersDao(db: RoomDB) = db.getCustomerDao()

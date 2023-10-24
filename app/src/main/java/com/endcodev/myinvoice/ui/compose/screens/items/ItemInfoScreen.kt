@@ -80,7 +80,7 @@ fun ItemsInfoContent(
                 }
             )
 
-            CompanyIdNum(uiState.iCode, onTextChanged = {
+            ItemIdNum(uiState.iCode, onTextChanged = {
                 viewModel.onDataChanged(
                     code = it,
                     name = uiState.iName,
@@ -112,4 +112,17 @@ fun ItemsInfoContent(
     }
 
 
+
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ItemIdNum(idNum: String, onTextChanged: (String) -> Unit, modifier: Modifier) {
+
+    OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+        value = idNum,
+        onValueChange = { onTextChanged(it) },
+        label = { Text("Company ID") }
+    )
+}
+
