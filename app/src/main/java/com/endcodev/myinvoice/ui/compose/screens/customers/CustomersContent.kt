@@ -56,7 +56,7 @@ fun CustomersContent(
             .padding(16.dp)
     )
     {
-        CommonSearchBar(searchText, viewModel::onSearchTextChange)
+        CommonSearchBar(searchText, viewModel::onSearchTextChange, onCleanClick = {})
         Spacer(Modifier.size(16.dp))
 
         if (isSearching)
@@ -158,7 +158,7 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
 
 @Preview
 @Composable
-fun MPreview() {
+fun CustomersContentPreview() {
     MyInvoiceTheme {
         CustomersContent(onButtonClick = {}, onItemClick = {})
     }
@@ -181,13 +181,4 @@ fun FilterItem(filter: String) {
             .height(20.dp)
             .width(50.dp)
     )
-}
-
-@Preview
-@Composable
-fun MPreview2() {
-    MyInvoiceTheme {
-        Filters()
-        //CustomerItem(CustomerModel(1,  "21321312A", "Example name", "688873827"))
-    }
 }

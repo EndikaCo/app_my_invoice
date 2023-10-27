@@ -40,7 +40,7 @@ fun ItemsContent(onButtonClick: () -> Unit) {
         .fillMaxSize()
         .padding(16.dp))
     {
-        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
+        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange, onCleanClick = {})
         Spacer(modifier = Modifier.size(16.dp))
 
         if (isSearching)

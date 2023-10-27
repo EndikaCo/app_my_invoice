@@ -63,7 +63,7 @@ fun CustomerInfoScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
-    if (customerIdentifier != null){
+    if (customerIdentifier != null) {
         //only called when customerIdentifier changes,
         LaunchedEffect(customerIdentifier) {
             viewModel.getCustomer(customerIdentifier)
@@ -73,19 +73,24 @@ fun CustomerInfoScreen(
     if (uiState.isLoading)
         ProgressBar()
     else
-    Scaffold(
-        topBar = { },
-        content = { innerPadding -> CustomerInfoContent(innerPadding, uiState, viewModel) },
-        bottomBar = {
-            BottomButtons(
-                uiState.isAcceptEnabled,
-                onAcceptClick = {
-                    viewModel.saveCustomer() //todo return if correct or not, if correct navigate back
-                },
-                onCancelButton
-            )
-        }
-    )
+        Scaffold(
+            topBar = { },
+            content = { innerPadding ->
+                CustomerInfoContent(
+                    innerPadding, uiState, viewModel
+                )
+            },
+            bottomBar = {
+                BottomButtons(
+                    uiState.isAcceptEnabled,
+                    onAcceptClick = {
+                        viewModel.saveCustomer()
+                        onAcceptButton()
+                    },
+                    onCancelButton
+                )
+            }
+        )
 }
 
 @Composable

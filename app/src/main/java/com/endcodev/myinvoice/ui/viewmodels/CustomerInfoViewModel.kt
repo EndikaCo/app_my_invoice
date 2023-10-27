@@ -65,7 +65,7 @@ class CustomerInfoViewModel @Inject constructor(
     private fun enableAccept(identifier: String, fiscalName: String) =
         identifier.isNotEmpty() && fiscalName.isNotEmpty()
 
-    fun saveCustomer() {
+    fun saveCustomer( ) {
         viewModelScope.launch {
             with(_uiState.value) {
                 val customer = CustomersEntity(
