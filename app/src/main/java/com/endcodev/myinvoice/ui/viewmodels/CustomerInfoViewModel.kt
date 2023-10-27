@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.database.CustomersEntity
 import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.data.model.CustomerUiState
+import com.endcodev.myinvoice.data.model.CustomerInfoUiState
 import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import com.endcodev.myinvoice.domain.GetSimpleCustomerUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,8 +24,8 @@ class CustomerInfoViewModel @Inject constructor(
     private val getSimpleCustomerUseCase: GetSimpleCustomerUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CustomerUiState())
-    val uiState: StateFlow<CustomerUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(CustomerInfoUiState())
+    val uiState: StateFlow<CustomerInfoUiState> = _uiState.asStateFlow()
 
     fun getCustomer(customerId: String?) {
         viewModelScope.launch(Dispatchers.IO) {

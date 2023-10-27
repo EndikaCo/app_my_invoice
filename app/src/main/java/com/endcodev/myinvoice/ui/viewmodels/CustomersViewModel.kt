@@ -62,4 +62,8 @@ class CustomersViewModel @Inject constructor(
     fun onSearchTextChange(text: String) {
         _searchText.value = text
     }
+
+    fun clearSearchText() {
+        TODO("Not yet implemented")
+    }
 }

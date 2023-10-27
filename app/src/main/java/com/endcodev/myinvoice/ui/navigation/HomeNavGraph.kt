@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.endcodev.myinvoice.ui.compose.screens.customers.CustomerInfoScreen
 import com.endcodev.myinvoice.ui.compose.screens.customers.CustomersContent
+import com.endcodev.myinvoice.ui.compose.screens.customers.CustomersContentActions
 import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.compose.screens.items.ItemInfoScreen
@@ -35,11 +36,7 @@ fun HomeNavGraph(navController: NavHostController) {
         }
         //CUSTOMERS
         composable(route = Routes.CustomerContent.routes) {
-            CustomersContent(
-                onButtonClick = { navController.navigate(DetailsScreen.Customer.route) },
-                onItemClick = { cIdentifier ->
-                    navController.navigate("${DetailsScreen.Customer.route}/${cIdentifier ?: ""}")
-                })
+            CustomersContentActions(navController)
         }
         //ITEMS
         composable(route = Routes.ItemsContent.routes) {
@@ -61,6 +58,7 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         route = Graph.DETAILS,
         startDestination = DetailsScreen.Customer.route
     ) {
+
         // CUSTOMER SCREEN
         composable(
             route = "${DetailsScreen.Customer.route}/{cIdentifier}",
@@ -83,6 +81,7 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
                 customerIdentifier = null
             )
         }
+
         //INVOICE SCREEN
         composable(route = DetailsScreen.Invoice.route) {
             InvoiceInfoScreen(onNavButtonClick = {})

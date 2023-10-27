@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.model.CustomerUiState
+import com.endcodev.myinvoice.data.model.CustomerInfoUiState
 import com.endcodev.myinvoice.ui.compose.components.BottomButtons
 import com.endcodev.myinvoice.ui.compose.screens.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
@@ -96,7 +96,7 @@ fun CustomerInfoScreen(
 @Composable
 fun CustomerInfoContent(
     innerPadding: PaddingValues,
-    uiState: CustomerUiState,
+    uiState: CustomerInfoUiState,
     viewModel: CustomerInfoViewModel
 ) {
     val context = LocalContext.current
@@ -164,7 +164,7 @@ fun CustomerInfoContent(
 @Composable
 fun CustomerInfoImage(
     singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
-    uiState: CustomerUiState
+    uiState: CustomerInfoUiState
 ) {
     Image(
         painter = uriToPainterImage(

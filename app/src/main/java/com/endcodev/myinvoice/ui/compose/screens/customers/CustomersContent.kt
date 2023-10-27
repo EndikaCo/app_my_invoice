@@ -32,23 +32,47 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
 import com.endcodev.myinvoice.ui.compose.screens.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
+import kotlin.reflect.KFunction1
 
 @Composable
-fun CustomersContent(
-    onButtonClick: () -> Unit,
-    onItemClick: (String) -> Unit
-) {
+fun CustomersContentActions(
+    navController: NavHostController,
+){
     val viewModel: CustomersViewModel = hiltViewModel()
     val searchText by viewModel.searchText.collectAsState()
     val customers by viewModel.customers.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
+
+    CustomersContent(
+        searchText = searchText,
+        customers = customers,
+        isSearching = isSearching,
+        onSearchTextChange = viewModel::onSearchTextChange,
+        onCleanClick = viewModel::clearSearchText,
+        onButtonClick = {navController.navigate(DetailsScreen.Customer.route)},
+        onItemClick = {navController.navigate("${DetailsScreen.Customer.route}/${it}")}
+    )
+}
+
+@Composable
+fun CustomersContent(
+    onButtonClick: () -> Unit,
+    onItemClick: (String) -> Unit,
+    searchText: String,
+    customers: List<CustomerModel>,
+    isSearching: Boolean,
+    onSearchTextChange: (String) -> Unit,
+    onCleanClick: () -> Unit
+) {
 
     Column(
         Modifier
@@ -56,7 +80,7 @@ fun CustomersContent(
             .padding(16.dp)
     )
     {
-        CommonSearchBar(searchText, viewModel::onSearchTextChange, onCleanClick = {})
+        CommonSearchBar(searchText, onSearchTextChange, onCleanClick)
         Spacer(Modifier.size(16.dp))
 
         if (isSearching)
@@ -159,8 +183,25 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
 @Preview
 @Composable
 fun CustomersContentPreview() {
+
+    // Define your test data and actions here
+    val searchText = "Test"
+    val customers = listOf<CustomerModel>() // replace with your test data
+    val isSearching = false
+
+    // Define a test ViewModel or a way to provide test actions
+    val onSearchTextChange: (String) -> Unit = {}
+
     MyInvoiceTheme {
-        CustomersContent(onButtonClick = {}, onItemClick = {})
+        CustomersContent(
+            onButtonClick = {},
+            onItemClick = {},
+            searchText = searchText,
+            customers = customers,
+            isSearching = isSearching,
+            onSearchTextChange = onSearchTextChange,
+            onCleanClick = {}
+        )
     }
 }
 
