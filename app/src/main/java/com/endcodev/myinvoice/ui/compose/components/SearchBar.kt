@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit, onCleanClick: () -> Unit) {
+fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit) {
     TextField(
         value = searchText,
         onValueChange = { valueChanged(it) },
@@ -23,7 +23,7 @@ fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit, onCleanC
             Icon(
                 Icons.Filled.Close,
                 contentDescription = "clean",
-                Modifier.clickable { onCleanClick() })
+                Modifier.clickable { valueChanged("") })
         },
         modifier = Modifier.fillMaxWidth(),
         placeholder = { Text(text = "Search") }

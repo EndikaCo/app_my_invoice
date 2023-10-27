@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -34,30 +35,28 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
+import com.endcodev.myinvoice.data.database.toDomain
 import com.endcodev.myinvoice.data.model.CustomerModel
+import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
 import com.endcodev.myinvoice.ui.compose.screens.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
-import kotlin.reflect.KFunction1
 
 @Composable
 fun CustomersContentActions(
     navController: NavHostController,
 ){
     val viewModel: CustomersViewModel = hiltViewModel()
-    val searchText by viewModel.searchText.collectAsState()
-    val customers by viewModel.customers.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     CustomersContent(
-        searchText = searchText,
-        customers = customers,
-        isSearching = isSearching,
-        onSearchTextChange = viewModel::onSearchTextChange,
-        onCleanClick = viewModel::clearSearchText,
+        searchText = uiState.searchText,
+        customers = uiState.customersList,
+        isSearching = uiState.isLoading,
+        onSearchTextChange = viewModel::setSearchText,
         onButtonClick = {navController.navigate(DetailsScreen.Customer.route)},
         onItemClick = {navController.navigate("${DetailsScreen.Customer.route}/${it}")}
     )
@@ -71,7 +70,6 @@ fun CustomersContent(
     customers: List<CustomerModel>,
     isSearching: Boolean,
     onSearchTextChange: (String) -> Unit,
-    onCleanClick: () -> Unit
 ) {
 
     Column(
@@ -80,9 +78,10 @@ fun CustomersContent(
             .padding(16.dp)
     )
     {
-        CommonSearchBar(searchText, onSearchTextChange, onCleanClick)
+        CommonSearchBar(searchText, onSearchTextChange)
         Spacer(Modifier.size(16.dp))
-
+        Filters()
+        Spacer(Modifier.size(16.dp))
         if (isSearching)
             ProgressBar()
         else
@@ -183,10 +182,9 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
 @Preview
 @Composable
 fun CustomersContentPreview() {
-
     // Define your test data and actions here
     val searchText = "Test"
-    val customers = listOf<CustomerModel>() // replace with your test data
+    val customers = GetCustomersUseCase.exampleCustomers().map { it.toDomain()}
     val isSearching = false
 
     // Define a test ViewModel or a way to provide test actions
@@ -200,7 +198,6 @@ fun CustomersContentPreview() {
             customers = customers,
             isSearching = isSearching,
             onSearchTextChange = onSearchTextChange,
-            onCleanClick = {}
         )
     }
 }
@@ -208,7 +205,7 @@ fun CustomersContentPreview() {
 @Composable
 fun Filters() {
     val filterList = listOf("Add filter")
-    LazyRow {
+    LazyRow (Modifier.fillMaxWidth()){
         items(filterList) { filter ->
             FilterItem(filter)
         }
@@ -220,6 +217,10 @@ fun FilterItem(filter: String) {
     Box(
         modifier = Modifier
             .height(20.dp)
-            .width(50.dp)
-    )
+            .wrapContentWidth()
+            .background(Color.Blue)
+            .clip(CircleShape)
+    ){
+        Text(text = filter)
+    }
 }

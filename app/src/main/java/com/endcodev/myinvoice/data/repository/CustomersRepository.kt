@@ -19,7 +19,7 @@ class CustomersRepository @Inject constructor(
         return customer.toDomain()
     }
 
-    suspend fun insertAllCustomers(customersList: MutableList<CustomersEntity>) {
+    suspend fun insertAllCustomers(customersList: List<CustomersEntity>) {
         customersDao.insertAllCustomers(customersList)
     }
 

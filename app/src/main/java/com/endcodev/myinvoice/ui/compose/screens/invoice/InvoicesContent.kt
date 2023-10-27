@@ -42,7 +42,7 @@ fun InvoicesContent(onButtonClick: () -> Unit) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange, onCleanClick = {})
+        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
         Spacer(modifier = Modifier.height(16.dp))
 
         if (isSearching)
