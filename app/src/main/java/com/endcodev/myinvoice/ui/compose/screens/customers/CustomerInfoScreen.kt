@@ -186,7 +186,7 @@ fun CustomerInfoImage(
     )
 }
 
-
+//convert Uri to Painter
 @Composable
 fun uriToPainterImage(uri: Uri?, default: Painter): Painter {
     if (uri == null)

@@ -3,22 +3,29 @@ package com.endcodev.myinvoice.ui.compose.screens.customers
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,14 +36,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.database.toDomain
 import com.endcodev.myinvoice.data.model.CustomerModel
+import com.endcodev.myinvoice.data.model.FilterModel
 import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
@@ -48,7 +59,7 @@ import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 @Composable
 fun CustomersContentActions(
     navController: NavHostController,
-){
+) {
     val viewModel: CustomersViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
@@ -57,9 +68,9 @@ fun CustomersContentActions(
         customers = uiState.customersList,
         isSearching = uiState.isLoading,
         onSearchTextChange = viewModel::setSearchText,
-        onButtonClick = {navController.navigate(DetailsScreen.Customer.route)},
-        onItemClick = {navController.navigate("${DetailsScreen.Customer.route}/${it}")}
-    )
+        onButtonClick = { navController.navigate(DetailsScreen.Customer.route) },
+        onItemClick = { navController.navigate("${DetailsScreen.Customer.route}/${it}") },
+        onDialogClick = { viewModel.manageDialog(it) })
 }
 
 @Composable
@@ -69,23 +80,29 @@ fun CustomersContent(
     searchText: String,
     customers: List<CustomerModel>,
     isSearching: Boolean,
+    onDialogClick: (Int) -> Unit,
+    showDialog: Boolean = false,
     onSearchTextChange: (String) -> Unit,
 ) {
 
     Column(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     )
     {
         CommonSearchBar(searchText, onSearchTextChange)
-        Spacer(Modifier.size(16.dp))
-        Filters()
-        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.size(11.dp))
+        FiltersView(onDialogClick)
+        Spacer(Modifier.size(11.dp))
+
         if (isSearching)
             ProgressBar()
         else
             CustomersList(Modifier.weight(1f), customers, onItemClick)
+
+        if (showDialog)
+            FiltersDialog()
 
         FloatingActionButton(
             Modifier
@@ -95,6 +112,21 @@ fun CustomersContent(
             onButtonClick
         )
         Spacer(Modifier.size(80.dp))
+    }
+}
+
+@Composable
+fun FiltersDialog() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        Text(
+            text = "Filters",
+            modifier = Modifier
+                .align(Alignment.Center)
+        )
     }
 }
 
@@ -125,8 +157,8 @@ fun CustomerImage(image: Painter) {
             painter = image,
             contentDescription = "logo",
             modifier = Modifier
-                .height(50.dp)
-                .width(50.dp)
+                .height(5.dp)
+                .width(5.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
@@ -184,7 +216,7 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
 fun CustomersContentPreview() {
     // Define your test data and actions here
     val searchText = "Test"
-    val customers = GetCustomersUseCase.exampleCustomers().map { it.toDomain()}
+    val customers = GetCustomersUseCase.exampleCustomers().map { it.toDomain() }
     val isSearching = false
 
     // Define a test ViewModel or a way to provide test actions
@@ -198,29 +230,53 @@ fun CustomersContentPreview() {
             customers = customers,
             isSearching = isSearching,
             onSearchTextChange = onSearchTextChange,
+            onDialogClick = {}
         )
     }
 }
 
 @Composable
-fun Filters() {
-    val filterList = listOf("Add filter")
-    LazyRow (Modifier.fillMaxWidth()){
-        items(filterList) { filter ->
-            FilterItem(filter)
+fun FiltersView(onDialogClick: (Int) -> Unit) {
+
+    val filterList = listOf(FilterModel(1, "NEW FILTER")) // todo to view model
+
+    LazyRow(Modifier.fillMaxWidth()) {
+        items(filterList) {
+            FilterItem((FilterModel(0, " + ")), onFilterClick = {onDialogClick(it.id)})
+            FilterItem(filterList[0], onFilterClick = { onDialogClick(it.id)})
         }
     }
 }
 
 @Composable
-fun FilterItem(filter: String) {
-    Box(
+fun FilterItem(filter: FilterModel, onFilterClick: () -> Unit) {
+    ElevatedCard(
         modifier = Modifier
-            .height(20.dp)
+            .wrapContentHeight()
             .wrapContentWidth()
-            .background(Color.Blue)
-            .clip(CircleShape)
-    ){
-        Text(text = filter)
+            .clickable { }
+            .padding(start = 5.dp, end = 5.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = colorResource(R.color.purple_200),
+            contentColor = Color.Black
+        )
+    ) {
+        Box(
+            Modifier
+                .clickable { onFilterClick() }
+                .height(25.dp)
+                .padding(start = 5.dp, end = 5.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = filter.name,
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
+            )
+        }
+
     }
 }
+
+

@@ -44,16 +44,16 @@ class CustomersViewModel @Inject constructor(
         _uiState.update { it.copy(searchText = searchText) }
     }
 
+    fun manageDialog(dialogId : Int) {
+        if (dialogId == 0)
+            _uiState.update { it.copy(showDialog = true) }
+    }
+
     init {
         viewModelScope.launch {
             uiState.collect { state ->
                 getCustomers(state.searchText)
             }
         }
-    }
-
-
-    fun clearSearchText() {
-        _uiState.update { it.copy(searchText = "") }
     }
 }

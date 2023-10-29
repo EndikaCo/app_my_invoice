@@ -162,8 +162,8 @@ fun Email(email: String, onTextChanged: (String) -> Unit) {
         placeholder = { Text(text = "Email") },
         maxLines = 1,
         singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = Color(0xFF222020),
+        colors = TextFieldDefaults.colors(
+            unfocusedTextColor = Color(0xFF222020),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         )
@@ -185,8 +185,8 @@ fun PassWord(password: String, onTextChanged: (String) -> Unit) {
         placeholder = { Text(text = "Password") },
         maxLines = 1,
         singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = Color(0xFF222020),
+        colors = TextFieldDefaults.colors(
+            unfocusedTextColor = Color(0xFF222020),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent
         ),
