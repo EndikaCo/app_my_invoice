@@ -45,8 +45,12 @@ class CustomersViewModel @Inject constructor(
     }
 
     fun manageDialog(dialogId : Int) {
-        if (dialogId == 0)
-            _uiState.update { it.copy(showDialog = true) }
+        if (dialogId == 0){
+            if(!uiState.value.showDialog)
+                _uiState.update { it.copy(showDialog = true) }
+            else
+                _uiState.update { it.copy(showDialog = false) }
+        }
     }
 
     init {
