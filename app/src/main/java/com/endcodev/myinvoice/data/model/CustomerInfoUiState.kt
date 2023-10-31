@@ -7,6 +7,7 @@ data class CustomerInfoUiState (
     val cIdentifier : String = "",
     val cFiscalName : String = "",
     val cTelephone : String = "",
+    val cCountry : CountryModel? = null,
     val isLoading : Boolean = false,
     val isAcceptEnabled : Boolean = false,
     val errorMessage : String? = null,

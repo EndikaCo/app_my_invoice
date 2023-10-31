@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,17 +19,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.endcodev.myinvoice.data.model.CountryModel
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CountrySelection(modifier: Modifier) {
-    val countryList = listOf(
-        "United state",
-        "Australia",
-        "Japan",
-        "India",
+
+    val allCountriesList: List<CountryModel> = listOf(
+        CountryModel(0, "All countries"),
+        CountryModel(1, "France"),
+        CountryModel(2, "United States"),
+        CountryModel(3, "China"),
+        CountryModel(4, "Spain")
     )
+
     val text = remember { mutableStateOf("") } // initial value
     val isOpen = remember { mutableStateOf(false) } // initial value
     val openCloseOfDropDownList: (Boolean) -> Unit = {
@@ -44,12 +45,12 @@ fun CountrySelection(modifier: Modifier) {
             OutlinedTextField(
                 value = text.value,
                 onValueChange = { text.value = it },
-                label = { Text(text = "United state") },
+                label = { Text(text = "Country") },
                 modifier = Modifier.fillMaxWidth()
             )
             DropDownList(
                 requestToOpen = isOpen.value,
-                list = countryList,
+                list = allCountriesList.map { it.name },
                 openCloseOfDropDownList,
                 userSelectedString
             )

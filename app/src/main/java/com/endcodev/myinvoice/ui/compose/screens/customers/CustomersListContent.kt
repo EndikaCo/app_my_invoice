@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,8 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
@@ -36,13 +33,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
@@ -51,21 +45,21 @@ import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.data.model.FilterModel
 import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
-import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
 import com.endcodev.myinvoice.ui.compose.screens.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
+import com.endcodev.myinvoice.ui.utils.uriToPainterImage
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 
 @Composable
-fun CustomersContentActions(
+fun CustomersListContentActions(
     navController: NavHostController,
 ) {
     val viewModel: CustomersViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
-    CustomersContent(
+    CustomersListContent(
         searchText = uiState.searchText,
         customers = uiState.customersList,
         isSearching = uiState.isLoading,
@@ -73,11 +67,13 @@ fun CustomersContentActions(
         onButtonClick = { navController.navigate(DetailsScreen.Customer.route) },
         onItemClick = { navController.navigate("${DetailsScreen.Customer.route}/${it}") },
         onDialogClick = { viewModel.manageDialog(it) },
-        showDialog = uiState.showDialog)
+        showDialog = uiState.showDialog,
+        filters = uiState.filters
+    )
 }
 
 @Composable
-fun CustomersContent(
+fun CustomersListContent(
     onButtonClick: () -> Unit,
     onItemClick: (String) -> Unit,
     searchText: String,
@@ -86,8 +82,8 @@ fun CustomersContent(
     onDialogClick: (Int) -> Unit,
     showDialog: Boolean,
     onSearchTextChange: (String) -> Unit,
+    filters : List<FilterModel>
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -96,14 +92,13 @@ fun CustomersContent(
     {
         CommonSearchBar(searchText, onSearchTextChange)
         Spacer(Modifier.size(11.dp))
-        FiltersView(onDialogClick)
+        FiltersView(onDialogClick, filters)
         Spacer(Modifier.size(11.dp))
 
         if (isSearching)
             ProgressBar()
         else
             CustomersList(Modifier.weight(1f), customers, onItemClick)
-
         if (showDialog)
             FiltersDialog(onDialogClick)
 
@@ -115,36 +110,6 @@ fun CustomersContent(
             onButtonClick
         )
         Spacer(Modifier.size(80.dp))
-    }
-}
-
-@Composable
-fun FiltersDialog(onDialogClick: (Int) -> Unit) {
-    Dialog(
-        onDismissRequest = { onDialogClick(0) }, properties = DialogProperties(
-            dismissOnBackPress = true, dismissOnClickOutside = true
-        )
-    ) {
-        Card(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .fillMaxWidth().padding(0.dp).height(IntrinsicSize.Min))
-        {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-            ) {
-                Text(
-                    text = "NEW FILTER",
-                    modifier = Modifier.padding(8.dp, 16.dp, 8.dp, 2.dp)
-                        .align(Alignment.CenterHorizontally).fillMaxWidth(), fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                CountrySelection(Modifier)
-            }
-        }
     }
 }
 
@@ -195,8 +160,7 @@ fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
             modifier = Modifier
                 .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
         ) {
-            CustomerImage(
-                uriToPainterImage(
+            CustomerImage(uriToPainterImage(
                     uri = customer.cImage,
                     default = painterResource(id = R.drawable.image_search_24)
                 )
@@ -214,7 +178,6 @@ fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
 fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
     Column(
         modifier = modifier
-
     ) {
         Text(
             text = customer.cFiscalName,
@@ -229,40 +192,13 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
     }
 }
 
-@Preview
 @Composable
-fun CustomersContentPreview() {
-    // Define your test data and actions here
-    val searchText = "Test"
-    val customers = GetCustomersUseCase.exampleCustomers().map { it.toDomain() }
-    val isSearching = false
-
-    // Define a test ViewModel or a way to provide test actions
-    val onSearchTextChange: (String) -> Unit = {}
-
-    MyInvoiceTheme {
-        CustomersContent(
-            onButtonClick = {},
-            onItemClick = {},
-            searchText = searchText,
-            customers = customers,
-            isSearching = isSearching,
-            onSearchTextChange = onSearchTextChange,
-            onDialogClick = {},
-            showDialog = false
-        )
-    }
-}
-
-@Composable
-fun FiltersView(onDialogClick: (Int) -> Unit) {
-
-    val filterList = listOf(FilterModel(2, "NEW FILTER")) // todo to view model
+fun FiltersView(onDialogClick: (Int) -> Unit, filters : List<FilterModel>) {
 
     LazyRow(Modifier.fillMaxWidth()) {
-        items(filterList) {
-            FilterItem((FilterModel(0, " + ")), onDialogClick)
-            FilterItem(filterList[0], onDialogClick)
+        items(filters) {
+            FilterItem((FilterModel(0, "New filter")), onDialogClick)
+            //FilterItem(filters[0], onDialogClick)
         }
     }
 }
@@ -293,8 +229,29 @@ fun FilterItem(filter: FilterModel, onDialogClick: (Int) -> Unit) {
                 textAlign = TextAlign.Center,
             )
         }
-
     }
 }
 
+@Preview
+@Composable
+fun CustomersContentPreview() {
 
+    val searchText = "Test"
+    val customers = GetCustomersUseCase.exampleCustomers().map { it.toDomain() }
+    val isSearching = false
+    val onSearchTextChange: (String) -> Unit = {}
+
+    MyInvoiceTheme {
+        CustomersListContent(
+            onButtonClick = {},
+            onItemClick = {},
+            searchText = searchText,
+            customers = customers,
+            isSearching = isSearching,
+            onSearchTextChange = onSearchTextChange,
+            onDialogClick = {},
+            showDialog = false,
+            filters = emptyList()
+        )
+    }
+}

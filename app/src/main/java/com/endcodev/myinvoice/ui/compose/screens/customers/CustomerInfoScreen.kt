@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -32,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -43,24 +41,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
-import com.endcodev.myinvoice.R
+import androidx.navigation.NavHostController
+import com.endcodev.myinvoice.data.model.CountryModel
 import com.endcodev.myinvoice.data.model.CustomerInfoUiState
 import com.endcodev.myinvoice.ui.compose.components.BottomButtons
+import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.compose.screens.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.navigation.Routes
+import com.endcodev.myinvoice.ui.utils.uriToPainterImage
 import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
 
-val pPadding = 20.dp
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomerInfoScreen(
-    viewModel: CustomerInfoViewModel = hiltViewModel(),
-    onAcceptButton: () -> Unit,
-    onCancelButton: () -> Unit,
-    customerIdentifier: String?
-) {
+fun CustomerInfoScreenActions(customerIdentifier: String?, navController: NavHostController) {
 
+    val viewModel: CustomerInfoViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
     if (customerIdentifier != null) {
@@ -70,6 +64,42 @@ fun CustomerInfoScreen(
         }
     }
 
+    CustomerInfoScreen(
+        onAcceptButton = {
+            viewModel.saveCustomer()
+            navController.navigate(Routes.CustomerContent.routes)
+        },
+        onCancelButton = { navController.navigate(Routes.CustomerContent.routes) },
+        uiState,
+        onUriChanged = { viewModel.updateUri(it) },
+        onFiscalNameChange = {
+            viewModel.onDataChanged(
+                identifier = uiState.cIdentifier,
+                fiscalName = it,
+                telephone = uiState.cTelephone
+            )
+        },
+        onIdentifierChange = {
+            viewModel.onDataChanged(
+                identifier = it,
+                fiscalName = uiState.cFiscalName,
+                telephone = uiState.cTelephone
+            )
+        }
+    )
+}
+
+val pPadding = 20.dp
+
+@Composable
+fun CustomerInfoScreen(
+    onAcceptButton: () -> Unit,
+    onCancelButton: () -> Unit,
+    uiState: CustomerInfoUiState,
+    onUriChanged: (Uri) -> Unit,
+    onFiscalNameChange: (String) -> Unit,
+    onIdentifierChange: (String) -> Unit,
+) {
     if (uiState.isLoading)
         ProgressBar()
     else
@@ -77,16 +107,17 @@ fun CustomerInfoScreen(
             topBar = { },
             content = { innerPadding ->
                 CustomerInfoContent(
-                    innerPadding, uiState, viewModel
+                    innerPadding,
+                    onUriChanged,
+                    uiState,
+                    onFiscalNameChange,
+                    onIdentifierChange
                 )
             },
             bottomBar = {
                 BottomButtons(
                     uiState.isAcceptEnabled,
-                    onAcceptClick = {
-                        viewModel.saveCustomer()
-                        onAcceptButton()
-                    },
+                    onAcceptButton,
                     onCancelButton
                 )
             }
@@ -96,8 +127,10 @@ fun CustomerInfoScreen(
 @Composable
 fun CustomerInfoContent(
     innerPadding: PaddingValues,
+    onUriChanged: (Uri) -> Unit,
     uiState: CustomerInfoUiState,
-    viewModel: CustomerInfoViewModel
+    onFiscalNameChange: (String) -> Unit,
+    onIdentifierChange: (String) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -111,8 +144,7 @@ fun CustomerInfoContent(
                 // Grant read permission to the obtained URI
                 val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 context.contentResolver.takePersistableUriPermission(uri, flag)
-
-                viewModel.updateUri(uri)
+                onUriChanged(uri)
             }
         }
     )
@@ -133,31 +165,17 @@ fun CustomerInfoContent(
                 )
                 CompanyIdNum(
                     uiState.cIdentifier,
-                    onTextChanged = {
-                        viewModel.onDataChanged(
-                            identifier = it,
-                            fiscalName = uiState.cFiscalName,
-                            telephone = uiState.cTelephone
-                        )
-                    },
+                    onTextChanged = { onIdentifierChange(it) },
                 )
             }
             CustomerInfoImage(singlePhotoPickerLauncher, uiState)
-
         }
-
         CompanyName(
             uiState.cFiscalName,
-            onTextChanged = {
-                viewModel.onDataChanged(
-                    identifier = uiState.cIdentifier,
-                    fiscalName = it,
-                    telephone = uiState.cTelephone
-                )
-            }
+            onTextChanged = { onFiscalNameChange(it) }
         )
-
         CompanyEmail()
+        CountrySelection(modifier = Modifier.padding(start = pPadding, end = pPadding, top = 3.dp))
     }
 }
 
@@ -169,7 +187,7 @@ fun CustomerInfoImage(
     Image(
         painter = uriToPainterImage(
             uiState.cImage,
-            painterResource(id = R.drawable.image_search_24)
+            painterResource(id = android.R.drawable.ic_menu_report_image)
         ),
         contentDescription = "Image",
         modifier = Modifier
@@ -186,15 +204,7 @@ fun CustomerInfoImage(
     )
 }
 
-//convert Uri to Painter
-@Composable
-fun uriToPainterImage(uri: Uri?, default: Painter): Painter {
-    if (uri == null)
-        return default
-    return rememberAsyncImagePainter(model = uri)
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompanyIdNum(idNum: String, onTextChanged: (String) -> Unit) {
 
@@ -220,7 +230,6 @@ fun InfoTitle(text: String, modifier: Modifier) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompanyName(cFiscalName: String, onTextChanged: (String) -> Unit) {
 
@@ -234,7 +243,6 @@ fun CompanyName(cFiscalName: String, onTextChanged: (String) -> Unit) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CompanyEmail() {
     var text by remember { mutableStateOf("") }
@@ -252,6 +260,13 @@ fun CompanyEmail() {
 
 @Preview
 @Composable
-fun PreviewDetailsCustomer() {
-    //CustomerInfoScreen(onAcceptClick = {}, onCancelClick = {})
+fun PreviewCustomerInfoScreen() {
+    CustomerInfoScreen(
+        onAcceptButton = {},
+        onCancelButton = {},
+        CustomerInfoUiState(),
+        onUriChanged = {},
+        onFiscalNameChange = {},
+        onIdentifierChange = {}
+    )
 }

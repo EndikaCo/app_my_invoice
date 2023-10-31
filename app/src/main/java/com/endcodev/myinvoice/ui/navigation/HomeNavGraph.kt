@@ -9,8 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.endcodev.myinvoice.ui.compose.screens.customers.CustomerInfoScreen
-import com.endcodev.myinvoice.ui.compose.screens.customers.CustomersContent
-import com.endcodev.myinvoice.ui.compose.screens.customers.CustomersContentActions
+import com.endcodev.myinvoice.ui.compose.screens.customers.CustomerInfoScreenActions
+import com.endcodev.myinvoice.ui.compose.screens.customers.CustomersListContentActions
 import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.compose.screens.items.ItemInfoScreen
@@ -36,7 +36,7 @@ fun HomeNavGraph(navController: NavHostController) {
         }
         //CUSTOMERS
         composable(route = Routes.CustomerContent.routes) {
-            CustomersContentActions(navController)
+            CustomersListContentActions(navController)
         }
         //ITEMS
         composable(route = Routes.ItemsContent.routes) {
@@ -65,21 +65,13 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("cIdentifier") { type = NavType.StringType })
         ) { backStackEntry ->
             val customerIdentifier = backStackEntry.arguments?.getString("cIdentifier")
-            CustomerInfoScreen(
-                customerIdentifier = customerIdentifier,
-                onAcceptButton = { navController.navigate(Routes.CustomerContent.routes) },
-                onCancelButton = { navController.navigate(Routes.CustomerContent.routes) }
-            )
+            CustomerInfoScreenActions(customerIdentifier = customerIdentifier, navController)
         }
         // CUSTOMER SCREEN (Without Arguments)
         composable(
             route = DetailsScreen.Customer.route,
         ) {
-            CustomerInfoScreen(
-                onAcceptButton = { navController.navigate(Routes.CustomerContent.routes) },
-                onCancelButton = { navController.navigate(Routes.CustomerContent.routes) },
-                customerIdentifier = null
-            )
+            CustomerInfoScreenActions(customerIdentifier = null, navController)
         }
 
         //INVOICE SCREEN
