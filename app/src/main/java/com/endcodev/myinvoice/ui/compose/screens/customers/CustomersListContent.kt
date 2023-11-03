@@ -43,6 +43,7 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.database.toDomain
 import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.data.model.FilterModel
+import com.endcodev.myinvoice.data.model.FilterType
 import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
@@ -66,9 +67,11 @@ fun CustomersListContentActions(
         onSearchTextChange = viewModel::setSearchText,
         onButtonClick = { navController.navigate(DetailsScreen.Customer.route) },
         onItemClick = { navController.navigate("${DetailsScreen.Customer.route}/${it}") },
-        onDialogClick = { viewModel.manageDialog(it) },
+        onFilterClick = { viewModel.manageFilter(it) },
         showDialog = uiState.showDialog,
-        filters = uiState.filters
+        filters = uiState.filters,
+        onFiltersChanged = {viewModel.changeFilters(it)},
+        onDialogExit = { viewModel.dialogClose() }
     )
 }
 
@@ -79,10 +82,12 @@ fun CustomersListContent(
     searchText: String,
     customers: List<CustomerModel>,
     isSearching: Boolean,
-    onDialogClick: (Int) -> Unit,
+    onFilterClick: (FilterModel) -> Unit,
     showDialog: Boolean,
     onSearchTextChange: (String) -> Unit,
-    filters : List<FilterModel>
+    onFiltersChanged: (MutableList<FilterModel>) -> Unit,
+    filters : MutableList<FilterModel>,
+    onDialogExit : () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -92,7 +97,7 @@ fun CustomersListContent(
     {
         CommonSearchBar(searchText, onSearchTextChange)
         Spacer(Modifier.size(11.dp))
-        FiltersView(onDialogClick, filters)
+        FiltersView(onFilterClick, filters)
         Spacer(Modifier.size(11.dp))
 
         if (isSearching)
@@ -100,7 +105,7 @@ fun CustomersListContent(
         else
             CustomersList(Modifier.weight(1f), customers, onItemClick)
         if (showDialog)
-            FiltersDialog(onDialogClick)
+            FiltersDialog(onFiltersChanged, filters, onDialogExit)
 
         FloatingActionButton(
             Modifier
@@ -193,23 +198,22 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
 }
 
 @Composable
-fun FiltersView(onDialogClick: (Int) -> Unit, filters : List<FilterModel>) {
+fun FiltersView(onFilterClick: (FilterModel) -> Unit, filters : List<FilterModel>) {
 
     LazyRow(Modifier.fillMaxWidth()) {
         items(filters) {
-            FilterItem((FilterModel(0, "New filter")), onDialogClick)
-            //FilterItem(filters[0], onDialogClick)
+            FilterItem(it, onFilterClick)
         }
     }
 }
 
 @Composable
-fun FilterItem(filter: FilterModel, onDialogClick: (Int) -> Unit) {
+fun FilterItem(filter: FilterModel, onFilterClick: (FilterModel) -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .wrapContentHeight()
             .wrapContentWidth()
-            .clickable { onDialogClick(filter.id) }
+            .clickable { onFilterClick(filter) }
             .padding(start = 5.dp, end = 5.dp),
         colors = CardDefaults.elevatedCardColors(
             containerColor = colorResource(R.color.purple_200),
@@ -224,7 +228,7 @@ fun FilterItem(filter: FilterModel, onDialogClick: (Int) -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = filter.name,
+                text = filter.text,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center,
             )
@@ -249,9 +253,11 @@ fun CustomersContentPreview() {
             customers = customers,
             isSearching = isSearching,
             onSearchTextChange = onSearchTextChange,
-            onDialogClick = {},
+            onFilterClick = {},
             showDialog = false,
-            filters = emptyList()
-        )
+            filters = mutableListOf(FilterModel(FilterType.NEW, "new")),
+            onFiltersChanged = {},
+            onDialogExit = {}
+            )
     }
 }

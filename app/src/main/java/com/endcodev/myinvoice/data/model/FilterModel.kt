@@ -1,6 +1,9 @@
 package com.endcodev.myinvoice.data.model
 
 data class FilterModel(
-    val id : Int,
-    val name : String
+    val type : FilterType,
+    val text : String
 )
+
+enum class FilterType { NEW, COUNTRY, ACTIVITY}
+

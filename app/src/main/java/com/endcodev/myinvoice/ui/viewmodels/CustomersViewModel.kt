@@ -2,20 +2,16 @@ package com.endcodev.myinvoice.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.data.model.CustomersListUiState
+import com.endcodev.myinvoice.data.model.FilterModel
+import com.endcodev.myinvoice.data.model.FilterType
+import com.endcodev.myinvoice.data.model.FilterType.*
 import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,13 +40,21 @@ class CustomersViewModel @Inject constructor(
         _uiState.update { it.copy(searchText = searchText) }
     }
 
-    fun manageDialog(dialogId : Int) {
-        if (dialogId == 0){
+    fun manageFilter(filter : FilterModel) {
+        if (filter.type == NEW){
             if(!uiState.value.showDialog)
                 _uiState.update { it.copy(showDialog = true) }
             else
                 _uiState.update { it.copy(showDialog = false) }
         }
+    }
+
+    fun changeFilters(filters : MutableList<FilterModel>) {
+        _uiState.update { it.copy(filters = filters) }
+    }
+
+    fun dialogClose() {
+        _uiState.update { it.copy(showDialog = false) }
     }
 
     init {

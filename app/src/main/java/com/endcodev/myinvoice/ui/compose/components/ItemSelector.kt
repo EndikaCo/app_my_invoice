@@ -20,26 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.endcodev.myinvoice.data.model.CountryModel
+import com.endcodev.myinvoice.data.model.allCountriesList
 
 @Composable
-fun CountrySelection(modifier: Modifier) {
-
-    val allCountriesList: List<CountryModel> = listOf(
-        CountryModel(0, "All countries"),
-        CountryModel(1, "France"),
-        CountryModel(2, "United States"),
-        CountryModel(3, "China"),
-        CountryModel(4, "Spain")
-    )
+fun CountrySelection(modifier: Modifier, onSelection : (String) -> Unit) {
 
     val text = remember { mutableStateOf("") } // initial value
     val isOpen = remember { mutableStateOf(false) } // initial value
     val openCloseOfDropDownList: (Boolean) -> Unit = {
         isOpen.value = it
     }
-    val userSelectedString: (String) -> Unit = {
-        text.value = it
-    }
+
     Box(modifier = modifier) {
         Column {
             OutlinedTextField(
@@ -52,7 +43,10 @@ fun CountrySelection(modifier: Modifier) {
                 requestToOpen = isOpen.value,
                 list = allCountriesList.map { it.name },
                 openCloseOfDropDownList,
-                userSelectedString
+                selectedString = {
+                    text.value = it
+                    onSelection(it)
+                }
             )
         }
         Spacer(

@@ -5,5 +5,5 @@ data class CustomersListUiState(
     val isLoading : Boolean = false,
     val customersList : List<CustomerModel> = emptyList(),
     val showDialog : Boolean = false,
-    val filters : List<FilterModel> = emptyList()
+    val filters : MutableList<FilterModel> = mutableListOf(FilterModel(FilterType.NEW, "New Filter"))
 )

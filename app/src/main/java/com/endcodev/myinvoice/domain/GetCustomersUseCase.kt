@@ -48,19 +48,23 @@ class GetCustomersUseCase @Inject constructor(
                     cImage = null,
                     cFiscalName = "Example 1",
                     cIdentifier = "B95768523",
-                    cTelephone = "+34623213213"
+                    cTelephone = "+34623213213",
+                    cCountry = ""
                 ),
                 CustomersEntity(
                     cImage = null,
                     cFiscalName = "Example 2",
                     cIdentifier = "1608876623V",
-                    cTelephone = "+86732132133"
+                    cTelephone = "+86732132133",
+                    cCountry = ""
+
                 ),
                 CustomersEntity(
                     cImage = null,
                     cFiscalName = "Example 3",
                     cIdentifier = "A323145125212",
-                    cTelephone = "+51624223213"
+                    cTelephone = "+51624223213",
+                    cCountry = ""
                 )
             )
         }

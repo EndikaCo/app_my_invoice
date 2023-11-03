@@ -1,17 +1,14 @@
 package com.endcodev.myinvoice.ui.compose.screens.customers
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,25 +21,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.endcodev.myinvoice.data.model.CountryModel
+import com.endcodev.myinvoice.data.model.FilterModel
 import com.endcodev.myinvoice.ui.compose.components.BottomButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
-fun FiltersDialog(onDialogClick: (Int) -> Unit) {
+fun FiltersDialog(
+    onFilterAdded: (MutableList<FilterModel>) -> Unit,
+    filters: MutableList<FilterModel>,
+    onDialogCancel: () -> Unit
+) {
 
     Dialog(
-        onDismissRequest = { onDialogClick(0) }, properties = DialogProperties(
-            dismissOnBackPress = true, dismissOnClickOutside = true
-        )
+        onDismissRequest = { onDialogCancel() },
+        properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
     ) {
         Card(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp)
-                .height(IntrinsicSize.Min))
+                .height(IntrinsicSize.Min)
+        )
         {
             Column(
                 Modifier
@@ -60,11 +61,14 @@ fun FiltersDialog(onDialogClick: (Int) -> Unit) {
                     textAlign = TextAlign.Center
                 )
 
-                CountrySelection(Modifier)
+                CountrySelection(Modifier, onSelection = {})
             }
-            Spacer( Modifier.height(16.dp))
-            BottomButtons(enabled = true, onAcceptClick = { /*TODO*/ }) {
-            }
+            Spacer(Modifier.height(16.dp))
+            BottomButtons(
+                enabled = true,
+                onAcceptClick = { onFilterAdded(filters) },
+                onCancelClick = onDialogCancel
+            )
         }
     }
 }
@@ -74,7 +78,7 @@ fun FiltersDialog(onDialogClick: (Int) -> Unit) {
 fun FilterDialogPreview() {
 
     MyInvoiceTheme {
-        FiltersDialog(onDialogClick = {})
+        FiltersDialog(onFilterAdded = {}, mutableListOf(), onDialogCancel = {})
     }
 }
 

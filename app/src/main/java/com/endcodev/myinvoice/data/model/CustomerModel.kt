@@ -6,7 +6,8 @@ data class CustomerModel(
     val cImage: Uri?,
     val cIdentifier: String,
     val cFiscalName: String,
-    val cTelephone: String
+    val cTelephone: String,
+    val cCountry: String,
 ){
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(

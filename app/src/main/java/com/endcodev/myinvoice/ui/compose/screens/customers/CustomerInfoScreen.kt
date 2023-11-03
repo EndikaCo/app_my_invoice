@@ -24,9 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.endcodev.myinvoice.data.model.CountryModel
 import com.endcodev.myinvoice.data.model.CustomerInfoUiState
 import com.endcodev.myinvoice.ui.compose.components.BottomButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
@@ -76,16 +72,36 @@ fun CustomerInfoScreenActions(customerIdentifier: String?, navController: NavHos
             viewModel.onDataChanged(
                 identifier = uiState.cIdentifier,
                 fiscalName = it,
-                telephone = uiState.cTelephone
+                telephone = uiState.cTelephone,
+                country = uiState.cCountry,
+                email = uiState.cEmail
             )
         },
         onIdentifierChange = {
             viewModel.onDataChanged(
                 identifier = it,
                 fiscalName = uiState.cFiscalName,
-                telephone = uiState.cTelephone
+                telephone = uiState.cTelephone,
+                country = uiState.cCountry,
+                email = uiState.cEmail
             )
-        }
+        },
+        onCountryChange = {
+            viewModel.onDataChanged(
+                identifier = uiState.cIdentifier,
+                fiscalName = uiState.cFiscalName,
+                telephone = uiState.cTelephone,
+                country = it,
+                email = uiState.cEmail
+            )
+        },
+        onEmailChange = {viewModel.onDataChanged(
+            identifier = uiState.cIdentifier,
+            fiscalName = uiState.cFiscalName,
+            telephone = uiState.cTelephone,
+            country = uiState.cCountry,
+            email = it
+        )}
     )
 }
 
@@ -99,6 +115,8 @@ fun CustomerInfoScreen(
     onUriChanged: (Uri) -> Unit,
     onFiscalNameChange: (String) -> Unit,
     onIdentifierChange: (String) -> Unit,
+    onCountryChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
 ) {
     if (uiState.isLoading)
         ProgressBar()
@@ -111,7 +129,9 @@ fun CustomerInfoScreen(
                     onUriChanged,
                     uiState,
                     onFiscalNameChange,
-                    onIdentifierChange
+                    onIdentifierChange,
+                    onCountryChange,
+                    onEmailChange
                 )
             },
             bottomBar = {
@@ -131,6 +151,8 @@ fun CustomerInfoContent(
     uiState: CustomerInfoUiState,
     onFiscalNameChange: (String) -> Unit,
     onIdentifierChange: (String) -> Unit,
+    onCountryChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
 ) {
     val context = LocalContext.current
 
@@ -164,29 +186,34 @@ fun CustomerInfoContent(
                     fontSize = 24.sp
                 )
                 CompanyIdNum(
-                    uiState.cIdentifier,
+                    idNum = uiState.cIdentifier,
                     onTextChanged = { onIdentifierChange(it) },
                 )
             }
-            CustomerInfoImage(singlePhotoPickerLauncher, uiState)
+            CustomerInfoImage(
+                singlePhotoPickerLauncher = singlePhotoPickerLauncher,
+                cImage = uiState.cImage
+            )
         }
         CompanyName(
-            uiState.cFiscalName,
+            cFiscalName = uiState.cFiscalName,
             onTextChanged = { onFiscalNameChange(it) }
         )
-        CompanyEmail()
-        CountrySelection(modifier = Modifier.padding(start = pPadding, end = pPadding, top = 3.dp))
+        CompanyEmail(cEmail = uiState.cEmail, onEmailChanged = onEmailChange)
+        CountrySelection(
+            modifier = Modifier.padding(start = pPadding, end = pPadding, top = 3.dp),
+            onSelection = onCountryChange
+        )
     }
 }
 
 @Composable
 fun CustomerInfoImage(
     singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
-    uiState: CustomerInfoUiState
-) {
+    cImage: Uri?) {
     Image(
         painter = uriToPainterImage(
-            uiState.cImage,
+            cImage,
             painterResource(id = android.R.drawable.ic_menu_report_image)
         ),
         contentDescription = "Image",
@@ -244,15 +271,14 @@ fun CompanyName(cFiscalName: String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun CompanyEmail() {
-    var text by remember { mutableStateOf("") }
+fun CompanyEmail(cEmail: String, onEmailChanged: (String) -> Unit) {
 
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = pPadding, end = pPadding),
-        value = text,
-        onValueChange = { text = it },
+        value = cEmail,
+        onValueChange = { onEmailChanged(it) },
         label = { Text("Email") }
     )
 }
@@ -267,6 +293,8 @@ fun PreviewCustomerInfoScreen() {
         CustomerInfoUiState(),
         onUriChanged = {},
         onFiscalNameChange = {},
-        onIdentifierChange = {}
+        onIdentifierChange = {},
+        onCountryChange = {},
+        onEmailChange = {}
     )
 }

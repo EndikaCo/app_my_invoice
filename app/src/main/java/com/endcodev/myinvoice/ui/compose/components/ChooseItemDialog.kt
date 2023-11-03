@@ -38,9 +38,9 @@ fun PreviewChooseCustomerDialog() {
         onDismissRequest = {},
         onAcceptRequest = {},
         listOf(
-            CustomerModel(null, "A525251dss", "Jose Miguel", "678595232"),
-            CustomerModel(null, "225525535F", "Manolo", "763276326"),
-            CustomerModel(null, "325252525D", "Aurelio Martinez", "42424242112"),
+            CustomerModel(null, "A525251dss", "Jose Miguel", "678595232", ""),
+            CustomerModel(null, "225525535F", "Manolo", "763276326", ""),
+            CustomerModel(null, "325252525D", "Aurelio Martinez", "42424242112", ""),
             )
     )
 }

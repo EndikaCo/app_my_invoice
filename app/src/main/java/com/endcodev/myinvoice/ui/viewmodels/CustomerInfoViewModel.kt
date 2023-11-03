@@ -43,6 +43,7 @@ class CustomerInfoViewModel @Inject constructor(
                 cIdentifier = customer.cIdentifier,
                 cFiscalName = customer.cFiscalName,
                 cTelephone = customer.cTelephone,
+                cCountry = customer.cCountry,
                 cImage = customer.cImage,
                 isLoading = false,
                 isAcceptEnabled = enableAccept(customer.cIdentifier, customer.cFiscalName)
@@ -51,14 +52,15 @@ class CustomerInfoViewModel @Inject constructor(
     }
 
 
-    fun onDataChanged(identifier: String, fiscalName: String, telephone: String) {
+    fun onDataChanged(identifier: String, fiscalName: String, telephone: String, country: String, email: String) {
         _uiState.update { currentState ->
             currentState.copy(
                 cIdentifier = identifier,
                 cFiscalName = fiscalName,
                 cTelephone = telephone,
-                isAcceptEnabled = enableAccept(identifier, fiscalName)
-            )
+                cCountry = country,
+                cEmail = email,
+                isAcceptEnabled = enableAccept(identifier, fiscalName))
         }
     }
 
@@ -72,7 +74,8 @@ class CustomerInfoViewModel @Inject constructor(
                     cImage = cImage.toString(),
                     cIdentifier = cIdentifier,
                     cFiscalName = cFiscalName,
-                    cTelephone = cTelephone
+                    cTelephone = cTelephone,
+                    cCountry = cCountry
                 )
                 getCustomersUseCase.saveCustomer(customer)
             }
