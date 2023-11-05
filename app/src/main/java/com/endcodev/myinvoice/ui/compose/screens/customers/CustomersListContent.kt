@@ -1,5 +1,6 @@
 package com.endcodev.myinvoice.ui.compose.screens.customers
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -135,6 +136,7 @@ fun CustomersList(
 
 @Composable
 fun CustomerImage(image: Painter) {
+
     Box(
         modifier = Modifier
             .size(50.dp) // Size of the Box (background)
@@ -143,10 +145,10 @@ fun CustomerImage(image: Painter) {
     ) {
         Image(
             painter = image,
-            contentDescription = "logo",
+            contentDescription = "customer Image",
             modifier = Modifier
-                .height(5.dp)
-                .width(5.dp)
+                .height(50.dp)
+                .width(50.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
@@ -167,7 +169,7 @@ fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
         ) {
             CustomerImage(uriToPainterImage(
                     uri = customer.cImage,
-                    default = painterResource(id = R.drawable.image_search_24)
+                    default = painterResource(id = R.drawable.person_24)
                 )
             )
             CustomerNameAndIdentifier(

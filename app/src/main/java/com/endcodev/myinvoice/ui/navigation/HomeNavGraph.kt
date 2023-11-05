@@ -8,8 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.endcodev.myinvoice.ui.compose.screens.customers.CustomerInfoScreen
-import com.endcodev.myinvoice.ui.compose.screens.customers.CustomerInfoScreenActions
+import com.endcodev.myinvoice.ui.compose.screens.customers.CustomerDetailsActions
 import com.endcodev.myinvoice.ui.compose.screens.customers.CustomersListContentActions
 import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoicesContent
@@ -65,13 +64,13 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("cIdentifier") { type = NavType.StringType })
         ) { backStackEntry ->
             val customerIdentifier = backStackEntry.arguments?.getString("cIdentifier")
-            CustomerInfoScreenActions(customerIdentifier = customerIdentifier, navController)
+            CustomerDetailsActions(customerIdentifier = customerIdentifier, navController)
         }
         // CUSTOMER SCREEN (Without Arguments)
         composable(
             route = DetailsScreen.Customer.route,
         ) {
-            CustomerInfoScreenActions(customerIdentifier = null, navController)
+            CustomerDetailsActions(customerIdentifier = null, navController)
         }
 
         //INVOICE SCREEN

@@ -21,9 +21,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,78 +34,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.CustomerInfoUiState
 import com.endcodev.myinvoice.ui.compose.components.BottomButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.compose.screens.invoice.ProgressBar
-import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.utils.uriToPainterImage
-import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
-
-@Composable
-fun CustomerInfoScreenActions(customerIdentifier: String?, navController: NavHostController) {
-
-    val viewModel: CustomerInfoViewModel = hiltViewModel()
-    val uiState by viewModel.uiState.collectAsState()
-
-    if (customerIdentifier != null) {
-        //only called when customerIdentifier changes,
-        LaunchedEffect(customerIdentifier) {
-            viewModel.getCustomer(customerIdentifier)
-        }
-    }
-
-    CustomerInfoScreen(
-        onAcceptButton = {
-            viewModel.saveCustomer()
-            navController.navigate(Routes.CustomerContent.routes)
-        },
-        onCancelButton = { navController.navigate(Routes.CustomerContent.routes) },
-        uiState,
-        onUriChanged = { viewModel.updateUri(it) },
-        onFiscalNameChange = {
-            viewModel.onDataChanged(
-                identifier = uiState.cIdentifier,
-                fiscalName = it,
-                telephone = uiState.cTelephone,
-                country = uiState.cCountry,
-                email = uiState.cEmail
-            )
-        },
-        onIdentifierChange = {
-            viewModel.onDataChanged(
-                identifier = it,
-                fiscalName = uiState.cFiscalName,
-                telephone = uiState.cTelephone,
-                country = uiState.cCountry,
-                email = uiState.cEmail
-            )
-        },
-        onCountryChange = {
-            viewModel.onDataChanged(
-                identifier = uiState.cIdentifier,
-                fiscalName = uiState.cFiscalName,
-                telephone = uiState.cTelephone,
-                country = it,
-                email = uiState.cEmail
-            )
-        },
-        onEmailChange = {viewModel.onDataChanged(
-            identifier = uiState.cIdentifier,
-            fiscalName = uiState.cFiscalName,
-            telephone = uiState.cTelephone,
-            country = uiState.cCountry,
-            email = it
-        )}
-    )
-}
 
 val pPadding = 20.dp
 
+/**
+ * Composable function that represents the screen for displaying customer details.
+ *
+ * @param onAcceptButton Callback function to be called when the accept button is clicked.
+ * @param onCancelButton Callback function to be called when the cancel button is clicked.
+ * @param uiState The current state of the customer information UI.
+ * @param onUriChanged Callback function to be called when the URI is changed.
+ * @param onFiscalNameChange Callback function to be called when the fiscal name is changed.
+ * @param onIdentifierChange Callback function to be called when the identifier is changed.
+ * @param onCountryChange Callback function to be called when the country is changed.
+ * @param onEmailChange Callback function to be called when the email is changed.
+ */
 @Composable
-fun CustomerInfoScreen(
+fun CustomerDetailsScreen(
     onAcceptButton: () -> Unit,
     onCancelButton: () -> Unit,
     uiState: CustomerInfoUiState,
@@ -144,6 +92,16 @@ fun CustomerInfoScreen(
         )
 }
 
+/**
+ * Composable function that represents the content of the customer information screen.
+ * @param innerPadding Padding values for the inner content.
+ * @param onUriChanged Callback function to be called when the URI is changed.
+ * @param uiState The current state of the customer information UI.
+ * @param onFiscalNameChange Callback function to be called when the fiscal name is changed.
+ * @param onIdentifierChange Callback function to be called when the identifier is changed.
+ * @param onCountryChange Callback function to be called when the country is changed.
+ * @param onEmailChange Callback function to be called when the email is changed.
+ */
 @Composable
 fun CustomerInfoContent(
     innerPadding: PaddingValues,
@@ -207,6 +165,12 @@ fun CustomerInfoContent(
     }
 }
 
+
+/**
+ * Displays a customer's image or new image from photo picker launcher.
+ * @param singlePhotoPickerLauncher The launcher used to pick a visual media (image) from the device.
+ * @param cImage The current image URI of the customer.
+ */
 @Composable
 fun CustomerInfoImage(
     singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
@@ -214,9 +178,9 @@ fun CustomerInfoImage(
     Image(
         painter = uriToPainterImage(
             cImage,
-            painterResource(id = android.R.drawable.ic_menu_report_image)
+            painterResource(id = R.drawable.person_24)
         ),
-        contentDescription = "Image",
+        contentDescription = "customer Image",
         modifier = Modifier
             .clickable {
                 singlePhotoPickerLauncher.launch(
@@ -234,7 +198,6 @@ fun CustomerInfoImage(
 
 @Composable
 fun CompanyIdNum(idNum: String, onTextChanged: (String) -> Unit) {
-
     OutlinedTextField(modifier = Modifier
         .fillMaxWidth()
         .padding(end = 16.dp),
@@ -287,7 +250,7 @@ fun CompanyEmail(cEmail: String, onEmailChanged: (String) -> Unit) {
 @Preview
 @Composable
 fun PreviewCustomerInfoScreen() {
-    CustomerInfoScreen(
+    CustomerDetailsScreen(
         onAcceptButton = {},
         onCancelButton = {},
         CustomerInfoUiState(),

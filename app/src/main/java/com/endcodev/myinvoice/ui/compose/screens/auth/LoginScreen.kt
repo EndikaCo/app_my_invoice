@@ -53,7 +53,6 @@ import androidx.lifecycle.viewmodel.compose.*
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.ui.viewmodels.LoginViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     onLoginClick: () -> Unit,
@@ -144,15 +143,14 @@ fun LoginFooter(onSignUpClick: () -> Unit) {
 @Composable
 fun ImageLogo(modifier: Modifier) {
     Image(
-        painter = painterResource(id = R.drawable.invoice_logo),
+        painter = painterResource(id = R.drawable.title_logo),
         contentDescription = "logo",
         modifier = modifier
             .height(100.dp)
-            .width(100.dp)
+            .width(300.dp)
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Email(email: String, onTextChanged: (String) -> Unit) {
     TextField(
@@ -171,7 +169,6 @@ fun Email(email: String, onTextChanged: (String) -> Unit) {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PassWord(password: String, onTextChanged: (String) -> Unit) {
 
