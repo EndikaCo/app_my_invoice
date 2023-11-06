@@ -5,4 +5,12 @@
     <string name="pass_changed">Password changed correctly.</string>
     <string name="pass_change_error">Error while changing password.</string>
     <string name="error_creating_account">Error occurred creating account.</string>
+    <string name="login_don_t_have_an_account">Don\'t have an account?</string>
+    <string name="login_sign_up_link">Sign up</string>
+    <string name="login_close_app">close app</string>
+    <string name="login_logo">logo</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_visibility_change_icon">visibility change icon</string>
+    <string name="login_forgot_password">Forgot password</string>
 </resources>

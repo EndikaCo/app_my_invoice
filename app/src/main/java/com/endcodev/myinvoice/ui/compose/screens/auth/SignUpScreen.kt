@@ -139,7 +139,7 @@ fun SignUpBody(
                 viewModel.onSignUpChanged(email = it, password = password)
             }
             Spacer(modifier = Modifier.size(4.dp))
-            PassWord(password) {
+            LoginPassWord(password) {
                 viewModel.onSignUpChanged(password = it, email = email)
                 viewModel.isValidCredentials(email, password)
             }
@@ -154,7 +154,6 @@ fun SignUpBody(
         }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepeatPassWord(password: String, onTextChanged: (String) -> Unit) {
 

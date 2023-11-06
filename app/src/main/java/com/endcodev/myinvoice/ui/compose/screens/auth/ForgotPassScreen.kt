@@ -33,7 +33,6 @@ import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.ForgotViewModel
 import com.endcodev.myinvoice.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForgotPassScreen(
     onBackClick: () ->Unit,
@@ -105,7 +104,7 @@ fun ForgotHeader(onBackClick: () -> Unit) {
                 .fillMaxWidth()
         )
         Spacer(modifier = Modifier.size(24.dp))
-        SignUp(onBackClick)
+        SignUpLink(onBackClick)
         Spacer(modifier = Modifier.size(24.dp))
     }
 }
