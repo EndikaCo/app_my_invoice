@@ -13,4 +13,5 @@
     <string name="login_password">Password</string>
     <string name="login_visibility_change_icon">visibility change icon</string>
     <string name="login_forgot_password">Forgot password</string>
+    <string name="loggin_log_in_button">Log In</string>
 </resources>

@@ -135,11 +135,11 @@ fun SignUpBody(
         ) {
             ImageLogo(Modifier.align(Alignment.CenterHorizontally))
             Spacer(modifier = Modifier.size(16.dp))
-            Email(email) {
+            LoginEnterEmail(email) {
                 viewModel.onSignUpChanged(email = it, password = password)
             }
             Spacer(modifier = Modifier.size(4.dp))
-            LoginPassWord(password) {
+            LoginEnterPassWord(password) {
                 viewModel.onSignUpChanged(password = it, email = email)
                 viewModel.isValidCredentials(email, password)
             }

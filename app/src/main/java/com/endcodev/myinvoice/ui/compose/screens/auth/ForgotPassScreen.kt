@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -64,7 +63,7 @@ fun ForgotBody(innerPadding: PaddingValues, viewModel: ForgotViewModel, onLoginC
         verticalArrangement = Arrangement.Center){
         ImageLogo(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
-        Email(email) { viewModel.onLoginChanged(email = it) }
+        LoginEnterEmail(email) { viewModel.onLoginChanged(email = it) }
         Spacer(modifier = Modifier.size(4.dp))
         ForgotButton(
             loginEnabled = isForgotEnabled,

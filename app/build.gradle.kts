@@ -79,7 +79,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    //constrait layout
+    //constraint layout
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
     //firebase
@@ -88,7 +88,7 @@ dependencies {
     implementation("com.google.firebase:firebase-common-ktx:20.4.2")
 
     //navigation
-    implementation("androidx.navigation:navigation-compose:2.7.4")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
 
     //viewModel()
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
@@ -100,7 +100,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.48")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     kapt("com.google.dagger:hilt-compiler:2.48")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0-rc01")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     //room
     val roomVersion = "2.6.0"

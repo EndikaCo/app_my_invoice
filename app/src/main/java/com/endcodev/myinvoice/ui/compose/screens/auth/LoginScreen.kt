@@ -1,7 +1,7 @@
 package com.endcodev.myinvoice.ui.compose.screens.auth
 
 import android.app.Activity
-import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -31,16 +30,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,55 +46,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.ui.navigation.AuthScreen
-import com.endcodev.myinvoice.ui.navigation.Graph
-import com.endcodev.myinvoice.ui.viewmodels.LoginViewModel
-
-@Composable
-fun LoginActions(navController: NavHostController) {
-
-    val viewModel: LoginViewModel = hiltViewModel()
-
-    val email by viewModel.email.observeAsState(initial = "")
-    val password by viewModel.password.observeAsState(initial = "")
-    val isLoginEnabled by viewModel.isLoginEnabled.observeAsState(initial = false)
-
-    val context = LocalContext.current
-    LaunchedEffect(key1 = viewModel) {
-        viewModel.errors.collect { error ->
-            error.asString(context)
-            Toast.makeText(context, error.asString(context), Toast.LENGTH_LONG).show()
-        }
-    }
-
-    LoginScreen(
-        email = email,
-        password = password,
-        isLoginEnables = isLoginEnabled,
-        onLoginClick = {
-            viewModel.login()
-            navController.popBackStack() // clear nav history
-            navController.navigate(Graph.HOME)
-        },
-        onSignUpClick = {
-            navController.navigate(AuthScreen.SignUp.route)
-        },
-        onForgotClick = {
-            navController.navigate(AuthScreen.Forgot.route)
-        },
-        onEmailChanged = {
-            viewModel.onLoginChanged(it, password)
-        },
-        onPassChanged = {
-            viewModel.onLoginChanged(password = it, email = email)
-        }
-    )
-}
+import com.endcodev.myinvoice.ui.theme.*
 
 @Composable
 fun LoginScreen(
@@ -155,17 +107,17 @@ fun LoginBody(
             .fillMaxHeight(),
         verticalArrangement = Arrangement.Center
     ) {
-        ImageLogo(Modifier.align(Alignment.CenterHorizontally))
+        ImageLogo(Modifier.align(CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
-        Email(email) { onLoginChanged(it) }
+        LoginEnterEmail(email) { onLoginChanged(it) }
         Spacer(modifier = Modifier.size(4.dp))
-        LoginPassWord(password) { onPassChanged(it) }
+        LoginEnterPassWord(password) { onPassChanged(it) }
         Spacer(modifier = Modifier.size(16.dp))
         ForgotPassword(Modifier.align(Alignment.End), onForgotClick)
         Spacer(modifier = Modifier.size(16.dp))
         LoginButton(loginEnabled = isLoginEnabled, onLoginClick = onLoginClick)
         Spacer(modifier = Modifier.size(16.dp))
-        LoginDivider(Modifier.align(Alignment.CenterHorizontally))
+        LoginDivider(Modifier.align(CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
         SocialLogin(Modifier.align(CenterHorizontally))
     }
@@ -198,7 +150,7 @@ fun ImageLogo(modifier: Modifier) {
 }
 
 @Composable
-fun Email(email: String, onTextChanged: (String) -> Unit) {
+fun LoginEnterEmail(email: String, onTextChanged: (String) -> Unit) {
     TextField(
         value = email,
         onValueChange = { onTextChanged(it) },
@@ -208,14 +160,14 @@ fun Email(email: String, onTextChanged: (String) -> Unit) {
         singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         colors = TextFieldDefaults.colors(
             unfocusedTextColor = Color(0xFF222020),
-            focusedIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Black,
             unfocusedIndicatorColor = Color.Transparent
         )
     )
 }
 
 @Composable
-fun LoginPassWord(password: String, onTextChanged: (String) -> Unit) {
+fun LoginEnterPassWord(password: String, onTextChanged: (String) -> Unit) {
 
     var passwordVisibility by remember {
         mutableStateOf(false)
@@ -229,8 +181,8 @@ fun LoginPassWord(password: String, onTextChanged: (String) -> Unit) {
         maxLines = 1,
         singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         colors = TextFieldDefaults.colors(
-            unfocusedTextColor = Color(0xFF222020),
-            focusedIndicatorColor = Color.Transparent,
+            unfocusedTextColor = md_theme_dark_background,
+            focusedIndicatorColor = Color.Black,
             unfocusedIndicatorColor = Color.Transparent
         ),
         trailingIcon = {
@@ -250,7 +202,6 @@ fun LoginPassWord(password: String, onTextChanged: (String) -> Unit) {
     )
 }
 
-
 @Composable
 fun ForgotPassword(modifier: Modifier, onForgotClick: () -> Unit) {
     Text(
@@ -269,17 +220,18 @@ fun LoginButton(loginEnabled: Boolean, onLoginClick: () -> Unit) {
         onClick = { onLoginClick() },
         enabled = loginEnabled,
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(width = 2.dp, color = Color.Black),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(R.color.light_black),
-            disabledContainerColor = Color(0x80646464),
-            disabledContentColor = Color.White,
+            containerColor = Color.Black,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = Color.Black,
             contentColor = Color.White,
         )
     ) {
-        Text(text = "Log In", fontSize = 20.sp)
+        Text(text = stringResource(R.string.loggin_log_in_button), fontSize = 20.sp)
     }
 }
-
 
 @Composable
 fun LoginDivider(modifier: Modifier) {
@@ -332,4 +284,19 @@ fun SignUpLink(onSignUpClick: () -> Unit) {
             textDecoration = TextDecoration.Underline
         )
     }
+}
+
+@Preview
+@Composable
+fun PreviewLoginScreen() {
+    LoginScreen(
+        email = "Email",
+        password = "password",
+        isLoginEnables = false,
+        onLoginClick = {},
+        onSignUpClick = {},
+        onForgotClick = {},
+        onEmailChanged = {},
+        onPassChanged = {}
+    )
 }
