@@ -1,6 +1,5 @@
-package com.endcodev.myinvoice.ui.compose.screens.customers
+package com.endcodev.myinvoice.ui.compose.screens.home.customers
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,8 +46,8 @@ import com.endcodev.myinvoice.data.model.FilterModel
 import com.endcodev.myinvoice.data.model.FilterType
 import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
-import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
-import com.endcodev.myinvoice.ui.compose.screens.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.utils.uriToPainterImage

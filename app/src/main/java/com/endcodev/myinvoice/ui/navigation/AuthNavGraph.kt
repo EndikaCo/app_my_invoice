@@ -4,10 +4,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.endcodev.myinvoice.ui.compose.screens.auth.LoginScreen
-import com.endcodev.myinvoice.ui.compose.screens.auth.ForgotPassScreen
-import com.endcodev.myinvoice.ui.compose.screens.auth.LoginActions
-import com.endcodev.myinvoice.ui.compose.screens.auth.SignUpScreen
+import com.endcodev.myinvoice.ui.compose.screens.auth.forgot.ForgotPassActions
+import com.endcodev.myinvoice.ui.compose.screens.auth.login.LoginActions
+import com.endcodev.myinvoice.ui.compose.screens.auth.signup.SignUpActions
+import com.endcodev.myinvoice.ui.compose.screens.auth.signup.SignUpScreen
 
 
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
@@ -21,16 +21,11 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         }
         //SIGN-UP SCREEN
         composable(route = AuthScreen.SignUp.route) {
-            SignUpScreen(
-                onSignUpClick = {
-                    navController.navigate(AuthScreen.Login.route)
-            })
+            SignUpActions(navController = navController)
         }
         //FORGOT PASSWORD SCREEN
         composable(route = AuthScreen.Forgot.route) {
-            ForgotPassScreen(onBackClick = {
-                navController.navigate(AuthScreen.Login.route)
-            })
+            ForgotPassActions(navController)
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens
+package com.endcodev.myinvoice.ui.compose.screens.home
 
 import android.util.Log
 import androidx.compose.material.icons.Icons
@@ -29,10 +29,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.endcodev.myinvoice.ui.navigation.HomeNavGraph
 import com.endcodev.myinvoice.ui.navigation.Routes.*
-import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoicesContent
+import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
 

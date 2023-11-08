@@ -1,9 +1,10 @@
-package com.endcodev.myinvoice.ui.compose.screens.auth
+package com.endcodev.myinvoice.ui.compose.screens.auth.login
 
-import android.app.Activity
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,20 +16,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,7 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.ui.theme.*
+import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
 fun LoginScreen(
@@ -62,9 +59,10 @@ fun LoginScreen(
     onForgotClick: () -> Unit,
     onEmailChanged: (String) -> Unit,
     onPassChanged: (String) -> Unit,
+    onExitClick: () -> Unit
 ) {
     Scaffold(
-        topBar = { LoginHeader() },
+        topBar = { LoginHeader(onExitClick) },
         content = { innerPadding ->
             LoginBody(
                 innerPadding, email,
@@ -81,12 +79,13 @@ fun LoginScreen(
 }
 
 @Composable
-fun LoginHeader() {
-    val activity = LocalContext.current as Activity
-    Icon(
-        imageVector = Icons.Default.Close,
-        contentDescription = stringResource(R.string.login_close_app),
-        modifier = Modifier.clickable { activity.finish() })
+fun LoginHeader(onExitClick: () -> Unit) {
+    Text(
+        text = "EXIT",
+        modifier = Modifier
+            .clickable { onExitClick() }
+            .padding(start = 8.dp, top = 8.dp)
+    )
 }
 
 @Composable
@@ -115,7 +114,7 @@ fun LoginBody(
         Spacer(modifier = Modifier.size(16.dp))
         ForgotPassword(Modifier.align(Alignment.End), onForgotClick)
         Spacer(modifier = Modifier.size(16.dp))
-        LoginButton(loginEnabled = isLoginEnabled, onLoginClick = onLoginClick)
+        LoginButton(stringResource(R.string.loggin_log_in_button), isLoginEnabled, onLoginClick)
         Spacer(modifier = Modifier.size(16.dp))
         LoginDivider(Modifier.align(CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
@@ -140,13 +139,7 @@ fun LoginFooter(onSignUpClick: () -> Unit) {
 
 @Composable
 fun ImageLogo(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.title_logo),
-        contentDescription = stringResource(R.string.login_logo),
-        modifier = modifier
-            .height(100.dp)
-            .width(300.dp)
-    )
+    Text(text = stringResource(id = R.string.app_name_m), fontSize = 60.sp, modifier = modifier)
 }
 
 @Composable
@@ -157,12 +150,8 @@ fun LoginEnterEmail(email: String, onTextChanged: (String) -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         placeholder = { Text(text = stringResource(R.string.login_email)) },
         maxLines = 1,
-        singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        colors = TextFieldDefaults.colors(
-            unfocusedTextColor = Color(0xFF222020),
-            focusedIndicatorColor = Color.Black,
-            unfocusedIndicatorColor = Color.Transparent
-        )
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
     )
 }
 
@@ -179,12 +168,8 @@ fun LoginEnterPassWord(password: String, onTextChanged: (String) -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         placeholder = { Text(text = stringResource(R.string.login_password)) },
         maxLines = 1,
-        singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        colors = TextFieldDefaults.colors(
-            unfocusedTextColor = md_theme_dark_background,
-            focusedIndicatorColor = Color.Black,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         trailingIcon = {
             IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
                 if (passwordVisibility)
@@ -195,7 +180,8 @@ fun LoginEnterPassWord(password: String, onTextChanged: (String) -> Unit) {
                         contentDescription = stringResource(R.string.login_visibility_change_icon)
                     )
             }
-        }, visualTransformation = if (passwordVisibility)
+        },
+        visualTransformation = if (passwordVisibility)
             VisualTransformation.None
         else
             PasswordVisualTransformation()
@@ -206,51 +192,53 @@ fun LoginEnterPassWord(password: String, onTextChanged: (String) -> Unit) {
 fun ForgotPassword(modifier: Modifier, onForgotClick: () -> Unit) {
     Text(
         text = stringResource(R.string.login_forgot_password),
-        fontSize = 12.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color(R.color.black),
+        fontSize = 15.sp,
         modifier = modifier.clickable { onForgotClick() },
         textDecoration = TextDecoration.Underline,
+        fontWeight = FontWeight.Bold,
     )
 }
 
 @Composable
-fun LoginButton(loginEnabled: Boolean, onLoginClick: () -> Unit) {
+fun LoginButton(text: String, loginEnabled: Boolean, onLoginClick: () -> Unit) {
     Button(
         onClick = { onLoginClick() },
         enabled = loginEnabled,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(width = 2.dp, color = Color.Black),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Black,
-            disabledContainerColor = Color.Transparent,
-            disabledContentColor = Color.Black,
-            contentColor = Color.White,
-        )
+        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onBackground),
+        colors = ButtonDefaults.buttonColors(disabledContainerColor = Color.Transparent)
     ) {
-        Text(text = stringResource(R.string.loggin_log_in_button), fontSize = 20.sp)
+        Text(
+            text = text,
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
 }
 
 @Composable
 fun LoginDivider(modifier: Modifier) {
-    Text(text = "OR", modifier = modifier, fontSize = 14.sp, color = Color(R.color.grey))
+    Text(text = "OR", modifier = modifier, fontSize = 14.sp)
 }
 
 @Composable
-fun SocialLogin(modifier : Modifier) {
+fun SocialLogin(modifier: Modifier) {
     Row(
         modifier = modifier
             .height(36.dp)
-            .background(Color.LightGray, RoundedCornerShape(16.dp))
+            .border(
+                BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .background(Color.Transparent, RoundedCornerShape(16.dp))
             .padding(start = 8.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         Image(
             painter = painterResource(id = com.google.firebase.database.ktx.R.drawable.googleg_standard_color_18),
-            contentDescription = "Social login image",
+            contentDescription = stringResource(R.string.login_social_login_image),
             modifier = Modifier.size(20.dp)
         )
         Text(
@@ -258,7 +246,6 @@ fun SocialLogin(modifier : Modifier) {
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 8.dp),
-            color = Color(R.color.black),
         )
     }
 }
@@ -273,30 +260,32 @@ fun SignUpLink(onSignUpClick: () -> Unit) {
         Text(
             text = stringResource(R.string.login_don_t_have_an_account),
             fontSize = 15.sp,
-            color = Color(R.color.light_black)
         )
         Text(
             text = stringResource(R.string.login_sign_up_link),
             fontSize = 15.sp,
             modifier = Modifier.padding(horizontal = 8.dp),
-            color = Color(R.color.black),
             fontWeight = FontWeight.Bold,
             textDecoration = TextDecoration.Underline
         )
     }
 }
 
-@Preview
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewLoginScreen() {
-    LoginScreen(
-        email = "Email",
-        password = "password",
-        isLoginEnables = false,
-        onLoginClick = {},
-        onSignUpClick = {},
-        onForgotClick = {},
-        onEmailChanged = {},
-        onPassChanged = {}
-    )
+fun LoginScreenPreview() {
+    MyInvoiceTheme {
+        LoginScreen(
+            email = "Email",
+            password = "password",
+            isLoginEnables = true,
+            onLoginClick = {},
+            onSignUpClick = {},
+            onForgotClick = {},
+            onEmailChanged = {},
+            onPassChanged = {},
+            onExitClick = {}
+        )
+    }
 }

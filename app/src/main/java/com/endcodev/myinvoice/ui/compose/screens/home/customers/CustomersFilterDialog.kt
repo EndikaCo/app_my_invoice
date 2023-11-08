@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.customers
+package com.endcodev.myinvoice.ui.compose.screens.home.customers
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.endcodev.myinvoice.data.model.FilterModel
-import com.endcodev.myinvoice.ui.compose.components.BottomButtons
+import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
@@ -64,7 +64,7 @@ fun FiltersDialog(
                 CountrySelection(Modifier, onSelection = {})
             }
             Spacer(Modifier.height(16.dp))
-            BottomButtons(
+            AcceptCancelButtons(
                 enabled = true,
                 onAcceptClick = { onFilterAdded(filters) },
                 onCancelClick = onDialogCancel

@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.invoice
+package com.endcodev.myinvoice.ui.compose.screens.home.invoice
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,7 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.InvoicesModel
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
-import com.endcodev.myinvoice.ui.compose.screens.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
 import com.endcodev.myinvoice.ui.viewmodels.InvoicesViewModel
 
 @Composable

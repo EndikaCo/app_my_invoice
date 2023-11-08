@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">My Invoice</string>
+    <string name="app_name_m">MY INVOICE</string>
     <string name="no_error">Account creating success</string>
     <string name="error_mail_or_pass">Mail or pass not correct</string>
     <string name="pass_changed">Password changed correctly.</string>
@@ -14,4 +15,8 @@
     <string name="login_visibility_change_icon">visibility change icon</string>
     <string name="login_forgot_password">Forgot password</string>
     <string name="loggin_log_in_button">Log In</string>
+    <string name="login_social_login_image">Social login image</string>
+    <string name="forgot_change_pass">Change Password</string>
+    <string name="forgot_icon_back">Icon Back</string>
+    <string name="signup_sign_up_bt">Sign Up</string>
 </resources>

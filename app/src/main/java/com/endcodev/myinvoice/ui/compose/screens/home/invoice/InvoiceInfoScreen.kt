@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.invoice
+package com.endcodev.myinvoice.ui.compose.screens.home.invoice
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.ItemsModel
-import com.endcodev.myinvoice.ui.compose.components.BottomButtons
+import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.ChooseCustomerDialog
-import com.endcodev.myinvoice.ui.compose.screens.items.ItemsList
+import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsList
 import com.endcodev.myinvoice.ui.viewmodels.InvoiceInfoViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -57,7 +57,7 @@ fun InvoiceInfoScreen(
                 InvoiceContent(innerPadding, viewModel)
             },
             bottomBar = {
-                BottomButtons(enabled = true, onAcceptClick = { /*TODO*/ }) {}
+                AcceptCancelButtons(enabled = true, onAcceptClick = { /*TODO*/ }) {}
             }
         )
 }

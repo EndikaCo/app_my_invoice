@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.customers
+package com.endcodev.myinvoice.ui.compose.screens.home.customers
 
 import android.content.Intent
 import android.net.Uri
@@ -36,9 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.CustomerInfoUiState
-import com.endcodev.myinvoice.ui.compose.components.BottomButtons
+import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
-import com.endcodev.myinvoice.ui.compose.screens.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.utils.uriToPainterImage
 
 val pPadding = 20.dp
@@ -83,7 +83,7 @@ fun CustomerDetailsScreen(
                 )
             },
             bottomBar = {
-                BottomButtons(
+                AcceptCancelButtons(
                     uiState.isAcceptEnabled,
                     onAcceptButton,
                     onCancelButton

@@ -8,12 +8,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.endcodev.myinvoice.ui.compose.screens.customers.CustomerDetailsActions
-import com.endcodev.myinvoice.ui.compose.screens.customers.CustomersListContentActions
-import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoiceInfoScreen
-import com.endcodev.myinvoice.ui.compose.screens.invoice.InvoicesContent
-import com.endcodev.myinvoice.ui.compose.screens.items.ItemInfoScreen
-import com.endcodev.myinvoice.ui.compose.screens.items.ItemsContent
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.CustomerDetailsActions
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.CustomersListContentActions
+import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoiceInfoScreen
+import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesContent
+import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemInfoScreen
+import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsContent
 
 sealed class Routes(val routes: String) {
     object InvoicesContent : Routes("invoices")

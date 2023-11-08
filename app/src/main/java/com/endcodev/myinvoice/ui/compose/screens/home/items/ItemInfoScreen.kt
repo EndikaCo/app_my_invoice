@@ -1,12 +1,9 @@
-package com.endcodev.myinvoice.ui.compose.screens.items
+package com.endcodev.myinvoice.ui.compose.screens.home.items
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -22,11 +19,10 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.ItemUiState
-import com.endcodev.myinvoice.ui.compose.components.BottomButtons
+import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.InfoImage
-import com.endcodev.myinvoice.ui.compose.screens.customers.CompanyIdNum
-import com.endcodev.myinvoice.ui.compose.screens.customers.CompanyName
-import com.endcodev.myinvoice.ui.compose.screens.customers.InfoTitle
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.CompanyName
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.InfoTitle
 import com.endcodev.myinvoice.ui.viewmodels.ItemInfoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,7 +40,7 @@ fun ItemInfoScreen(
             ItemsInfoContent(innerPadding, uiState, viewModel)
         },
         bottomBar = {
-            BottomButtons(
+            AcceptCancelButtons(
                 uiState.isAcceptEnabled,
                 onAcceptClick = {},
                 onCancelButton

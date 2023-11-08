@@ -45,14 +45,15 @@ class SignUpViewModel @Inject constructor(
     private val _isSuccess = MutableLiveData<Boolean>()
     val isSuccess: LiveData<Boolean> = _isSuccess
 
-    fun onSignUpChanged(email: String, password: String) {
+    fun onSignUpChanged(email: String, password: String, repeat:String) {
         _email.value = email
         _password.value = password
-        _isSignInEnabled.value = isValidCredentials(email, password)
+        _repeatPassword.value = repeat
+        _isSignInEnabled.value = isValidCredentials(email, password, repeat)
     }
 
-    fun isValidCredentials(email: String, password: String) =
-        Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 6
+    private fun isValidCredentials(email: String, password: String, repeat: String) =
+        Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > 6 && password == repeat
 
     fun createAccount() {
         val mail = _email.value

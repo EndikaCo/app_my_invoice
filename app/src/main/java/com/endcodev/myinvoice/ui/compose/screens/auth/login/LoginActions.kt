@@ -1,5 +1,6 @@
-package com.endcodev.myinvoice.ui.compose.screens.auth
+package com.endcodev.myinvoice.ui.compose.screens.auth.login
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,8 +29,9 @@ fun LoginActions(navController: NavHostController) {
             Toast.makeText(context, error.asString(context), Toast.LENGTH_LONG).show()
         }
     }
-
+    val activity = LocalContext.current as Activity
     LoginScreen(
+
         email = email,
         password = password,
         isLoginEnables = isLoginEnabled,
@@ -49,6 +51,7 @@ fun LoginActions(navController: NavHostController) {
         },
         onPassChanged = {
             viewModel.onLoginChanged(password = it, email = email)
-        }
+        },
+        onExitClick = {activity.finish()}
     )
 }

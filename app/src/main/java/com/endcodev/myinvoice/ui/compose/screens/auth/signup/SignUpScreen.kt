@@ -1,5 +1,6 @@
-package com.endcodev.myinvoice.ui.compose.screens.auth
+package com.endcodev.myinvoice.ui.compose.screens.auth.signup
 
+import android.content.res.Configuration
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -19,8 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,30 +41,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
+import com.endcodev.myinvoice.ui.compose.screens.auth.login.ImageLogo
+import com.endcodev.myinvoice.ui.compose.screens.auth.login.LoginButton
+import com.endcodev.myinvoice.ui.compose.screens.auth.login.LoginEnterEmail
+import com.endcodev.myinvoice.ui.compose.screens.auth.login.LoginEnterPassWord
+import com.endcodev.myinvoice.ui.navigation.AuthScreen
+import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.SignUpViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpScreen(
-    onSignUpClick : () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
-) {
+fun SignUpActions(navController: NavHostController) {
+    val viewModel: SignUpViewModel = hiltViewModel()
 
+    val email by viewModel.email.observeAsState(initial = "")
+    val password by viewModel.password.observeAsState(initial = "")
+    val repeatPassword by viewModel.repeatPassword.observeAsState(initial = "")
+    val isSignUpEnabled by viewModel.isSignUpEnabled.observeAsState(initial = false)
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
     val success by viewModel.isSuccess.observeAsState(initial = false)
-
-    if(success){
-        onSignUpClick()
-        Log.v("***", "SUCCESS")
-    }
 
     val context = LocalContext.current
     LaunchedEffect(key1 = viewModel) {
@@ -74,22 +79,79 @@ fun SignUpScreen(
         }
     }
 
+    SignUpScreen(
+        onSignUpClick = {
+            navController.navigate(AuthScreen.Login.route)
+            viewModel.createAccount()
+        },
+        success,
+        isLoading,
+        email,
+        password,
+        repeatPassword,
+        isSignUpEnabled,
+        onEmailChanged = {
+            viewModel.onSignUpChanged(email = it, password = password, repeat = repeatPassword)
+        },
+        onPassChanged = {
+            viewModel.onSignUpChanged(password = it, email = email, repeat = repeatPassword)
+
+        },
+        onVerifyChanged = {
+            viewModel.onSignUpChanged(password = it, email = email, repeat = repeatPassword)
+        })
+}
+
+@Composable
+fun SignUpScreen(
+    onSignUpClick: () -> Unit,
+    success: Boolean,
+    isLoading: Boolean,
+    email: String,
+    password: String,
+    repeatPassword: String,
+    isSignUpEnabled: Boolean,
+    onEmailChanged: (String) -> Unit,
+    onPassChanged: (String) -> Unit,
+    onVerifyChanged: (String) -> Unit,
+
+    ) {
+
+    if (success) {
+        onSignUpClick()
+        Log.v("***", "SUCCESS")
+    }
+
     Scaffold(
         topBar = { SignUpTopBar(onSignUpClick) },
-        content = { innerPadding -> SignUpBody(innerPadding, viewModel) },
+        content = { innerPadding ->
+            SignUpBody(
+                innerPadding,
+                isLoading,
+                email,
+                password,
+                repeatPassword,
+                isSignUpEnabled,
+                onEmailChanged,
+                onPassChanged,
+                onVerifyChanged,
+                onSignUpClick
+            )
+        },
         bottomBar = { SignUpFooter(onSignUpClick) }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpTopBar(onSignUpClick : () -> Unit) {
+fun SignUpTopBar(onSignUpClick: () -> Unit) {
     androidx.compose.material3.TopAppBar(
         title = {
-            Text("Sign Up") },
+            Text("Sign Up")
+        },
         navigationIcon = {
             IconButton(
-                onClick = {onSignUpClick()}
+                onClick = { onSignUpClick() }
             ) {
                 Icon(Icons.Filled.KeyboardArrowLeft, contentDescription = "Go back")
             }
@@ -99,7 +161,7 @@ fun SignUpTopBar(onSignUpClick : () -> Unit) {
 
 
 @Composable
-fun VerificationProgressBar( ) {
+fun VerificationProgressBar() {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -113,15 +175,17 @@ fun VerificationProgressBar( ) {
 @Composable
 fun SignUpBody(
     innerPadding: PaddingValues,
-    viewModel: SignUpViewModel
+    isLoading: Boolean,
+    email: String,
+    password: String,
+    repeatPassword: String,
+    isSignUpEnabled: Boolean,
+    onEmailChanged: (String) -> Unit,
+    onPassChanged: (String) -> Unit,
+    onVerifyChanged: (String) -> Unit,
+    onSignUpClick: () -> Unit
 ) {
-    val email by viewModel.email.observeAsState(initial = "")
-    val password by viewModel.password.observeAsState(initial = "")
-    val repeatPassword by viewModel.repeatPassword.observeAsState(initial = "")
-    val isSignUpEnabled by viewModel.isSignUpEnabled.observeAsState(initial = false)
-    val isLoading by viewModel.isLoading.observeAsState(initial = false)
-
-    if(isLoading)
+    if (isLoading)
         Column {
             VerificationProgressBar()
         }
@@ -136,17 +200,18 @@ fun SignUpBody(
             ImageLogo(Modifier.align(Alignment.CenterHorizontally))
             Spacer(modifier = Modifier.size(16.dp))
             LoginEnterEmail(email) {
-                viewModel.onSignUpChanged(email = it, password = password)
+                onEmailChanged(it)
             }
             Spacer(modifier = Modifier.size(4.dp))
             LoginEnterPassWord(password) {
-                viewModel.onSignUpChanged(password = it, email = email)
-                viewModel.isValidCredentials(email, password)
+                onPassChanged(it)
             }
             Spacer(modifier = Modifier.size(4.dp))
-            RepeatPassWord(repeatPassword) {}
+            RepeatPassWord(repeatPassword) {
+
+            }
             Spacer(modifier = Modifier.size(16.dp))
-            SignUpButton(loginEnabled = isSignUpEnabled, viewModel)
+            LoginButton(stringResource(R.string.signup_sign_up_bt),isSignUpEnabled, onSignUpClick)
             Spacer(modifier = Modifier.size(16.dp))
             SignUpDivider(Modifier.align(Alignment.CenterHorizontally))
             Spacer(modifier = Modifier.size(16.dp))
@@ -192,23 +257,6 @@ fun RepeatPassWord(password: String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun SignUpButton(loginEnabled: Boolean, viewModel: SignUpViewModel) {
-    Button(
-        onClick = { viewModel.createAccount() },
-        enabled = loginEnabled,
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(R.color.light_black),
-            disabledContainerColor = Color(0x80646464),
-            disabledContentColor = Color.White,
-            contentColor = Color.White
-        )
-    ) {
-        Text(text = "Sign Up", fontSize = 20.sp)
-    }
-}
-
-@Composable
 fun SignUpDivider(modifier: Modifier) {
     Text(text = "OR", modifier = modifier, fontSize = 14.sp, color = Color(R.color.grey))
 }
@@ -244,8 +292,8 @@ fun ToLogIn(onAlreadyLoggedClick: () -> Unit) {
             .fillMaxWidth()
             .clickable {
                 onAlreadyLoggedClick()
-            }
-        , horizontalArrangement = Arrangement.Center) {
+            }, horizontalArrangement = Arrangement.Center
+    ) {
 
         Text(
             text = "Already have an account?",
@@ -264,7 +312,7 @@ fun ToLogIn(onAlreadyLoggedClick: () -> Unit) {
 }
 
 @Composable
-fun SignUpFooter( onAlreadyLoggedClick: () -> Unit) {
+fun SignUpFooter(onAlreadyLoggedClick: () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Divider(
             Modifier
@@ -275,5 +323,25 @@ fun SignUpFooter( onAlreadyLoggedClick: () -> Unit) {
         Spacer(modifier = Modifier.size(24.dp))
         ToLogIn(onAlreadyLoggedClick)
         Spacer(modifier = Modifier.size(24.dp))
+    }
+}
+
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun LoginScreenPreview() {
+    MyInvoiceTheme {
+        SignUpScreen(
+            onSignUpClick = {},
+            false,
+            false,
+            "Email",
+            "Password",
+            "Repeat password",
+            true,
+            onEmailChanged= {},
+            onPassChanged= {},
+            onVerifyChanged= {},
+            )
     }
 }
