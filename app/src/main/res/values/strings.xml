@@ -6,7 +6,9 @@
     <string name="pass_changed">Password changed correctly.</string>
     <string name="pass_change_error">Error while changing password.</string>
     <string name="error_creating_account">Error occurred creating account.</string>
-    <string name="login_don_t_have_an_account">Don\'t have an account?</string>
+
+    <!-- Login Screens -->
+    <string name="login_dont_have_account">Don\'t have an account?</string>
     <string name="login_sign_up_link">Sign up</string>
     <string name="login_close_app">close app</string>
     <string name="login_logo">logo</string>
@@ -14,9 +16,18 @@
     <string name="login_password">Password</string>
     <string name="login_visibility_change_icon">visibility change icon</string>
     <string name="login_forgot_password">Forgot password</string>
-    <string name="loggin_log_in_button">Log In</string>
+    <string name="login_login_bt">Log In</string>
     <string name="login_social_login_image">Social login image</string>
-    <string name="forgot_change_pass">Change Password</string>
-    <string name="forgot_icon_back">Icon Back</string>
-    <string name="signup_sign_up_bt">Sign Up</string>
+    <string name="login_change_pass">Change Password</string>
+    <string name="login__icon_back">Icon Back</string>
+    <string name="login__sign_up_bt">Sign Up</string>
+    <string name="login__repeat_password">Repeat password</string>
+    <string name="login_already_have_account">Already have an account?</string>
+    <string name="login_log_in">Log in</string>
+    <string name="login_remember_pass">I remember the password</string>
+    <string name="search_bar_placeholder">Search</string>
+    <string name="seach_bar_clean_content">clean search bar</string>
+    <string name="search_bar_icon">Search Icon</string>
+    <string name="serach_bar_filter">Filter icon</string>
+
 </resources>

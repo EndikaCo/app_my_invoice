@@ -38,7 +38,7 @@ class LoginViewModel @Inject constructor(
         _isLoginEnabled.value = enableLogin(email, password)
     }
 
-    fun enableLogin(email: String, password: String) =
+    private fun enableLogin(email: String, password: String) =
         Patterns.EMAIL_ADDRESS.matcher(email).matches() && password.length > MIN_PASS_LENGTH
 
     fun login() {

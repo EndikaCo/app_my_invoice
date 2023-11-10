@@ -12,3 +12,11 @@ fun uriToPainterImage(uri: Uri?, default: Painter): Painter {
         return default
     return rememberAsyncImagePainter(model = uri)
 }
+
+@Composable
+fun uriToPainterImage(uri: Uri?): Painter? {
+    return if (uri == null)
+        null
+    else
+        rememberAsyncImagePainter(model = uri)
+}

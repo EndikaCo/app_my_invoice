@@ -21,6 +21,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -78,13 +79,11 @@ fun LoginScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginHeader(onExitClick: () -> Unit) {
-    Text(
-        text = "EXIT",
-        modifier = Modifier
-            .clickable { onExitClick() }
-            .padding(start = 8.dp, top = 8.dp)
+    androidx.compose.material3.TopAppBar(
+        title = { Text(text = "EXIT",fontSize = 15.sp, modifier = Modifier.clickable { onExitClick() }) },
     )
 }
 
@@ -110,13 +109,13 @@ fun LoginBody(
         Spacer(modifier = Modifier.size(16.dp))
         LoginEnterEmail(email) { onLoginChanged(it) }
         Spacer(modifier = Modifier.size(4.dp))
-        LoginEnterPassWord(password) { onPassChanged(it) }
+        LoginEnterPassWord(stringResource(R.string.login_password), password) { onPassChanged(it) }
         Spacer(modifier = Modifier.size(16.dp))
         ForgotPassword(Modifier.align(Alignment.End), onForgotClick)
         Spacer(modifier = Modifier.size(16.dp))
-        LoginButton(stringResource(R.string.loggin_log_in_button), isLoginEnabled, onLoginClick)
+        LoginButton(stringResource(R.string.login_login_bt), isLoginEnabled, onLoginClick)
         Spacer(modifier = Modifier.size(16.dp))
-        LoginDivider(Modifier.align(CenterHorizontally))
+        OrDivider(Modifier.align(CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
         SocialLogin(Modifier.align(CenterHorizontally))
     }
@@ -132,7 +131,11 @@ fun LoginFooter(onSignUpClick: () -> Unit) {
                 .fillMaxWidth()
         )
         Spacer(modifier = Modifier.size(24.dp))
-        SignUpLink(onSignUpClick)
+        SignUpLink(
+            stringResource(R.string.login_dont_have_account),
+            stringResource(R.string.login_sign_up_link),
+            onSignUpClick
+        )
         Spacer(modifier = Modifier.size(24.dp))
     }
 }
@@ -156,7 +159,7 @@ fun LoginEnterEmail(email: String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun LoginEnterPassWord(password: String, onTextChanged: (String) -> Unit) {
+fun LoginEnterPassWord(text: String, password: String, onTextChanged: (String) -> Unit) {
 
     var passwordVisibility by remember {
         mutableStateOf(false)
@@ -166,7 +169,7 @@ fun LoginEnterPassWord(password: String, onTextChanged: (String) -> Unit) {
         value = password,
         onValueChange = { onTextChanged(it) },
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = stringResource(R.string.login_password)) },
+        placeholder = { Text(text = text) },
         maxLines = 1,
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -218,7 +221,7 @@ fun LoginButton(text: String, loginEnabled: Boolean, onLoginClick: () -> Unit) {
 }
 
 @Composable
-fun LoginDivider(modifier: Modifier) {
+fun OrDivider(modifier: Modifier) {
     Text(text = "OR", modifier = modifier, fontSize = 14.sp)
 }
 
@@ -251,18 +254,18 @@ fun SocialLogin(modifier: Modifier) {
 }
 
 @Composable
-fun SignUpLink(onSignUpClick: () -> Unit) {
+fun SignUpLink(text1: String, text2: String, onClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable { onSignUpClick() }, horizontalArrangement = Arrangement.Center
+            .clickable { onClick() }, horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = stringResource(R.string.login_don_t_have_an_account),
+            text = text1,
             fontSize = 15.sp,
         )
         Text(
-            text = stringResource(R.string.login_sign_up_link),
+            text = text2,
             fontSize = 15.sp,
             modifier = Modifier.padding(horizontal = 8.dp),
             fontWeight = FontWeight.Bold,

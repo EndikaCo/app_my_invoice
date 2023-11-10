@@ -1,7 +1,9 @@
 package com.endcodev.myinvoice.ui.compose.screens.home.customers
 
+import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -70,7 +74,7 @@ fun CustomersListContentActions(
         onFilterClick = { viewModel.manageFilter(it) },
         showDialog = uiState.showDialog,
         filters = uiState.filters,
-        onFiltersChanged = {viewModel.changeFilters(it)},
+        onFiltersChanged = { viewModel.changeFilters(it) },
         onDialogExit = { viewModel.dialogClose() }
     )
 }
@@ -86,8 +90,8 @@ fun CustomersListContent(
     showDialog: Boolean,
     onSearchTextChange: (String) -> Unit,
     onFiltersChanged: (MutableList<FilterModel>) -> Unit,
-    filters : MutableList<FilterModel>,
-    onDialogExit : () -> Unit,
+    filters: MutableList<FilterModel>,
+    onDialogExit: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -134,13 +138,15 @@ fun CustomersList(
 }
 
 @Composable
-fun CustomerImage(image: Painter) {
+fun CustomerImage(image: Painter, colorFilter: ColorFilter?) {
 
     Box(
         modifier = Modifier
             .size(50.dp) // Size of the Box (background)
-            .background(Color.Gray, CircleShape) // Round background
-        , contentAlignment = Alignment.Center // Center content in the Box
+            .border(
+                border = BorderStroke(width = 1.dp, color = colorScheme.onBackground), //todo
+                shape = CircleShape
+            ), contentAlignment = Alignment.Center // Center content in the Box
     ) {
         Image(
             painter = image,
@@ -149,13 +155,23 @@ fun CustomerImage(image: Painter) {
                 .height(50.dp)
                 .width(50.dp)
                 .clip(CircleShape),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            colorFilter = colorFilter
         )
     }
 }
 
 @Composable
 fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
+
+    var colorFilter = ColorFilter.tint(color = Color.Red)
+
+    var image = uriToPainterImage(customer.cImage)
+    if (image == null){
+
+        image = painterResource(id = R.drawable.person_24)
+    }
+
     ElevatedCard(
         modifier = Modifier
             .padding(bottom = 8.dp)
@@ -166,10 +182,15 @@ fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
             modifier = Modifier
                 .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
         ) {
-            CustomerImage(uriToPainterImage(
+
+            CustomerImage(
+
+
+                image = uriToPainterImage(
                     uri = customer.cImage,
-                    default = painterResource(id = R.drawable.person_24)
-                )
+                    default = painterResource(id = R.drawable.person_24, )
+                ), //todo filter if null
+                colorFilter = ColorFilter.tint(color = colorScheme.onBackground)
             )
             CustomerNameAndIdentifier(
                 Modifier
@@ -199,7 +220,7 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
 }
 
 @Composable
-fun FiltersView(onFilterClick: (FilterModel) -> Unit, filters : List<FilterModel>) {
+fun FiltersView(onFilterClick: (FilterModel) -> Unit, filters: List<FilterModel>) {
 
     LazyRow(Modifier.fillMaxWidth()) {
         items(filters) {
@@ -237,7 +258,8 @@ fun FilterItem(filter: FilterModel, onFilterClick: (FilterModel) -> Unit) {
     }
 }
 
-@Preview
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun CustomersContentPreview() {
 
@@ -259,6 +281,6 @@ fun CustomersContentPreview() {
             filters = mutableListOf(FilterModel(FilterType.NEW, "new")),
             onFiltersChanged = {},
             onDialogExit = {}
-            )
+        )
     }
 }

@@ -1,6 +1,7 @@
 package com.endcodev.myinvoice.ui.compose.screens.home.customers
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -39,6 +40,7 @@ import com.endcodev.myinvoice.data.model.CustomerInfoUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.utils.uriToPainterImage
 
 val pPadding = 20.dp
@@ -174,7 +176,8 @@ fun CustomerInfoContent(
 @Composable
 fun CustomerInfoImage(
     singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
-    cImage: Uri?) {
+    cImage: Uri?
+) {
     Image(
         painter = uriToPainterImage(
             cImage,
@@ -247,17 +250,20 @@ fun CompanyEmail(cEmail: String, onEmailChanged: (String) -> Unit) {
 }
 
 
-@Preview
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewCustomerInfoScreen() {
-    CustomerDetailsScreen(
-        onAcceptButton = {},
-        onCancelButton = {},
-        CustomerInfoUiState(),
-        onUriChanged = {},
-        onFiscalNameChange = {},
-        onIdentifierChange = {},
-        onCountryChange = {},
-        onEmailChange = {}
-    )
+    MyInvoiceTheme {
+        CustomerDetailsScreen(
+            onAcceptButton = {},
+            onCancelButton = {},
+            CustomerInfoUiState(),
+            onUriChanged = {},
+            onFiscalNameChange = {},
+            onIdentifierChange = {},
+            onCountryChange = {},
+            onEmailChange = {}
+        )
+    }
 }
