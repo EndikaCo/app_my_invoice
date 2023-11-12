@@ -210,12 +210,17 @@ fun LoginButton(text: String, loginEnabled: Boolean, onLoginClick: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
         border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onBackground),
-        colors = ButtonDefaults.buttonColors(disabledContainerColor = Color.Transparent)
+        colors = ButtonDefaults.buttonColors(
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = MaterialTheme.colorScheme.onBackground,
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onBackground
+            ),
+
     ) {
         Text(
             text = text,
             fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
@@ -283,6 +288,25 @@ fun LoginScreenPreview() {
             email = "Email",
             password = "password",
             isLoginEnables = true,
+            onLoginClick = {},
+            onSignUpClick = {},
+            onForgotClick = {},
+            onEmailChanged = {},
+            onPassChanged = {},
+            onExitClick = {}
+        )
+    }
+}
+
+@Preview(name = "DISABLED Light Mode")
+@Preview(name = "DISABLED Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun LoginScreenPreview2() {
+    MyInvoiceTheme {
+        LoginScreen(
+            email = "Email",
+            password = "password",
+            isLoginEnables = false,
             onLoginClick = {},
             onSignUpClick = {},
             onForgotClick = {},

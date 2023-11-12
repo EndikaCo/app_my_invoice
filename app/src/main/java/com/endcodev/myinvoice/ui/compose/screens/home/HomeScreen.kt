@@ -155,6 +155,6 @@ data class NavBarItem(
 @Composable
 fun HomePreview() {
     MyInvoiceTheme {
-        InvoicesContent(onButtonClick = {})
+        HomeScreen()
     }
 }

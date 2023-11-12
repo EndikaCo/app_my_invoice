@@ -26,7 +26,7 @@ class LoginViewModel @Inject constructor(
     private val _password = MutableLiveData<String>()
     val password: LiveData<String> = _password
 
-    private val _isLoginEnabled = MutableLiveData(false)
+    private val _isLoginEnabled = MutableLiveData(true)
     val isLoginEnabled: LiveData<Boolean> = _isLoginEnabled
 
     private val errorChannel = Channel<UiText>()

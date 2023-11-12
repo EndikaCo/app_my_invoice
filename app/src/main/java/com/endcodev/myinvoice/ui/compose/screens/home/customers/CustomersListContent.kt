@@ -1,6 +1,7 @@
 package com.endcodev.myinvoice.ui.compose.screens.home.customers
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -101,15 +102,15 @@ fun CustomersListContent(
     {
         CommonSearchBar(searchText, onSearchTextChange)
         Spacer(Modifier.size(11.dp))
-        FiltersView(onFilterClick, filters)
+        //FiltersView(onFilterClick, filters)
         Spacer(Modifier.size(11.dp))
 
         if (isSearching)
             ProgressBar()
         else
             CustomersList(Modifier.weight(1f), customers, onItemClick)
-        if (showDialog)
-            FiltersDialog(onFiltersChanged, filters, onDialogExit)
+        //if (showDialog)
+        //    FiltersDialog(onFiltersChanged, filters, onDialogExit)
 
         FloatingActionButton(
             Modifier
@@ -144,7 +145,7 @@ fun CustomerImage(image: Painter, colorFilter: ColorFilter?) {
         modifier = Modifier
             .size(50.dp) // Size of the Box (background)
             .border(
-                border = BorderStroke(width = 1.dp, color = colorScheme.onBackground), //todo
+                border = BorderStroke(width = 1.dp, color = colorScheme.onBackground),
                 shape = CircleShape
             ), contentAlignment = Alignment.Center // Center content in the Box
     ) {
@@ -164,11 +165,10 @@ fun CustomerImage(image: Painter, colorFilter: ColorFilter?) {
 @Composable
 fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
 
-    var colorFilter = ColorFilter.tint(color = Color.Red)
-
+    var colorFilter : ColorFilter? = null
     var image = uriToPainterImage(customer.cImage)
     if (image == null){
-
+        colorFilter = ColorFilter.tint(color = colorScheme.onBackground)
         image = painterResource(id = R.drawable.person_24)
     }
 
@@ -182,15 +182,9 @@ fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
             modifier = Modifier
                 .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
         ) {
-
             CustomerImage(
-
-
-                image = uriToPainterImage(
-                    uri = customer.cImage,
-                    default = painterResource(id = R.drawable.person_24, )
-                ), //todo filter if null
-                colorFilter = ColorFilter.tint(color = colorScheme.onBackground)
+                image = image,
+                colorFilter = colorFilter
             )
             CustomerNameAndIdentifier(
                 Modifier

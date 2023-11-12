@@ -2,14 +2,14 @@ package com.endcodev.myinvoice.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val md_theme_light_primary = Color(0xFF6750A4)
-val md_theme_light_onPrimary = Color(0xFFFFFFFF)
-val md_theme_light_primaryContainer = Color(0xFFEADDFF)
+val md_theme_light_primary = Color(0xFF4592D5)//android top bar y buttons container
+val md_theme_light_onPrimary = Color(0xFF0F0F0F)// top app bar, floating action bt
+val md_theme_light_primaryContainer = Color(0xFFA2DBFF)// floating action bt
 val md_theme_light_onPrimaryContainer = Color(0xFF21005D)
 val md_theme_light_secondary = Color(0xFF625B71)
 val md_theme_light_onSecondary = Color(0xFFFFFFFF)
-val md_theme_light_secondaryContainer = Color(0xFFE8DEF8)
-val md_theme_light_onSecondaryContainer = Color(0xFF1D192B)
+val md_theme_light_secondaryContainer = Color(0xFFD9E8FD)//disabled button & navbar icon background
+val md_theme_light_onSecondaryContainer = Color(0xFF1D192B)//navbar icons
 val md_theme_light_tertiary = Color(0xFF7D5260)
 val md_theme_light_onTertiary = Color(0xFFFFFFFF)
 val md_theme_light_tertiaryContainer = Color(0xFFFFD8E4)
@@ -33,9 +33,9 @@ val md_theme_light_surfaceTint = Color(0xFF6750A4)
 val md_theme_light_outlineVariant = Color(0xFFCAC4D0)
 val md_theme_light_scrim = Color(0xFF000000)
 
-val md_theme_dark_primary = Color(0xFF7B64AF)
-val md_theme_dark_onPrimary = Color(0xFF381E72)
-val md_theme_dark_primaryContainer = Color(0xFF4F378B)
+val md_theme_dark_primary = Color(0xFF0070C7)
+val md_theme_dark_onPrimary = Color(0xFFF1EDED)
+val md_theme_dark_primaryContainer = Color(0xFF556068)
 val md_theme_dark_onPrimaryContainer = Color(0xFFEADDFF)
 val md_theme_dark_secondary = Color(0xFFCCC2DC)
 val md_theme_dark_onSecondary = Color(0xFF332D41)

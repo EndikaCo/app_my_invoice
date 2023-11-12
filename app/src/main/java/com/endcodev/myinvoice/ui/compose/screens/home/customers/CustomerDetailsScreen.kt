@@ -8,16 +8,21 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -167,7 +173,6 @@ fun CustomerInfoContent(
     }
 }
 
-
 /**
  * Displays a customer's image or new image from photo picker launcher.
  * @param singlePhotoPickerLauncher The launcher used to pick a visual media (image) from the device.
@@ -178,24 +183,39 @@ fun CustomerInfoImage(
     singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
     cImage: Uri?
 ) {
-    Image(
-        painter = uriToPainterImage(
-            cImage,
-            painterResource(id = R.drawable.person_24)
-        ),
-        contentDescription = "customer Image",
+
+    var colorFilter : ColorFilter? = null
+    var image = uriToPainterImage(cImage)
+    if (image == null){
+        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+        image = painterResource(id = R.drawable.person_24)
+    }
+
+    Box(
         modifier = Modifier
-            .clickable {
-                singlePhotoPickerLauncher.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
-            }
-            .height(100.dp)
-            .width(100.dp)
-            .clip(CircleShape),
-        contentScale = ContentScale.Crop,
-        alignment = Alignment.TopCenter
-    )
+            .size(100.dp) // Size of the Box (background)
+            .border(
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
+                shape = CircleShape
+            ), contentAlignment = Alignment.Center // Center content in the Box
+    ){
+        Image(
+            painter = image,
+            contentDescription = "customer Image",
+            modifier = Modifier
+                .clickable {
+                    singlePhotoPickerLauncher.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
+                .height(90.dp)
+                .width(90.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.TopCenter,
+            colorFilter = colorFilter
+        )
+    }
 }
 
 
