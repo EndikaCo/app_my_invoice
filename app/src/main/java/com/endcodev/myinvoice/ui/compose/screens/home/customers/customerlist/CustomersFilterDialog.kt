@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.customers
+package com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -28,11 +28,10 @@ import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
 fun FiltersDialog(
-    onFilterAdded: (MutableList<FilterModel>) -> Unit,
-    filters: MutableList<FilterModel>,
+    onFilterAdded: (List<FilterModel>) -> Unit,
+    filters: List<FilterModel>,
     onDialogCancel: () -> Unit
 ) {
-
     Dialog(
         onDismissRequest = { onDialogCancel() },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)

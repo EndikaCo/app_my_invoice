@@ -5,5 +5,5 @@ data class FilterModel(
     val text : String
 )
 
-enum class FilterType { NEW, COUNTRY, ACTIVITY}
+enum class FilterType { COUNTRY, ACTIVITY}
 

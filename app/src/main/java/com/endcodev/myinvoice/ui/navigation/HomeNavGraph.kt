@@ -8,8 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.CustomerDetailsActions
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.CustomersListContentActions
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CustomerDetailsActions
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomersListContentActions
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemInfoScreen

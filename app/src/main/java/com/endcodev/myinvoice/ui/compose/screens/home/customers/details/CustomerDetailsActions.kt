@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.customers
+package com.endcodev.myinvoice.ui.compose.screens.home.customers.details
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

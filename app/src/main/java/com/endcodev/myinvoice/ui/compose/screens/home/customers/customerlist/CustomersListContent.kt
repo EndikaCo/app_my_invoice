@@ -1,7 +1,6 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.customers
+package com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -16,32 +15,27 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
@@ -51,6 +45,7 @@ import com.endcodev.myinvoice.data.model.FilterModel
 import com.endcodev.myinvoice.data.model.FilterType
 import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
+import com.endcodev.myinvoice.ui.compose.components.FiltersView
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
@@ -65,59 +60,65 @@ fun CustomersListContentActions(
     val viewModel: CustomersViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
     CustomersListContent(
         searchText = uiState.searchText,
         customers = uiState.customersList,
-        isSearching = uiState.isLoading,
+        isLoading = uiState.isLoading,
         onSearchTextChange = viewModel::setSearchText,
-        onButtonClick = { navController.navigate(DetailsScreen.Customer.route) },
-        onItemClick = { navController.navigate("${DetailsScreen.Customer.route}/${it}") },
-        onFilterClick = { viewModel.manageFilter(it) },
-        showDialog = uiState.showDialog,
+        onFloatingButtonClick = { navController.navigate(DetailsScreen.Customer.route) },
+        onListItemClick = { navController.navigate("${DetailsScreen.Customer.route}/${it}") },
+        onFilterClick = {showDialog = true  },
         filters = uiState.filters,
         onFiltersChanged = { viewModel.changeFilters(it) },
-        onDialogExit = { viewModel.dialogClose() }
+        onDialogExit = { showDialog = false },
+        showDialog = showDialog
     )
 }
 
 @Composable
 fun CustomersListContent(
-    onButtonClick: () -> Unit,
-    onItemClick: (String) -> Unit,
+    onFloatingButtonClick: () -> Unit,
+    onListItemClick: (String) -> Unit,
     searchText: String,
     customers: List<CustomerModel>,
-    isSearching: Boolean,
-    onFilterClick: (FilterModel) -> Unit,
-    showDialog: Boolean,
+    isLoading: Boolean,
     onSearchTextChange: (String) -> Unit,
-    onFiltersChanged: (MutableList<FilterModel>) -> Unit,
-    filters: MutableList<FilterModel>,
+
+    onFiltersChanged: (List<FilterModel>) -> Unit,
+    filters: List<FilterModel>,
     onDialogExit: () -> Unit,
-) {
+    showDialog: Boolean,
+    onFilterClick: () -> Unit,
+    ) {
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     )
     {
-        CommonSearchBar(searchText, onSearchTextChange)
+        CommonSearchBar(searchText, onSearchTextChange, onFilterClick)
         Spacer(Modifier.size(11.dp))
-        //FiltersView(onFilterClick, filters)
+        FiltersView(onFiltersChanged, filters)
         Spacer(Modifier.size(11.dp))
 
-        if (isSearching)
+        if (isLoading)
             ProgressBar()
         else
-            CustomersList(Modifier.weight(1f), customers, onItemClick)
-        //if (showDialog)
-        //    FiltersDialog(onFiltersChanged, filters, onDialogExit)
+            CustomersList(Modifier.weight(1f), customers, onListItemClick)
+        if (showDialog)
+            FiltersDialog(onFiltersChanged, filters, onDialogExit)
 
         FloatingActionButton(
             Modifier
                 .weight(0.08f)
                 .align(Alignment.End),
             painterResource(R.drawable.customer_add_24),
-            onButtonClick
+            onFloatingButtonClick
         )
         Spacer(Modifier.size(80.dp))
     }
@@ -213,44 +214,6 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
     }
 }
 
-@Composable
-fun FiltersView(onFilterClick: (FilterModel) -> Unit, filters: List<FilterModel>) {
-
-    LazyRow(Modifier.fillMaxWidth()) {
-        items(filters) {
-            FilterItem(it, onFilterClick)
-        }
-    }
-}
-
-@Composable
-fun FilterItem(filter: FilterModel, onFilterClick: (FilterModel) -> Unit) {
-    ElevatedCard(
-        modifier = Modifier
-            .wrapContentHeight()
-            .wrapContentWidth()
-            .clickable { onFilterClick(filter) }
-            .padding(start = 5.dp, end = 5.dp),
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = colorResource(R.color.purple_200),
-            contentColor = Color.Black
-        )
-    ) {
-        Box(
-            Modifier
-                .height(25.dp)
-                .padding(start = 5.dp, end = 5.dp)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = filter.text,
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center,
-            )
-        }
-    }
-}
 
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -264,17 +227,17 @@ fun CustomersContentPreview() {
 
     MyInvoiceTheme {
         CustomersListContent(
-            onButtonClick = {},
-            onItemClick = {},
+            onFloatingButtonClick = {},
+            onListItemClick = {},
             searchText = searchText,
             customers = customers,
-            isSearching = isSearching,
+            isLoading = isSearching,
             onSearchTextChange = onSearchTextChange,
             onFilterClick = {},
-            showDialog = false,
-            filters = mutableListOf(FilterModel(FilterType.NEW, "new")),
+            filters = mutableListOf(FilterModel(FilterType.COUNTRY, "Burkina Faso")),
             onFiltersChanged = {},
-            onDialogExit = {}
+            onDialogExit = {},
+            showDialog = false
         )
     }
 }

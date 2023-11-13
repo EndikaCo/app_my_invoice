@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.model.CustomersListUiState
 import com.endcodev.myinvoice.data.model.FilterModel
-import com.endcodev.myinvoice.data.model.FilterType
-import com.endcodev.myinvoice.data.model.FilterType.*
 import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -40,21 +38,9 @@ class CustomersViewModel @Inject constructor(
         _uiState.update { it.copy(searchText = searchText) }
     }
 
-    fun manageFilter(filter : FilterModel) {
-        if (filter.type == NEW){
-            if(!uiState.value.showDialog)
-                _uiState.update { it.copy(showDialog = true) }
-            else
-                _uiState.update { it.copy(showDialog = false) }
-        }
-    }
 
-    fun changeFilters(filters : MutableList<FilterModel>) {
+    fun changeFilters(filters : List<FilterModel>) {
         _uiState.update { it.copy(filters = filters) }
-    }
-
-    fun dialogClose() {
-        _uiState.update { it.copy(showDialog = false) }
     }
 
     init {

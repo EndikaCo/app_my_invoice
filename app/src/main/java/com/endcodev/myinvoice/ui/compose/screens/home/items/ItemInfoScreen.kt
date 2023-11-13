@@ -21,11 +21,10 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.ItemUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.InfoImage
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.CompanyName
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.InfoTitle
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CompanyName
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.InfoTitle
 import com.endcodev.myinvoice.ui.viewmodels.ItemInfoViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemInfoScreen(
     viewModel: ItemInfoViewModel = hiltViewModel(),
@@ -111,7 +110,6 @@ fun ItemsInfoContent(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemIdNum(idNum: String, onTextChanged: (String) -> Unit, modifier: Modifier) {
 

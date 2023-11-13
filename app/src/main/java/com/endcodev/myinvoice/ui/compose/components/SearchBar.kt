@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,7 +22,7 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
-fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit) {
+fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit, onFilterClick: () -> Unit) {
     TextField(
         value = searchText,
         onValueChange = { valueChanged(it) },
@@ -35,7 +34,7 @@ fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit) {
                 Icon(
                     painterResource(id = R.drawable.filter_24),
                     contentDescription = stringResource(R.string.serach_bar_filter),
-                    Modifier.clickable {   }) //todo open dialog filter
+                    Modifier.clickable { onFilterClick() })
                 Spacer(modifier = Modifier.size(8.dp))
                 Icon(
                     Icons.Filled.Close,
@@ -54,6 +53,6 @@ fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit) {
 @Composable
 fun SearchBarPreview() {
     MyInvoiceTheme {
-        CommonSearchBar(searchText = "Search", valueChanged = {})
-}
+        CommonSearchBar(searchText = "Search", valueChanged = {}, onFilterClick = {})
+    }
 }

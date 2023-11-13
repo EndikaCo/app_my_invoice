@@ -25,7 +25,7 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.ItemsModel
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.CustomerImage
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomerImage
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.viewmodels.ItemsViewModel
 
@@ -40,7 +40,7 @@ fun ItemsContent(onButtonClick: () -> Unit) {
         .fillMaxSize()
         .padding(16.dp))
     {
-        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange)
+        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange, onFilterClick ={})
         Spacer(modifier = Modifier.size(16.dp))
 
         if (isSearching)

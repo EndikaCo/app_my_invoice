@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.customers
+package com.endcodev.myinvoice.ui.compose.screens.home.customers.details
 
 import android.content.Intent
 import android.content.res.Configuration

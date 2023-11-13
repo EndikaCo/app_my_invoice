@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.CustomerItem
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomerItem
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
