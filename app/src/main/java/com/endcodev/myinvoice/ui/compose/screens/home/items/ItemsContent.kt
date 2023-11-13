@@ -12,91 +12,162 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.model.ItemsModel
+import com.endcodev.myinvoice.data.model.FilterModel
+import com.endcodev.myinvoice.data.model.ItemModel
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
+import com.endcodev.myinvoice.ui.compose.components.FiltersView
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomerImage
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.FiltersDialog
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.navigation.DetailsScreen
+import com.endcodev.myinvoice.ui.utils.uriToPainterImage
 import com.endcodev.myinvoice.ui.viewmodels.ItemsViewModel
 
+
 @Composable
-fun ItemsContent(onButtonClick: () -> Unit) {
+fun ItemsListContentActions(
+    navController: NavHostController,
+) {
     val viewModel: ItemsViewModel = hiltViewModel()
-    val searchText by viewModel.searchText.collectAsState()
-    val items by viewModel.items.collectAsState()
-    val isSearching by viewModel.isSearching.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp))
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    ItemsListContent(
+        searchText = uiState.searchText,
+        items = uiState.itemsList,
+        isLoading = uiState.isLoading,
+        onSearchTextChange = viewModel::setSearchText,
+        onFloatingButtonClick = { navController.navigate(DetailsScreen.Item.route) },
+        onListItemClick = { navController.navigate("${DetailsScreen.Item.route}/${it}") },
+        onFilterClick = {showDialog = true  },
+        filters = uiState.filters,
+        onFiltersChanged = { viewModel.changeFilters(it) },
+        onDialogExit = { showDialog = false },
+        showDialog = showDialog
+    )
+}
+
+@Composable
+fun ItemsListContent(
+    onFloatingButtonClick: () -> Unit,
+    onListItemClick: (String) -> Unit,
+    searchText: String,
+    items: List<ItemModel>,
+    isLoading: Boolean,
+    onSearchTextChange: (String) -> Unit,
+    onFiltersChanged: (List<FilterModel>) -> Unit,
+    filters: List<FilterModel>,
+    onDialogExit: () -> Unit,
+    showDialog: Boolean,
+    onFilterClick: () -> Unit,
+) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    )
     {
-        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange, onFilterClick ={})
-        Spacer(modifier = Modifier.size(16.dp))
+        CommonSearchBar(searchText, onSearchTextChange, onFilterClick)
+        Spacer(Modifier.size(11.dp))
+        FiltersView(onFiltersChanged, filters)
+        Spacer(Modifier.size(11.dp))
 
-        if (isSearching)
+        if (isLoading)
             ProgressBar()
         else
-            ItemsList(Modifier.weight(1f), items)
+            ItemsList(
+                Modifier.weight(1f),
+                items,
+                onListItemClick
+            )
+        if (showDialog)
+            FiltersDialog(onFiltersChanged, filters, onDialogExit)
 
         FloatingActionButton(
             Modifier
                 .weight(0.08f)
                 .align(Alignment.End),
-            painter = painterResource(id = R.drawable.item_add_24),
-            onButtonClick
+            painterResource(R.drawable.customer_add_24),
+            onFloatingButtonClick
         )
-        Spacer(modifier = Modifier.size(80.dp))
+        Spacer(Modifier.size(80.dp))
     }
 }
 
 @Composable
-fun ItemsList(modifier: Modifier, items: List<ItemsModel>) {
+fun ItemsList(
+    modifier: Modifier,
+    items: List<ItemModel>,
+    onItemClick: (String) -> Unit
+) {
     LazyColumn(
         modifier = modifier
     ) {
         items(items) { item ->
-            MyItem(item)
-        }
-    }
-}
-
-@Composable
-fun MyItem(item: ItemsModel) {
-    ElevatedCard(
-        modifier = Modifier
-            .padding(bottom = 8.dp)
-            .fillMaxWidth()
-            .clickable { }
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
-        ) {
-            CustomerImage(painterResource(id = R.drawable.image_search_24), null)
-            ItemPreviewData(
-                Modifier
-                    .padding(start = 12.dp)
-                    .weight(1f), item
+            ProductItem(
+                item = item,
+                onItemClick = { onItemClick(item.iCode) }
             )
         }
     }
 }
 
 @Composable
-fun ItemPreviewData(modifier: Modifier, item: ItemsModel) {
+fun ProductItem(item: ItemModel, onItemClick: () -> Unit) {
+
+    var colorFilter: ColorFilter? = null
+    var image = uriToPainterImage(item.iImage)
+    if (image == null) {
+        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+        image = painterResource(id = R.drawable.filter_24)
+    }
+
+    ElevatedCard(
+        modifier = Modifier
+            .padding(bottom = 8.dp)
+            .fillMaxWidth()
+            .clickable { onItemClick() }
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
+        ) {
+            CustomerImage(
+                image = image,
+                colorFilter = colorFilter)
+            ItemNameAndIdentifier( Modifier
+                .padding(start = 12.dp)
+                .weight(1f), item
+            )
+        }
+    }
+}
+
+@Composable
+fun ItemNameAndIdentifier(modifier: Modifier, item: ItemModel) {
     Column(
         modifier = modifier
-
     ) {
         Text(
             text = item.iCode,

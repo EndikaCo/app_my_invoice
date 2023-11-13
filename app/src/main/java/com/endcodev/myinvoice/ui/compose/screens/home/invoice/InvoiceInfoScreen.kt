@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.model.ItemsModel
+import com.endcodev.myinvoice.data.model.ItemModel
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.ChooseCustomerDialog
 import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsList
@@ -66,7 +66,6 @@ fun now(): String {
     return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvoiceContent(innerPadding: PaddingValues, viewModel: InvoiceInfoViewModel) {
     Column(modifier = Modifier.padding(innerPadding)) {
@@ -91,20 +90,20 @@ fun InvoiceContent(innerPadding: PaddingValues, viewModel: InvoiceInfoViewModel)
         }
         SelectCustomer(onClick = { viewModel })
         val list = listOf(
-            ItemsModel(null, "1", "dsadsa", "fsafasf"),
-            ItemsModel(null, "12", "dsadsa", "fsafasf"),
-            ItemsModel(null, "12", "dsadsa", "fsafasf"),
-            ItemsModel(null, "12", "dsadsa", "fsafasf"),
-            ItemsModel(null, "12", "dsadsa", "fsafasf"),
-            ItemsModel(null, "12", "dsadsa", "fsafasf"),
-            ItemsModel(null, "12", "dsadsa", "fsafasf"),
-            ItemsModel(null, "12", "dsadsa", "fsafasf"),
-            ItemsModel(null, "7", "dsadsa", "fsafasf"),
-            ItemsModel(null, "8", "dsadsa", "fsafasf"),
-            ItemsModel(null, "9", "dsadsa", "fsafasf"),
+            ItemModel(null, "1", "dsadsa", "fsafasf"),
+            ItemModel(null, "12", "dsadsa", "fsafasf"),
+            ItemModel(null, "12", "dsadsa", "fsafasf"),
+            ItemModel(null, "12", "dsadsa", "fsafasf"),
+            ItemModel(null, "12", "dsadsa", "fsafasf"),
+            ItemModel(null, "12", "dsadsa", "fsafasf"),
+            ItemModel(null, "12", "dsadsa", "fsafasf"),
+            ItemModel(null, "12", "dsadsa", "fsafasf"),
+            ItemModel(null, "7", "dsadsa", "fsafasf"),
+            ItemModel(null, "8", "dsadsa", "fsafasf"),
+            ItemModel(null, "9", "dsadsa", "fsafasf"),
 
             )
-        ItemsList(Modifier, list)
+        ItemsList(Modifier, list, onItemClick = {})
     }
 }
 

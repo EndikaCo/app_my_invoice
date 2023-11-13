@@ -13,7 +13,8 @@ import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.Cus
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemInfoScreen
-import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsContent
+import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsListContent
+import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsListContentActions
 
 sealed class Routes(val routes: String) {
     object InvoicesContent : Routes("invoices")
@@ -39,7 +40,7 @@ fun HomeNavGraph(navController: NavHostController) {
         }
         //ITEMS
         composable(route = Routes.ItemsContent.routes) {
-            ItemsContent(onButtonClick = { navController.navigate(DetailsScreen.Item.route) })
+            ItemsListContentActions(navController)
         }
         detailsNavGraph(navController = navController)
     }

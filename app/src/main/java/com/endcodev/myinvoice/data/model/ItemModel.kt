@@ -1,6 +1,9 @@
 package com.endcodev.myinvoice.data.model
-class ItemsModel(
-    val iImage: Int?,
+
+import android.net.Uri
+
+class ItemModel(
+    val iImage: Uri?,
     val iCode: String,
     val iName: String,
     val iDescription: String,

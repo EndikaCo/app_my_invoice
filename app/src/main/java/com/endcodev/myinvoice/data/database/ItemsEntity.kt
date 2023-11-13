@@ -1,20 +1,25 @@
 package com.endcodev.myinvoice.data.database
 
+import android.net.Uri
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.endcodev.myinvoice.data.model.ItemsModel
+import com.endcodev.myinvoice.data.model.ItemModel
 
 @Entity(tableName = "items_table")
 data class ItemsEntity(
     @PrimaryKey(autoGenerate = false)
-    val iImage: Int?,
-    val iCode: String,
-    val iName: String,
-    val iDescription: String,
-)
+    @ColumnInfo(name = "iCode")  val iCode: String,
+    @ColumnInfo(name = "iImage") val iImage: String?,
+    @ColumnInfo(name = "iName") val iName: String,
+    @ColumnInfo(name = "iDescription") val iDescription: String,
+){
+    val iImageUri: Uri?
+        get() = iImage?.let { Uri.parse(it) }
+}
 
-fun ItemsEntity.toDomain() = ItemsModel(
-    iImage = null,
+fun ItemsEntity.toDomain() = ItemModel(
+    iImage = iImageUri,
     iCode = iCode,
     iName = iName,
     iDescription = iDescription

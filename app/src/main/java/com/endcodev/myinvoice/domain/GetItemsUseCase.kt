@@ -1,9 +1,8 @@
 package com.endcodev.myinvoice.domain
 
 import android.util.Log
-import com.endcodev.myinvoice.data.database.CustomersEntity
 import com.endcodev.myinvoice.data.database.ItemsEntity
-import com.endcodev.myinvoice.data.model.ItemsModel
+import com.endcodev.myinvoice.data.model.ItemModel
 import com.endcodev.myinvoice.data.repository.ItemsRepository
 import javax.inject.Inject
 
@@ -15,8 +14,8 @@ class GetItemsUseCase @Inject constructor(
         const val TAG = "GetItemsUseCase"
     }
 
-    suspend operator fun invoke(): List<ItemsModel> {
-        var itemsList: List<ItemsModel>? = null
+    suspend operator fun invoke(): List<ItemModel> {
+        var itemsList: List<ItemModel>? = null
 
         try {
             itemsList = itemsRepository.getAllItemsFromDB()
@@ -38,7 +37,7 @@ class GetItemsUseCase @Inject constructor(
         }
     }
 
-    private fun exampleCustomers(): MutableList<ItemsEntity> {
+    private fun exampleCustomers(): List<ItemsEntity> {
         return arrayListOf(
             ItemsEntity(iCode = "1", iDescription = "example1", iName = "example1", iImage = null),
             ItemsEntity(iCode = "2", iDescription = "example2", iName = "example3", iImage = null),

@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
         InvoicesEntity::class,
         ItemsEntity::class
     ],
-    version = 5
+    version = 6
 )
 abstract class RoomDB : RoomDatabase() {
     abstract fun getCustomerDao(): CustomersDao

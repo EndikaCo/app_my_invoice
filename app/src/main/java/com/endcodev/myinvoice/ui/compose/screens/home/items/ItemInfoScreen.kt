@@ -11,19 +11,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.ItemUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.InfoImage
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomersListContent
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CompanyName
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.InfoTitle
+import com.endcodev.myinvoice.ui.navigation.DetailsScreen
+import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 import com.endcodev.myinvoice.ui.viewmodels.ItemInfoViewModel
+import com.endcodev.myinvoice.ui.viewmodels.ItemsViewModel
+
 
 @Composable
 fun ItemInfoScreen(
@@ -105,9 +114,6 @@ fun ItemsInfoContent(
             name = it,
         )})
     }
-
-
-
 }
 
 @Composable
