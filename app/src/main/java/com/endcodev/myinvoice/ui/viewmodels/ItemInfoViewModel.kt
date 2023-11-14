@@ -1,22 +1,52 @@
 package com.endcodev.myinvoice.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.endcodev.myinvoice.data.database.CustomersEntity
+import com.endcodev.myinvoice.data.database.ItemsEntity
+import com.endcodev.myinvoice.data.model.ItemModel
 import com.endcodev.myinvoice.data.model.ItemUiState
-import com.endcodev.myinvoice.domain.GetItemsUseCase
+import com.endcodev.myinvoice.domain.GetSimpleItemsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ItemInfoViewModel @Inject constructor(
-    private val getItemsUseCase: GetItemsUseCase
-): ViewModel() {
+    private val getSimpleItemUseCase: GetSimpleItemsUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ItemUiState())
     val uiState: StateFlow<ItemUiState> = _uiState.asStateFlow()
+
+
+    fun getItem(itemId: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val item = getSimpleItemUseCase.invoke(itemId)
+            withContext(Dispatchers.Main) {
+                if (item != null)
+                    updateUi(item)
+            }
+        }
+    }
+
+    private fun updateUi(item: ItemModel) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                iCode = item.iCode,
+                iName = item.iName,
+                iImage = item.iImage,
+                isLoading = false,
+                isAcceptEnabled = enableAccept(item.iCode, item.iName)
+            )
+        }
+    }
 
     fun onDataChanged(code: String, name: String) {
         _uiState.update { currentState ->
@@ -27,6 +57,21 @@ class ItemInfoViewModel @Inject constructor(
             )
         }
     }
+
+    fun saveItem( ) {
+        viewModelScope.launch {
+            with(_uiState.value) {
+                val item = ItemsEntity(
+                    iImage = iImage.toString(),
+                    iCode = iCode,
+                    iName = iName,
+                    iDescription = "" //todo
+                )
+                getSimpleItemUseCase.saveItem(item)
+            }
+        }
+    }
+
 
     private fun enableAccept(code: String, name: String) =
         code.isNotEmpty() && name.isNotEmpty()

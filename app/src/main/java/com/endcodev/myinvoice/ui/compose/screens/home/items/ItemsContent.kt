@@ -1,5 +1,7 @@
 package com.endcodev.myinvoice.ui.compose.screens.home.items
 
+import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,22 +26,28 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
+import com.endcodev.myinvoice.data.database.toDomain
 import com.endcodev.myinvoice.data.model.FilterModel
+import com.endcodev.myinvoice.data.model.FilterType
 import com.endcodev.myinvoice.data.model.ItemModel
+import com.endcodev.myinvoice.domain.GetCustomersUseCase
+import com.endcodev.myinvoice.domain.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomerImage
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomersListContent
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.FiltersDialog
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
+import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.utils.uriToPainterImage
 import com.endcodev.myinvoice.ui.viewmodels.ItemsViewModel
-
 
 @Composable
 fun ItemsListContentActions(
@@ -47,18 +55,21 @@ fun ItemsListContentActions(
 ) {
     val viewModel: ItemsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
+    val searchText by viewModel.userInput.collectAsState()
 
     var showDialog by remember {
         mutableStateOf(false)
     }
 
     ItemsListContent(
-        searchText = uiState.searchText,
+        searchText = searchText,
         items = uiState.itemsList,
         isLoading = uiState.isLoading,
         onSearchTextChange = viewModel::setSearchText,
         onFloatingButtonClick = { navController.navigate(DetailsScreen.Item.route) },
-        onListItemClick = { navController.navigate("${DetailsScreen.Item.route}/${it}") },
+        onListItemClick = {
+            Log.v("TAG", "ItemsListContentActions: $it")
+            navController.navigate("${DetailsScreen.Item.route}/${it}") },
         onFilterClick = {showDialog = true  },
         filters = uiState.filters,
         onFiltersChanged = { viewModel.changeFilters(it) },
@@ -81,7 +92,6 @@ fun ItemsListContent(
     showDialog: Boolean,
     onFilterClick: () -> Unit,
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -178,6 +188,31 @@ fun ItemNameAndIdentifier(modifier: Modifier, item: ItemModel) {
             text = item.iName,
             modifier = Modifier
                 .height(25.dp)
+        )
+    }
+}
+
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun CustomersContentPreview() {
+
+    val searchText = "Test"
+    val items = GetItemsUseCase.exampleCustomers().map { it.toDomain() }
+
+    MyInvoiceTheme {
+        ItemsListContent(
+            searchText = searchText,
+            items = items,
+            isLoading = false,
+            onSearchTextChange = {},
+            onFloatingButtonClick = { },
+            onListItemClick = {},
+            onFilterClick = {},
+            filters = emptyList(),
+            onFiltersChanged = {  },
+            onDialogExit = {  },
+            showDialog = false
         )
     }
 }

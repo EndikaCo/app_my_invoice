@@ -25,13 +25,6 @@ class GetCustomersUseCase @Inject constructor(
         return customersList
     }
 
-    suspend fun saveCustomer(customer: CustomersEntity?) {
-        if (customer != null) {
-            repository.insertCustomer(customer)
-            Log.v(TAG, "customer ${customer.cFiscalName} inserted")
-        }
-    }
-
     fun deleteCustomer(id: String) {
         repository.deleteCustomer(id)
         Log.e(TAG, "customer with $id deleted ")

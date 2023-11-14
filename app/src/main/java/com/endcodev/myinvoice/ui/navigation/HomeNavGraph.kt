@@ -8,12 +8,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CustomerDetailsActions
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomersListContentActions
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CustomerDetailsActions
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesContent
-import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemInfoScreen
-import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsListContent
+import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemDetailActions
 import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsListContentActions
 
 sealed class Routes(val routes: String) {
@@ -78,12 +77,20 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         composable(route = DetailsScreen.Invoice.route) {
             InvoiceInfoScreen(onNavButtonClick = {})
         }
-        //ITEMS SCREEN
-        composable(route = DetailsScreen.Item.route) {
-            ItemInfoScreen(
-                onAcceptButton = { navController.navigate(Routes.ItemsContent.routes) },
-                onCancelButton = { navController.navigate(Routes.ItemsContent.routes) })
+
+        // ITEMS SCREEN
+        composable(
+            route = "${DetailsScreen.Item.route}/{iCode}",
+            arguments = listOf(navArgument("iCode") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val itemCode = backStackEntry.arguments?.getString("iCode")
+            ItemDetailActions(itemId = itemCode, navController)
         }
+        //ITEMS SCREEN (Without Arguments)
+        composable(route = DetailsScreen.Item.route) {
+            ItemDetailActions(itemId = null, navController = navController)
+        }
+
         /*//ITEMS SCREEN
         composable(route = DetailsScreen.Item.route) {
             ItemsContent(name = DetailsScreen.Item.route) {

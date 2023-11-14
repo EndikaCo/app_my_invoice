@@ -29,6 +29,22 @@ fun CustomerDetailsActions(
         }
     }
 
+    fun onUpdateData(
+        identifier: String? = null,
+        fiscalName: String? = null,
+        telephone: String? = null,
+        country: String? = null,
+        email: String? = null
+    ) {
+        viewModel.onDataChanged(
+            identifier = identifier ?: uiState.cIdentifier,
+            fiscalName = fiscalName ?: uiState.cFiscalName,
+            telephone = telephone ?: uiState.cTelephone,
+            country = country ?: uiState.cCountry,
+            email = email ?: uiState.cEmail
+        )
+    }
+
     CustomerDetailsScreen(
         onAcceptButton = {
             viewModel.saveCustomer()
@@ -37,39 +53,12 @@ fun CustomerDetailsActions(
         onCancelButton = { navController.navigate(Routes.CustomerContent.routes) },
         uiState,
         onUriChanged = { viewModel.updateUri(it) },
-        onFiscalNameChange = {
-            viewModel.onDataChanged(
-                identifier = uiState.cIdentifier,
-                fiscalName = it,
-                telephone = uiState.cTelephone,
-                country = uiState.cCountry,
-                email = uiState.cEmail
-            )
-        },
-        onIdentifierChange = {
-            viewModel.onDataChanged(
-                identifier = it,
-                fiscalName = uiState.cFiscalName,
-                telephone = uiState.cTelephone,
-                country = uiState.cCountry,
-                email = uiState.cEmail
-            )
-        },
-        onCountryChange = {
-            viewModel.onDataChanged(
-                identifier = uiState.cIdentifier,
-                fiscalName = uiState.cFiscalName,
-                telephone = uiState.cTelephone,
-                country = it,
-                email = uiState.cEmail
-            )
-        },
-        onEmailChange = {viewModel.onDataChanged(
-            identifier = uiState.cIdentifier,
-            fiscalName = uiState.cFiscalName,
-            telephone = uiState.cTelephone,
-            country = uiState.cCountry,
-            email = it
-        )}
+        onFiscalNameChange = { onUpdateData(fiscalName = it) },
+        onIdentifierChange = { onUpdateData(identifier = it) },
+        onCountryChange = { onUpdateData(country = it) },
+        onEmailChange = { onUpdateData(email = it) }
     )
 }
+
+
+

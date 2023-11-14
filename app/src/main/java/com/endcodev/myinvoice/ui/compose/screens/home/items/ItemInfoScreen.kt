@@ -1,56 +1,98 @@
 package com.endcodev.myinvoice.ui.compose.screens.home.items
 
+import android.content.Intent
+import android.content.res.Configuration
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.ItemUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
-import com.endcodev.myinvoice.ui.compose.components.InfoImage
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomersListContent
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CompanyName
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.InfoTitle
-import com.endcodev.myinvoice.ui.navigation.DetailsScreen
-import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CustomerInfoImage
+import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.pPadding
+import com.endcodev.myinvoice.ui.navigation.Routes
+import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.ItemInfoViewModel
-import com.endcodev.myinvoice.ui.viewmodels.ItemsViewModel
 
+@Composable
+fun ItemDetailActions(
+    itemId: String?,
+    navController: NavHostController,
+) {
+    val viewModel: ItemInfoViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+
+    if (itemId != null) {
+        LaunchedEffect(itemId) {
+            viewModel.getItem(itemId)
+        }
+    }
+
+    fun onUpdateData(
+        code: String? = null,
+        name: String? = null,
+    ) {
+
+        viewModel.onDataChanged(
+            code = code ?: uiState.iCode,
+            name = name ?: uiState.iName,
+        )
+    }
+
+    ItemInfoScreen(
+        onAcceptButton = {
+            viewModel.saveItem()
+            navController.navigate(Routes.ItemsContent.routes)
+        },
+        onCancelButton = { navController.navigate(Routes.ItemsContent.routes) },
+        uiState = uiState,
+        onCodeChanged = { onUpdateData(code = it) },
+        onNameChanged = { onUpdateData(name = it) },
+        onUriChanged = {}
+    )
+}
 
 @Composable
 fun ItemInfoScreen(
-    viewModel: ItemInfoViewModel = hiltViewModel(),
     onAcceptButton: () -> Unit,
-    onCancelButton: () -> Unit
+    onCancelButton: () -> Unit,
+    uiState: ItemUiState,
+    onCodeChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit,
+    onUriChanged: (String) -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-
     Scaffold(
         topBar = { },
         content = { innerPadding ->
-            ItemsInfoContent(innerPadding, uiState, viewModel)
+            ItemsInfoContent(
+                innerPadding,
+                uiState, onCodeChanged, onNameChanged, onUriChanged
+            )
         },
         bottomBar = {
             AcceptCancelButtons(
                 uiState.isAcceptEnabled,
-                onAcceptClick = {},
+                onAcceptButton,
                 onCancelButton
             )
         }
@@ -61,68 +103,97 @@ fun ItemInfoScreen(
 fun ItemsInfoContent(
     innerPadding: PaddingValues,
     uiState: ItemUiState,
-    viewModel: ItemInfoViewModel
+    onCodeChanged: (String) -> Unit,
+    onNameChanged: (String) -> Unit,
+    onUriChanged: (String) -> Unit
 ) {
+
+    val context = LocalContext.current
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+
+            if (uri == null)
+                Log.e("SinglePhotoPickerLauncher", "Image not valid")
+            else {
+                // Grant read permission to the obtained URI
+                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                context.contentResolver.takePersistableUriPermission(uri, flag)
+                //onUriChanged(uri)
+            }
+        }
+    )
+
     Column(
-        Modifier
+        modifier = Modifier
             .padding(innerPadding)
             .fillMaxWidth()
-    )
-    {
-        ConstraintLayout(
-            modifier = Modifier
+    ) {
+        Row(
+            modifier = Modifier.padding(start = pPadding, end = pPadding, top = pPadding),
         ) {
-            val (title, nif, image) = createRefs()
-
-            InfoTitle(
-                text = "Item Info",
-                modifier = Modifier.constrainAs(title) {
-                    top.linkTo(parent.top, margin = 16.dp)
-                    start.linkTo(parent.start, margin = 20.dp)
-                    end.linkTo(image.start)
-                    width = Dimension.preferredWrapContent
-                }
-            )
-
-            ItemIdNum(uiState.iCode, onTextChanged = {
-                viewModel.onDataChanged(
-                    code = it,
-                    name = uiState.iName,
+            Column(Modifier.weight(0.5F)) {
+                Text(
+                    text = "Product Info",
+                    modifier = Modifier,
+                    fontSize = 24.sp
                 )
-            },
-                modifier = Modifier.constrainAs(nif) {
-                    top.linkTo(title.bottom, margin = 4.dp)
-                    start.linkTo(parent.start, margin = 20.dp)
-                    end.linkTo(title.end)
-                    width = Dimension.preferredWrapContent
-                }
+                IdNum(
+                    idNum = uiState.iCode,
+                    onTextChanged = { onCodeChanged(it) },
+                )
+            }
+            CustomerInfoImage(
+                singlePhotoPickerLauncher = singlePhotoPickerLauncher,
+                cImage = uiState.iImage,
+                defaultImage = painterResource(id = R.drawable.item_add_24)
             )
-
-            InfoImage(
-                size = 110,
-                image = painterResource(id = R.drawable.image_search_24),
-                modifier = Modifier.constrainAs(image) {
-                    start.linkTo(nif.end, margin = 40.dp)
-                    end.linkTo(parent.end, margin = 40.dp)
-                    bottom.linkTo(nif.bottom)
-                })
         }
-
-        CompanyName(uiState.iName, onTextChanged = {
-            viewModel.onDataChanged(
-            code = uiState.iCode,
-            name = it,
-        )})
+        ItemName(
+            cFiscalName = uiState.iName,
+            onTextChanged = { onNameChanged(it) }
+        )
     }
 }
 
 @Composable
-fun ItemIdNum(idNum: String, onTextChanged: (String) -> Unit, modifier: Modifier) {
-
-    OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+fun IdNum(idNum: String, onTextChanged: (String) -> Unit) {
+    OutlinedTextField(modifier = Modifier
+        .fillMaxWidth()
+        .padding(end = 16.dp),
         value = idNum,
         onValueChange = { onTextChanged(it) },
-        label = { Text("Company ID") }
+        label = { Text("Product code") }
     )
 }
 
+
+@Composable
+fun ItemName(cFiscalName: String, onTextChanged: (String) -> Unit) {
+
+    OutlinedTextField(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = pPadding, end = pPadding),
+        value = cFiscalName,
+        onValueChange = { onTextChanged(it) },
+        label = { Text("Company name") }
+    )
+}
+
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewCustomerInfoScreen() {
+    MyInvoiceTheme {
+        ItemInfoScreen(
+            onAcceptButton = {},
+            onCancelButton = {},
+            uiState = ItemUiState(),
+            onNameChanged = {},
+            onCodeChanged = {},
+            onUriChanged = {}
+        )
+    }
+}

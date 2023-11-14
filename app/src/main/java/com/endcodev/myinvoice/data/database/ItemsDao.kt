@@ -23,4 +23,7 @@ interface ItemsDao {
 
     @Query("DELETE FROM items_table WHERE iCode = :code")
     fun deleteItem(code: String)
+
+    @Query("SELECT * FROM items_table WHERE iCode = :itemId")
+     fun getItemById(itemId: String): ItemsEntity
 }

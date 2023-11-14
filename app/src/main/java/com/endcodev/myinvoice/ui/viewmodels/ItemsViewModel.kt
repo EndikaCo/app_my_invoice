@@ -13,11 +13,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
 @HiltViewModel
 class ItemsViewModel @Inject constructor(
     private val getItemsUseCase: GetItemsUseCase
-    ) : ViewModel() {
+) : ViewModel() {
+
+    private val _userInput = MutableStateFlow("")
+    val userInput: StateFlow<String> = _userInput.asStateFlow()
 
     private val _uiState = MutableStateFlow(ItemsListUiState())
     val uiState: StateFlow<ItemsListUiState> = _uiState.asStateFlow()
@@ -35,18 +37,17 @@ class ItemsViewModel @Inject constructor(
     }
 
     fun setSearchText(searchText: String) {
-        _uiState.update { it.copy(searchText = searchText) }
+        _userInput.value = searchText
     }
 
-
-    fun changeFilters(filters : List<FilterModel>) {
+    fun changeFilters(filters: List<FilterModel>) {
         _uiState.update { it.copy(filters = filters) }
     }
 
     init {
         viewModelScope.launch {
-            uiState.collect { state ->
-                getItems(state.searchText)
+            userInput.collect { searchText ->
+                getItems(searchText)
             }
         }
     }

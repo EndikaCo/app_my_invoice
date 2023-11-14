@@ -18,18 +18,23 @@ class GetSimpleCustomerUseCase @Inject constructor(
     suspend operator fun invoke(customerIdentifier: String?): CustomerModel? {
 
         var customer : CustomerModel? = null
-        Log.e(TAG, "customerid: $customerIdentifier")
 
         if(customerIdentifier == null)
             return null
 
         try {
             customer = repository.getCustomerById(customerIdentifier)
-            Log.e(TAG, "customer: ${customer.cFiscalName}")
-
         } catch (e: Exception) {
             Log.e(TAG, "customer not found, $e")
         }
         return customer
+    }
+
+
+    suspend fun saveCustomer(customer: CustomersEntity?) {
+        if (customer != null) {
+            repository.insertCustomer(customer)
+            Log.v(GetCustomersUseCase.TAG, "customer ${customer.cFiscalName} inserted")
+        }
     }
 }

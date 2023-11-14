@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CustomerInfoViewModel @Inject constructor(
-    private val getCustomersUseCase: GetCustomersUseCase,
     private val getSimpleCustomerUseCase: GetSimpleCustomerUseCase
 ) : ViewModel() {
 
@@ -77,7 +76,7 @@ class CustomerInfoViewModel @Inject constructor(
                     cTelephone = cTelephone,
                     cCountry = cCountry
                 )
-                getCustomersUseCase.saveCustomer(customer)
+                getSimpleCustomerUseCase.saveCustomer(customer)
             }
         }
     }

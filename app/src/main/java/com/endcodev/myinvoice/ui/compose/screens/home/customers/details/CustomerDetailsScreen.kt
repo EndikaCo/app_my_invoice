@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -158,7 +159,8 @@ fun CustomerInfoContent(
             }
             CustomerInfoImage(
                 singlePhotoPickerLauncher = singlePhotoPickerLauncher,
-                cImage = uiState.cImage
+                cImage = uiState.cImage,
+                defaultImage = painterResource(id = R.drawable.person_24)
             )
         }
         CompanyName(
@@ -181,14 +183,15 @@ fun CustomerInfoContent(
 @Composable
 fun CustomerInfoImage(
     singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
-    cImage: Uri?
+    cImage: Uri?,
+    defaultImage : Painter
 ) {
 
     var colorFilter : ColorFilter? = null
     var image = uriToPainterImage(cImage)
     if (image == null){
         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
-        image = painterResource(id = R.drawable.person_24)
+        image = defaultImage
     }
 
     Box(

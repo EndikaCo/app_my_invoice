@@ -14,7 +14,7 @@ class CustomersRepository @Inject constructor(
         return customersList.map { it.toDomain() }
     }
 
-    suspend fun getCustomerById(id : String) : CustomerModel {
+    fun getCustomerById(id : String) : CustomerModel {
         val customer : CustomersEntity = customersDao.getCustomerById(id)
         return customer.toDomain()
     }

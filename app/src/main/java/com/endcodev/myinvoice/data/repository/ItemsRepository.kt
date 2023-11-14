@@ -14,6 +14,11 @@ class ItemsRepository @Inject constructor(
         return response.map { it.toDomain() }
     }
 
+    fun getItemById(itemId : String) : ItemModel {
+        val response : ItemsEntity = itemsDao.getItemById(itemId)
+        return response.toDomain()
+    }
+
     suspend fun insertAllItems(itemsList: List<ItemsEntity>) {
         itemsDao.insertAllItems(itemsList)
     }

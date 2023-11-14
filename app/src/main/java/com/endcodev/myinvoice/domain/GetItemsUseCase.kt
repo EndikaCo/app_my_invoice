@@ -10,10 +10,6 @@ class GetItemsUseCase @Inject constructor(
     private val itemsRepository: ItemsRepository
 ) {
 
-    companion object {
-        const val TAG = "GetItemsUseCase"
-    }
-
     suspend operator fun invoke(): List<ItemModel> {
         var itemsList: List<ItemModel>? = null
 
@@ -30,18 +26,15 @@ class GetItemsUseCase @Inject constructor(
         return itemsList
     }
 
-    suspend fun saveItem(item: ItemsEntity?) {
-        if (item != null) {
-            itemsRepository.insertItem(item)
-            Log.e(GetCustomersUseCase.TAG, "customer ${item.iCode} inserted")
-        }
-    }
+    companion object {
+        const val TAG = "GetItemsUseCase"
 
-    private fun exampleCustomers(): List<ItemsEntity> {
-        return arrayListOf(
-            ItemsEntity(iCode = "1", iDescription = "example1", iName = "example1", iImage = null),
-            ItemsEntity(iCode = "2", iDescription = "example2", iName = "example3", iImage = null),
-            ItemsEntity(iCode = "3", iDescription = "example2", iName = "example3", iImage = null),
-        )
+         fun exampleCustomers(): List<ItemsEntity> {
+            return arrayListOf(
+                ItemsEntity(iCode = "1", iDescription = "example1", iName = "example1", iImage = null),
+                ItemsEntity(iCode = "2", iDescription = "example2", iName = "example3", iImage = null),
+                ItemsEntity(iCode = "3", iDescription = "example2", iName = "example3", iImage = null),
+            )
+        }
     }
 }
