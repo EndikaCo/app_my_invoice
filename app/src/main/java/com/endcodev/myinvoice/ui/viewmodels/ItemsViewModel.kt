@@ -26,13 +26,16 @@ class ItemsViewModel @Inject constructor(
 
     private suspend fun getItems(searchText: String) {
         _uiState.update { it.copy(isLoading = true) }
-        delay(500L) // simulate network delay
+
+        delay(300L) // simulate network delay
+
         val items = getItemsUseCase.invoke() // get items from use case
         val filteredItems = if (searchText.isBlank()) {
             items
         } else {
             items.filter { it.doesMatchSearchQuery(searchText) }
         }
+
         _uiState.update { it.copy(itemsList = filteredItems, isLoading = false) }
     }
 

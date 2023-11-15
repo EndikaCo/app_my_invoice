@@ -15,7 +15,7 @@ class GetSimpleCustomerUseCase @Inject constructor(
         const val TAG = "GetSimpleCustomerUseCase"
     }
 
-    suspend operator fun invoke(customerIdentifier: String?): CustomerModel? {
+    operator fun invoke(customerIdentifier: String?): CustomerModel? {
 
         var customer : CustomerModel? = null
 

@@ -90,17 +90,17 @@ fun InvoiceContent(innerPadding: PaddingValues, viewModel: InvoiceInfoViewModel)
         }
         SelectCustomer(onClick = { viewModel })
         val list = listOf(
-            ItemModel(null, "1", "dsadsa", "fsafasf"),
-            ItemModel(null, "12", "dsadsa", "fsafasf"),
-            ItemModel(null, "12", "dsadsa", "fsafasf"),
-            ItemModel(null, "12", "dsadsa", "fsafasf"),
-            ItemModel(null, "12", "dsadsa", "fsafasf"),
-            ItemModel(null, "12", "dsadsa", "fsafasf"),
-            ItemModel(null, "12", "dsadsa", "fsafasf"),
-            ItemModel(null, "12", "dsadsa", "fsafasf"),
-            ItemModel(null, "7", "dsadsa", "fsafasf"),
-            ItemModel(null, "8", "dsadsa", "fsafasf"),
-            ItemModel(null, "9", "dsadsa", "fsafasf"),
+            ItemModel(null, "1", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "7", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "8", "dsadsa", "fsafasf", "type1"),
+            ItemModel(null, "9", "dsadsa", "fsafasf", "type1"),
 
             )
         ItemsList(Modifier, list, onItemClick = {})

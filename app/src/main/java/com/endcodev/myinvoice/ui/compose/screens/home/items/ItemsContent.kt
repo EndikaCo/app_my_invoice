@@ -3,7 +3,9 @@ package com.endcodev.myinvoice.ui.compose.screens.home.items
 import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,8 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,15 +36,12 @@ import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.database.toDomain
 import com.endcodev.myinvoice.data.model.FilterModel
-import com.endcodev.myinvoice.data.model.FilterType
 import com.endcodev.myinvoice.data.model.ItemModel
-import com.endcodev.myinvoice.domain.GetCustomersUseCase
 import com.endcodev.myinvoice.domain.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomerImage
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomersListContent
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.FiltersDialog
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
@@ -69,8 +69,9 @@ fun ItemsListContentActions(
         onFloatingButtonClick = { navController.navigate(DetailsScreen.Item.route) },
         onListItemClick = {
             Log.v("TAG", "ItemsListContentActions: $it")
-            navController.navigate("${DetailsScreen.Item.route}/${it}") },
-        onFilterClick = {showDialog = true  },
+            navController.navigate("${DetailsScreen.Item.route}/${it}")
+        },
+        onFilterClick = { showDialog = true },
         filters = uiState.filters,
         onFiltersChanged = { viewModel.changeFilters(it) },
         onDialogExit = { showDialog = false },
@@ -128,19 +129,24 @@ fun ItemsListContent(
 @Composable
 fun ItemsList(
     modifier: Modifier,
-    items: List<ItemModel>,
+    products: List<ItemModel>,
     onItemClick: (String) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier
-    ) {
-        items(items) { item ->
-            ProductItem(
-                item = item,
-                onItemClick = { onItemClick(item.iCode) }
-            )
+    LazyVerticalGrid(modifier = modifier,
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(space = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
+        content = {
+            items(products) { item ->
+                ProductItem(
+                    item = item,
+                    onItemClick = { onItemClick(item.iCode) }
+                )
+            }
         }
-    }
+    )
+
 }
 
 @Composable
@@ -165,10 +171,12 @@ fun ProductItem(item: ItemModel, onItemClick: () -> Unit) {
         ) {
             CustomerImage(
                 image = image,
-                colorFilter = colorFilter)
-            ItemNameAndIdentifier( Modifier
-                .padding(start = 12.dp)
-                .weight(1f), item
+                colorFilter = colorFilter
+            )
+            ItemNameAndIdentifier(
+                Modifier
+                    .padding(start = 12.dp)
+                    .weight(1f), item
             )
         }
     }
@@ -192,6 +200,8 @@ fun ItemNameAndIdentifier(modifier: Modifier, item: ItemModel) {
     }
 }
 
+
+
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
@@ -210,8 +220,8 @@ fun CustomersContentPreview() {
             onListItemClick = {},
             onFilterClick = {},
             filters = emptyList(),
-            onFiltersChanged = {  },
-            onDialogExit = {  },
+            onFiltersChanged = { },
+            onDialogExit = { },
             showDialog = false
         )
     }

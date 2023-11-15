@@ -2,6 +2,7 @@ package com.endcodev.myinvoice.ui.compose.screens.home.items
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -51,11 +52,12 @@ fun ItemDetailActions(
     fun onUpdateData(
         code: String? = null,
         name: String? = null,
+        image: Uri? = null
     ) {
-
         viewModel.onDataChanged(
             code = code ?: uiState.iCode,
             name = name ?: uiState.iName,
+            image = image ?: uiState.iImage
         )
     }
 
@@ -68,7 +70,7 @@ fun ItemDetailActions(
         uiState = uiState,
         onCodeChanged = { onUpdateData(code = it) },
         onNameChanged = { onUpdateData(name = it) },
-        onUriChanged = {}
+        onUriChanged = {onUpdateData(image = it)}
     )
 }
 
@@ -79,7 +81,7 @@ fun ItemInfoScreen(
     uiState: ItemUiState,
     onCodeChanged: (String) -> Unit,
     onNameChanged: (String) -> Unit,
-    onUriChanged: (String) -> Unit,
+    onUriChanged: (Uri) -> Unit,
 ) {
     Scaffold(
         topBar = { },
@@ -105,7 +107,7 @@ fun ItemsInfoContent(
     uiState: ItemUiState,
     onCodeChanged: (String) -> Unit,
     onNameChanged: (String) -> Unit,
-    onUriChanged: (String) -> Unit
+    onUriChanged: (Uri) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -120,7 +122,7 @@ fun ItemsInfoContent(
                 // Grant read permission to the obtained URI
                 val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 context.contentResolver.takePersistableUriPermission(uri, flag)
-                //onUriChanged(uri)
+                onUriChanged(uri)
             }
         }
     )

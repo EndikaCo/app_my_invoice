@@ -69,7 +69,7 @@ fun CustomerDetailsScreen(
     onAcceptButton: () -> Unit,
     onCancelButton: () -> Unit,
     uiState: CustomerInfoUiState,
-    onUriChanged: (Uri) -> Unit,
+    onUriChanged: (Uri?) -> Unit,
     onFiscalNameChange: (String) -> Unit,
     onIdentifierChange: (String) -> Unit,
     onCountryChange: (String) -> Unit,
@@ -114,7 +114,7 @@ fun CustomerDetailsScreen(
 @Composable
 fun CustomerInfoContent(
     innerPadding: PaddingValues,
-    onUriChanged: (Uri) -> Unit,
+    onUriChanged: (Uri?) -> Unit,
     uiState: CustomerInfoUiState,
     onFiscalNameChange: (String) -> Unit,
     onIdentifierChange: (String) -> Unit,
@@ -127,8 +127,10 @@ fun CustomerInfoContent(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
 
-            if (uri == null)
+            if (uri == null){
                 Log.e("SinglePhotoPickerLauncher", "Image not valid")
+                onUriChanged(null)
+            }
             else {
                 // Grant read permission to the obtained URI
                 val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION

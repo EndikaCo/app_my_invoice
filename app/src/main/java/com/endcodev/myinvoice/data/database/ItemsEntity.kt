@@ -13,6 +13,7 @@ data class ItemsEntity(
     @ColumnInfo(name = "iImage") val iImage: String?,
     @ColumnInfo(name = "iName") val iName: String,
     @ColumnInfo(name = "iDescription") val iDescription: String,
+    @ColumnInfo(name = "iType") val iType: String,
 ){
     val iImageUri: Uri?
         get() = iImage?.let { Uri.parse(it) }
@@ -22,5 +23,6 @@ fun ItemsEntity.toDomain() = ItemModel(
     iImage = iImageUri,
     iCode = iCode,
     iName = iName,
-    iDescription = iDescription
+    iDescription = iDescription,
+    iType = iType,
 )

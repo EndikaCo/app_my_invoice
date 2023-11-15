@@ -1,5 +1,7 @@
 package com.endcodev.myinvoice.ui.viewmodels
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.database.CustomersEntity
@@ -48,11 +50,12 @@ class ItemInfoViewModel @Inject constructor(
         }
     }
 
-    fun onDataChanged(code: String, name: String) {
+    fun onDataChanged(code: String, name: String, image : Uri?) {
         _uiState.update { currentState ->
             currentState.copy(
                 iName = name,
                 iCode = code,
+                iImage = image,
                 isAcceptEnabled = enableAccept(code, name)
             )
         }
@@ -61,11 +64,13 @@ class ItemInfoViewModel @Inject constructor(
     fun saveItem( ) {
         viewModelScope.launch {
             with(_uiState.value) {
+                Log.v("ItemInfoViewModel", "saveItem: ${iImage.toString()}")
                 val item = ItemsEntity(
                     iImage = iImage.toString(),
                     iCode = iCode,
                     iName = iName,
-                    iDescription = "" //todo
+                    iDescription = "", //todo,
+                    iType = "TYPE",
                 )
                 getSimpleItemUseCase.saveItem(item)
             }

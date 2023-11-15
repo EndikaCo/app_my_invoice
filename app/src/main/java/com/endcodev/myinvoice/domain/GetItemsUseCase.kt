@@ -29,11 +29,20 @@ class GetItemsUseCase @Inject constructor(
     companion object {
         const val TAG = "GetItemsUseCase"
 
-         fun exampleCustomers(): List<ItemsEntity> {
+        fun exampleCustomers(): List<ItemsEntity> {
             return arrayListOf(
-                ItemsEntity(iCode = "1", iDescription = "example1", iName = "example1", iImage = null),
-                ItemsEntity(iCode = "2", iDescription = "example2", iName = "example3", iImage = null),
-                ItemsEntity(iCode = "3", iDescription = "example2", iName = "example3", iImage = null),
+                ItemsEntity(
+                    iCode = "1", iDescription = "example1", iName = "example1", iImage = null,
+                    iType = "type"
+                ),
+                ItemsEntity(
+                    iCode = "2", iDescription = "example2", iName = "example3", iImage = null,
+                    iType = "type"
+                ),
+                ItemsEntity(
+                    iCode = "3", iDescription = "example2", iName = "example3", iImage = null,
+                    iType = "type"
+                ),
             )
         }
     }

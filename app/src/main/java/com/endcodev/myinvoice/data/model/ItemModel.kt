@@ -7,12 +7,14 @@ class ItemModel(
     val iCode: String,
     val iName: String,
     val iDescription: String,
+    val iType: String,
 ) {
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
             iCode,
             iName,
-            iDescription
+            iDescription,
+            iType,
         )
 
         return matchingCombinations.any {

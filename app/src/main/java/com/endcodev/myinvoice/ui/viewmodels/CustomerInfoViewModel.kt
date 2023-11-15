@@ -66,6 +66,7 @@ class CustomerInfoViewModel @Inject constructor(
     private fun enableAccept(identifier: String, fiscalName: String) =
         identifier.isNotEmpty() && fiscalName.isNotEmpty()
 
+
     fun saveCustomer( ) {
         viewModelScope.launch {
             with(_uiState.value) {
@@ -81,7 +82,7 @@ class CustomerInfoViewModel @Inject constructor(
         }
     }
 
-    fun updateUri(uri: Uri) {
+    fun updateUri(uri: Uri?) {
         _uiState.update { currentState ->
             currentState.copy(
                 cImage = uri
