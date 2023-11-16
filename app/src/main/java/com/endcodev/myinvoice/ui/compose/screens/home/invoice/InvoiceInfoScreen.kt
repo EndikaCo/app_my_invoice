@@ -1,5 +1,6 @@
 package com.endcodev.myinvoice.ui.compose.screens.home.invoice
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,38 +13,57 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.model.ItemModel
+import com.endcodev.myinvoice.data.model.InvoiceUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
+import com.endcodev.myinvoice.ui.compose.components.CDatePicker
 import com.endcodev.myinvoice.ui.compose.components.ChooseCustomerDialog
-import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsList
+import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoiceInfoViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+@Composable
+fun InvoiceDetailActions(
+    invoiceId: String?,
+    navController: NavHostController
+) {
+    val viewModel: InvoiceInfoViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+
+    InvoiceInfoScreen(onNavButtonClick = {}, uiState)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvoiceInfoScreen(
-    viewModel: InvoiceInfoViewModel = hiltViewModel(),
-    onNavButtonClick: () -> Unit
+    onNavButtonClick: () -> Unit,
+    uiState: InvoiceUiState
 ) {
 
-    val uiState by viewModel.uiState.collectAsState()
+    val state = rememberDatePickerState()
+    val openDialog = remember { mutableStateOf(false) }
+
     if (uiState.showDialog)
         ChooseCustomerDialog(
             onDismissRequest = {},
@@ -54,12 +74,15 @@ fun InvoiceInfoScreen(
         Scaffold(
             topBar = { },
             content = { innerPadding ->
-                InvoiceContent(innerPadding, viewModel)
+                InvoiceContent(innerPadding, onDatePickerCLick = { openDialog.value = true })
             },
             bottomBar = {
-                AcceptCancelButtons(enabled = true, onAcceptClick = { /*TODO*/ }) {}
+                AcceptCancelButtons(enabled = true, onAcceptClick = { openDialog.value = true }) {}
             }
         )
+
+    if (openDialog.value)
+        CDatePicker(openDialog = { openDialog.value = it }, state)
 }
 
 fun now(): String {
@@ -67,17 +90,18 @@ fun now(): String {
 }
 
 @Composable
-fun InvoiceContent(innerPadding: PaddingValues, viewModel: InvoiceInfoViewModel) {
+fun InvoiceContent(innerPadding: PaddingValues, onDatePickerCLick: () -> Unit) {
     Column(modifier = Modifier.padding(innerPadding)) {
         Row {
             OutlinedTextField(
                 value = "001",
-                onValueChange = {},
+                onValueChange = {  },
                 label = { Text(text = "invoice") },
                 modifier = Modifier
                     .width(110.dp)
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             )
+
             val date = now()
             OutlinedTextField(
                 value = date,
@@ -86,30 +110,16 @@ fun InvoiceContent(innerPadding: PaddingValues, viewModel: InvoiceInfoViewModel)
                 modifier = Modifier
                     .width(140.dp)
                     .padding(top = 16.dp)
+                    .clickable {onDatePickerCLick() }
             )
         }
-        SelectCustomer(onClick = { viewModel })
-        val list = listOf(
-            ItemModel(null, "1", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "12", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "7", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "8", "dsadsa", "fsafasf", "type1"),
-            ItemModel(null, "9", "dsadsa", "fsafasf", "type1"),
-
-            )
-        ItemsList(Modifier, list, onItemClick = {})
+        SelectCustomer(onClick = { })
     }
 }
 
 @Composable
 fun SelectCustomer(
-    content: String = "select customer",
+    content: String = "Select customer",
     onClick: () -> Unit
 ) {
     val shape = RoundedCornerShape(20)
@@ -117,16 +127,19 @@ fun SelectCustomer(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-            .border(shape = shape, width = 1.dp, color = Color.Black)
+            .border(shape = shape, width = 1.dp, color = MaterialTheme.colorScheme.onBackground)
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
 
     ) {
-        Image(painter = painterResource(id = R.drawable.image_search_24), contentDescription = "")
+        Image(
+            painter = painterResource(id = R.drawable.image_search_24),
+            contentDescription = "",
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+        )
         Text(
             text = content,
-            color = Color.Black,
             fontWeight = FontWeight.W300,
             modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
         )
@@ -134,8 +147,11 @@ fun SelectCustomer(
 }
 
 
-@Preview
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun NewInvoiceScreenPreview() {
-    InvoiceInfoScreen(onNavButtonClick = {})
+fun PreviewInvoiceInfoScreen() {
+    MyInvoiceTheme {
+        InvoiceInfoScreen(onNavButtonClick = {}, uiState = InvoiceUiState())
+    }
 }

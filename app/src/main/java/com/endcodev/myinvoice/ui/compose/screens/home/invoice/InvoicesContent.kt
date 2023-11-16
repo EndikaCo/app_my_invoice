@@ -18,44 +18,76 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.model.InvoicesModel
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
+import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.viewmodels.InvoicesViewModel
 
+
 @Composable
-fun InvoicesContent(onButtonClick: () -> Unit) {
+fun InvoicesListContentActions(
+    navController: NavHostController,
+) {
     val viewModel: InvoicesViewModel = hiltViewModel()
     val searchText by viewModel.searchText.collectAsState()
     val invoices by viewModel.invoices.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
+
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    InvoicesContent(
+        searchText = searchText,
+        invoices = invoices,
+        isLoading = isSearching,
+        onSearchTextChange = viewModel::onSearchTextChange,
+        onFloatingButtonClick = { navController.navigate(DetailsScreen.Invoice.route) },
+        onListItemClick = { navController.navigate("${DetailsScreen.Invoice.route}/${it}") },
+    )
+}
+
+@Composable
+fun InvoicesContent(
+    onFloatingButtonClick: () -> Unit,
+    onListItemClick: (String) -> Unit,
+    searchText: String,
+    invoices: List<InvoicesModel>,
+    isLoading: Boolean,
+    onSearchTextChange: (String) -> Unit,
+) {
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        CommonSearchBar(searchText, valueChanged = viewModel::onSearchTextChange, onFilterClick = {})
+        CommonSearchBar(searchText, valueChanged = onSearchTextChange, onFilterClick = {})
         Spacer(modifier = Modifier.height(16.dp))
 
-        if (isSearching)
+        if (isLoading)
             ProgressBar()
         else
-            InvoiceList(Modifier.weight(1f), invoices)
+            InvoiceList(Modifier.weight(1f), invoices, onListItemClick)
 
         FloatingActionButton(
             Modifier
                 .weight(0.08f)
                 .align(Alignment.End),
             painter = painterResource(id = R.drawable.invoice_add_24),
-            onButtonClick
+            onFloatingButtonClick
         )
         Spacer(modifier = Modifier.size(80.dp))
     }
@@ -71,23 +103,27 @@ fun ProgressBar() {
 }
 
 @Composable
-fun InvoiceList(modifier: Modifier, invoices: List<InvoicesModel>) {
+fun InvoiceList(
+    modifier: Modifier,
+    invoices: List<InvoicesModel>,
+    onItemClick: (String) -> Unit
+) {
     LazyColumn(
         modifier = modifier
     ) {
-        items(invoices) { invoices ->
-            InvoiceItem(invoices)
+        items(invoices) { invoice ->
+            InvoiceItem(invoice, onItemClick = { onItemClick(invoice.iId.toString()) })
         }
     }
 }
 
 @Composable
-fun InvoiceItem(invoice: InvoicesModel) {
+fun InvoiceItem(invoice: InvoicesModel, onItemClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .padding(bottom = 8.dp) //between items
             .fillMaxWidth()
-            .clickable { }
+            .clickable { onItemClick()}
     ) {
         Row(
             modifier = Modifier

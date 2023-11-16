@@ -10,8 +10,10 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomersListContentActions
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CustomerDetailsActions
+import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoiceDetailActions
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoiceInfoScreen
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesContent
+import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesListContentActions
 import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemDetailActions
 import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsListContentActions
 
@@ -31,7 +33,7 @@ fun HomeNavGraph(navController: NavHostController) {
     ) {
         //HOME
         composable(route = Routes.InvoicesContent.routes) {
-            InvoicesContent(onButtonClick = { navController.navigate(DetailsScreen.Invoice.route) })
+            InvoicesListContentActions(navController)
         }
         //CUSTOMERS
         composable(route = Routes.CustomerContent.routes) {
@@ -60,6 +62,19 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
 
         // CUSTOMER SCREEN
         composable(
+            route = "${DetailsScreen.Invoice.route}/{iId}",
+            arguments = listOf(navArgument("iId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val invoiceId = backStackEntry.arguments?.getString("iId")
+            InvoiceDetailActions(invoiceId = invoiceId, navController)
+        }
+        //INVOICE SCREEN
+        composable(route = DetailsScreen.Invoice.route) {
+            InvoiceDetailActions(invoiceId = null, navController)
+        }
+
+        // CUSTOMER SCREEN
+        composable(
             route = "${DetailsScreen.Customer.route}/{cIdentifier}",
             arguments = listOf(navArgument("cIdentifier") { type = NavType.StringType })
         ) { backStackEntry ->
@@ -71,11 +86,6 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
             route = DetailsScreen.Customer.route,
         ) {
             CustomerDetailsActions(customerIdentifier = null, navController)
-        }
-
-        //INVOICE SCREEN
-        composable(route = DetailsScreen.Invoice.route) {
-            InvoiceInfoScreen(onNavButtonClick = {})
         }
 
         // ITEMS SCREEN

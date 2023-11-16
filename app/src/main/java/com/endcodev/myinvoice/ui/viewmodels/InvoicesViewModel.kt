@@ -25,7 +25,6 @@ class InvoicesViewModel @Inject constructor(
     private val getInvoicesUseCase: GetInvoicesUseCase
 ): ViewModel(
 ) {
-
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 
