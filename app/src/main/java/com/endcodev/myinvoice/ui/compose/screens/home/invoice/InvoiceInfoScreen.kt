@@ -1,6 +1,7 @@
 package com.endcodev.myinvoice.ui.compose.screens.home.invoice
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,10 +9,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -37,9 +40,11 @@ import com.endcodev.myinvoice.data.model.InvoiceUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CDatePicker
 import com.endcodev.myinvoice.ui.compose.components.ChooseCustomerDialog
+import com.endcodev.myinvoice.ui.compose.components.DocSelection
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoiceInfoViewModel
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
 
@@ -62,6 +67,7 @@ fun InvoiceInfoScreen(
 ) {
 
     val state = rememberDatePickerState()
+
     val openDialog = remember { mutableStateOf(false) }
 
     if (uiState.showDialog)
@@ -74,7 +80,9 @@ fun InvoiceInfoScreen(
         Scaffold(
             topBar = { },
             content = { innerPadding ->
-                InvoiceContent(innerPadding, onDatePickerCLick = { openDialog.value = true })
+                InvoiceInfoContent(
+                    innerPadding = innerPadding,
+                    onDateClick = { openDialog.value = true })
             },
             bottomBar = {
                 AcceptCancelButtons(enabled = true, onAcceptClick = { openDialog.value = true }) {}
@@ -82,7 +90,7 @@ fun InvoiceInfoScreen(
         )
 
     if (openDialog.value)
-        CDatePicker(openDialog = { openDialog.value = it }, state)
+        CDatePicker(openDialog = { openDialog.value = it }, state, newDate = {Log.v("new date", it.selectedDateMillis.toString())})
 }
 
 fun now(): String {
@@ -90,31 +98,58 @@ fun now(): String {
 }
 
 @Composable
-fun InvoiceContent(innerPadding: PaddingValues, onDatePickerCLick: () -> Unit) {
-    Column(modifier = Modifier.padding(innerPadding)) {
-        Row {
-            OutlinedTextField(
-                value = "001",
-                onValueChange = {  },
-                label = { Text(text = "invoice") },
-                modifier = Modifier
-                    .width(110.dp)
-                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)
-            )
-
-            val date = now()
-            OutlinedTextField(
-                value = date,
-                onValueChange = {},
-                label = { Text(text = "date") },
-                modifier = Modifier
-                    .width(140.dp)
-                    .padding(top = 16.dp)
-                    .clickable {onDatePickerCLick() }
-            )
+fun InvoiceInfoContent(innerPadding: PaddingValues, onDateClick: () -> Unit) {
+    Column(
+        modifier = Modifier.padding(innerPadding),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+        ) {
+            InvoiceNum(invoiceId = "001")
+            Spacer(modifier = Modifier.width(8.dp))
+            InvoiceDate("", onClick = { onDateClick() }) //todo
+            Spacer(modifier = Modifier.width(8.dp))
+            DocSelection(onSelection = { }, docs = listOf("Invoice", "Receipt"))
         }
-        SelectCustomer(onClick = { })
+        SelectCustomer(onClick = { }) // todo open customers dialog
     }
+}
+
+@Composable
+fun InvoiceNum(invoiceId: String) {
+    OutlinedTextField(
+        value = invoiceId,
+        onValueChange = { },
+        label = { Text(text = "invoice") },
+        modifier = Modifier.width(80.dp)
+    )
+}
+
+@Composable
+fun InvoiceDate(date1: String, onClick: () -> Unit, dateChanged : (String) -> Unit = {}) {
+    var date = date1
+    if (date1.isEmpty() || date1.isBlank())
+        date = now()
+
+    OutlinedTextField(
+        leadingIcon = {
+            Image(
+                //show calendar icon
+                painterResource(id = R.drawable.calendar_24),
+                contentDescription = "",
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
+                modifier = Modifier.clickable { onClick() }
+            )
+        },
+        value = date,
+        onValueChange = {dateChanged(it)},
+        label = { Text(text = "date") },
+        modifier = Modifier.width(160.dp)
+
+    )
 }
 
 @Composable
@@ -125,10 +160,8 @@ fun SelectCustomer(
     val shape = RoundedCornerShape(20)
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-            .border(shape = shape, width = 1.dp, color = MaterialTheme.colorScheme.onBackground)
-            .clickable { onClick() },
+            .fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+            .border(shape = shape, width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
 
@@ -136,7 +169,8 @@ fun SelectCustomer(
         Image(
             painter = painterResource(id = R.drawable.image_search_24),
             contentDescription = "",
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
+            modifier = Modifier.clickable { onClick() }
         )
         Text(
             text = content,
