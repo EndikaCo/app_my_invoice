@@ -45,10 +45,6 @@ fun InvoicesListContentActions(
     val invoices by viewModel.invoices.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
 
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
-
     InvoicesContent(
         searchText = searchText,
         invoices = invoices,

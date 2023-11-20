@@ -22,4 +22,7 @@ interface InvoicesDao {
 
     @Query("DELETE FROM invoices_table WHERE iId = :id")
     fun deleteInvoice(id: String)
+
+    @Query("SELECT * FROM invoices_table WHERE iId = :id")
+    fun getInvoiceById(id: String): InvoicesEntity
 }

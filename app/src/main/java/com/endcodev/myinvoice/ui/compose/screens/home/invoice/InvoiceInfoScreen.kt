@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -36,15 +35,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
+import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.data.model.InvoiceUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CDatePicker
-import com.endcodev.myinvoice.ui.compose.components.ChooseCustomerDialog
+import com.endcodev.myinvoice.ui.compose.components.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoiceInfoViewModel
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
 
@@ -56,25 +55,41 @@ fun InvoiceDetailActions(
     val viewModel: InvoiceInfoViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
-    InvoiceInfoScreen(onNavButtonClick = {}, uiState)
+    InvoiceInfoScreen(
+        onAcceptButton = {viewModel.saveInvoice()},
+        uiState = uiState,
+        onCustomerChange = viewModel::setCustomer,
+        onCancelButton = { navController.popBackStack() }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InvoiceInfoScreen(
-    onNavButtonClick: () -> Unit,
-    uiState: InvoiceUiState
+    onAcceptButton: () -> Unit,
+    onCancelButton: () -> Unit,
+    uiState: InvoiceUiState,
+    onCustomerChange: (CustomerModel) -> Unit
 ) {
 
     val state = rememberDatePickerState()
 
-    val openDialog = remember { mutableStateOf(false) }
+    val dateDialog = remember { mutableStateOf(false) }
+    val customerDialog = remember { mutableStateOf(false) }
 
-    if (uiState.showDialog)
-        ChooseCustomerDialog(
-            onDismissRequest = {},
-            onAcceptRequest = {},
-            customers = uiState.customersList!!//todo null
+    if (dateDialog.value)
+        CDatePicker(
+            openDialog = { dateDialog.value = it },
+            state,
+            newDate = { Log.v("new date", it.selectedDateMillis.toString()) })
+
+    if (customerDialog.value)
+        ChooseCustomerDialogActions(
+            onDismissRequest = { customerDialog.value = false },
+            onAcceptRequest = {
+                onCustomerChange(it)
+                customerDialog.value = false
+            },
         )
     else
         Scaffold(
@@ -82,23 +97,36 @@ fun InvoiceInfoScreen(
             content = { innerPadding ->
                 InvoiceInfoContent(
                     innerPadding = innerPadding,
-                    onDateClick = { openDialog.value = true })
+                    onDateClick = { dateDialog.value = true },
+                    onCustomerClick = { customerDialog.value = true },
+                    customer = uiState.customer
+                )
             },
             bottomBar = {
-                AcceptCancelButtons(enabled = true, onAcceptClick = { openDialog.value = true }) {}
+                AcceptCancelButtons(
+                    enabled = true,
+                    onAcceptClick = {
+                        onAcceptButton()
+                        dateDialog.value = true
+                    },
+                    onCancelClick = {
+                        onCancelButton()
+                    })
             }
         )
-
-    if (openDialog.value)
-        CDatePicker(openDialog = { openDialog.value = it }, state, newDate = {Log.v("new date", it.selectedDateMillis.toString())})
 }
 
 fun now(): String {
-    return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    return SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
 }
 
 @Composable
-fun InvoiceInfoContent(innerPadding: PaddingValues, onDateClick: () -> Unit) {
+fun InvoiceInfoContent(
+    innerPadding: PaddingValues,
+    onDateClick: () -> Unit,
+    onCustomerClick: () -> Unit,
+    customer: CustomerModel?,
+) {
     Column(
         modifier = Modifier.padding(innerPadding),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -114,7 +142,7 @@ fun InvoiceInfoContent(innerPadding: PaddingValues, onDateClick: () -> Unit) {
             Spacer(modifier = Modifier.width(8.dp))
             DocSelection(onSelection = { }, docs = listOf("Invoice", "Receipt"))
         }
-        SelectCustomer(onClick = { }) // todo open customers dialog
+        SelectCustomer(content = customer, onIconClick = { onCustomerClick() })
     }
 }
 
@@ -129,7 +157,7 @@ fun InvoiceNum(invoiceId: String) {
 }
 
 @Composable
-fun InvoiceDate(date1: String, onClick: () -> Unit, dateChanged : (String) -> Unit = {}) {
+fun InvoiceDate(date1: String, onClick: () -> Unit, dateChanged: (String) -> Unit = {}) {
     var date = date1
     if (date1.isEmpty() || date1.isBlank())
         date = now()
@@ -145,7 +173,7 @@ fun InvoiceDate(date1: String, onClick: () -> Unit, dateChanged : (String) -> Un
             )
         },
         value = date,
-        onValueChange = {dateChanged(it)},
+        onValueChange = { dateChanged(it) },
         label = { Text(text = "date") },
         modifier = Modifier.width(160.dp)
 
@@ -154,13 +182,18 @@ fun InvoiceDate(date1: String, onClick: () -> Unit, dateChanged : (String) -> Un
 
 @Composable
 fun SelectCustomer(
-    content: String = "Select customer",
-    onClick: () -> Unit
+    content: CustomerModel?,
+    onIconClick: () -> Unit
 ) {
+    var name: String? = content?.cFiscalName
+    if (name.isNullOrEmpty())
+        name = "Select Customer"
+
     val shape = RoundedCornerShape(20)
     Row(
         modifier = Modifier
-            .fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp)
             .border(shape = shape, width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -170,10 +203,11 @@ fun SelectCustomer(
             painter = painterResource(id = R.drawable.image_search_24),
             contentDescription = "",
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
-            modifier = Modifier.clickable { onClick() }
+            modifier = Modifier.clickable { onIconClick() }
         )
+
         Text(
-            text = content,
+            text = name,
             fontWeight = FontWeight.W300,
             modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
         )
@@ -186,6 +220,10 @@ fun SelectCustomer(
 @Composable
 fun PreviewInvoiceInfoScreen() {
     MyInvoiceTheme {
-        InvoiceInfoScreen(onNavButtonClick = {}, uiState = InvoiceUiState())
+        InvoiceInfoScreen(
+            onAcceptButton = {},
+            uiState = InvoiceUiState(),
+            onCustomerChange = {},
+            onCancelButton = {})
     }
 }

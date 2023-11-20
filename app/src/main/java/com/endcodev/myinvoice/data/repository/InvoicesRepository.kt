@@ -1,8 +1,10 @@
 package com.endcodev.myinvoice.data.repository
 
+import com.endcodev.myinvoice.data.database.CustomersEntity
 import com.endcodev.myinvoice.data.database.InvoicesDao
 import com.endcodev.myinvoice.data.database.InvoicesEntity
 import com.endcodev.myinvoice.data.database.toDomain
+import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.data.model.InvoicesModel
 import javax.inject.Inject
 
@@ -20,7 +22,14 @@ class InvoicesRepository @Inject constructor(
         invoicesDao.insertAllInvoices(invoiceList)
     }
 
-    suspend fun insertItem(invoice: InvoicesEntity) {
+
+    suspend fun getInvoiceById(invoiceId: String): InvoicesModel {
+        val invoice : InvoicesEntity = invoicesDao.getInvoiceById(invoiceId)
+        return invoice.toDomain()
+    }
+
+    suspend fun insertInvoice(invoice: InvoicesEntity) {
         invoicesDao.insertInvoice(invoice)
+
     }
 }

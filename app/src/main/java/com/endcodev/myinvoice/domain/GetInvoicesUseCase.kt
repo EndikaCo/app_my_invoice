@@ -29,6 +29,8 @@ class GetInvoicesUseCase @Inject constructor(
         return invoicesList
     }
 
+
+
     private fun exampleInvoices(): MutableList<InvoicesEntity> {
         return arrayListOf(
             InvoicesEntity(iId = 1, iCustomer = "Manolo")

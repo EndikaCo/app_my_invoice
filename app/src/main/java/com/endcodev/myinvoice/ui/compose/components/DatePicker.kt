@@ -50,7 +50,6 @@ fun CDatePicker(openDialog: (Boolean) -> Unit, state: DatePickerState, newDate: 
         // Pass the lambda to the DatePicker to handle the selected date
         DatePicker(
             state = state,
-
         )
     }
 }

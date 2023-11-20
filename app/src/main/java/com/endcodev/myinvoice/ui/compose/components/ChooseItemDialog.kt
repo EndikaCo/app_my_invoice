@@ -2,30 +2,68 @@ package com.endcodev.myinvoice.ui.compose.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.endcodev.myinvoice.data.database.toDomain
 import com.endcodev.myinvoice.data.model.CustomerModel
+import com.endcodev.myinvoice.domain.GetCustomersUseCase
+import com.endcodev.myinvoice.ui.compose.screens.auth.login.LoginHeader
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomerItem
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
+import com.endcodev.myinvoice.ui.viewmodels.DialogViewModel
+
+@Composable
+fun ChooseCustomerDialogActions(
+    onDismissRequest: () -> Unit,
+    onAcceptRequest: (CustomerModel) -> Unit,
+) {
+    val viewModel: DialogViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+
+    ChooseCustomerDialog(
+        uiState.searchText,
+        viewModel::setSearchText,
+        uiState.customersList,
+        onAcceptRequest,
+        onDismissRequest
+    )
+}
 
 @Composable
 fun ChooseCustomerDialog(
-    onDismissRequest: () -> Unit,
+    searchText: String,
+    onTextChange: (String) -> Unit,
+    itemList: List<CustomerModel>,
     onAcceptRequest: (CustomerModel) -> Unit,
-    customers: List<CustomerModel>
+    onDismissRequest: () -> Unit = {}
 ) {
-    Dialog(onDismissRequest = { }) {
-        Column {
-            LazyColumn(
-                modifier = Modifier
-            ) {
-                items(customers) { customer ->
-                    CustomerItem(customer, onItemClick = { onAcceptRequest(customer) })
+    Column {
+
+        Dialog(onDismissRequest = { onDismissRequest()}) {
+            Column {
+                LoginHeader(onDismissRequest)
+                CommonSearchBar(searchText, onTextChange, onFilterClick = {})
+                Spacer(modifier = Modifier.height(16.dp))
+                LazyColumn(
+                    modifier = Modifier
+                ) {
+                    items(itemList) { customer ->
+                        CustomerItem(customer, onItemClick = {
+                            onAcceptRequest(customer)
+                        })
+                    }
                 }
+
             }
         }
     }
@@ -36,14 +74,14 @@ fun ChooseCustomerDialog(
 @Composable
 fun PreviewChooseCustomerDialog() {
     MyInvoiceTheme {
+
+        val customers = GetCustomersUseCase.exampleCustomers().map { it.toDomain() }
+
         ChooseCustomerDialog(
-            onDismissRequest = {},
-            onAcceptRequest = {},
-            listOf(
-                CustomerModel(null, "A525251dss", "Jose Miguel", "678595232", ""),
-                CustomerModel(null, "225525535F", "Manolo", "763276326", ""),
-                CustomerModel(null, "325252525D", "Aurelio Martinez", "42424242112", ""),
-            )
+            "Search",
+            {},
+            customers,
+            {}
         )
     }
 }

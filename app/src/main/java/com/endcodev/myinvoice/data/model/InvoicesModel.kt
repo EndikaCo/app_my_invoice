@@ -1,7 +1,7 @@
 package com.endcodev.myinvoice.data.model
 
 data class InvoicesModel(
-    val iId: Int,
+    val iId: Int? = null,
     val iCustomer: String
     )
 {
