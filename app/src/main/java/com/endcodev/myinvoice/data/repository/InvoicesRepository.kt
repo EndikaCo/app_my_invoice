@@ -23,6 +23,7 @@ class InvoicesRepository @Inject constructor(
     }
 
 
+
     suspend fun getInvoiceById(invoiceId: String): InvoicesModel {
         val invoice : InvoicesEntity = invoicesDao.getInvoiceById(invoiceId)
         return invoice.toDomain()
@@ -30,6 +31,9 @@ class InvoicesRepository @Inject constructor(
 
     suspend fun insertInvoice(invoice: InvoicesEntity) {
         invoicesDao.insertInvoice(invoice)
+    }
 
+    suspend fun updateInvoice(invoice: InvoicesEntity) {
+        invoicesDao.updateInvoice(invoice)
     }
 }

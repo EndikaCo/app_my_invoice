@@ -54,15 +54,11 @@ import com.endcodev.myinvoice.ui.utils.uriToPainterImage
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 
 @Composable
-fun CustomersListContentActions(
-    navController: NavHostController,
-) {
+fun CustomersListContentActions(navController: NavHostController) {
+
     val viewModel: CustomersViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
-
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
+    var showDialog by remember { mutableStateOf(false) }
 
     CustomersListContent(
         searchText = uiState.searchText,
@@ -71,7 +67,7 @@ fun CustomersListContentActions(
         onSearchTextChange = viewModel::setSearchText,
         onFloatingButtonClick = { navController.navigate(DetailsScreen.Customer.route) },
         onListItemClick = { navController.navigate("${DetailsScreen.Customer.route}/${it}") },
-        onFilterClick = {showDialog = true  },
+        onFilterClick = { showDialog = true },
         filters = uiState.filters,
         onFiltersChanged = { viewModel.changeFilters(it) },
         onDialogExit = { showDialog = false },
@@ -87,14 +83,12 @@ fun CustomersListContent(
     customers: List<CustomerModel>,
     isLoading: Boolean,
     onSearchTextChange: (String) -> Unit,
-
     onFiltersChanged: (List<FilterModel>) -> Unit,
     filters: List<FilterModel>,
     onDialogExit: () -> Unit,
     showDialog: Boolean,
-    onFilterClick: () -> Unit,
-    ) {
-
+    onFilterClick: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -166,9 +160,9 @@ fun CustomerImage(image: Painter, colorFilter: ColorFilter?) {
 @Composable
 fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
 
-    var colorFilter : ColorFilter? = null
+    var colorFilter: ColorFilter? = null
     var image = uriToPainterImage(customer.cImage)
-    if (image == null){
+    if (image == null) {
         colorFilter = ColorFilter.tint(color = colorScheme.onBackground)
         image = painterResource(id = R.drawable.person_24)
     }

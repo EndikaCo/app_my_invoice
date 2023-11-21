@@ -40,4 +40,11 @@ class GetSimpleInvoiceUseCase @Inject constructor(
             Log.v(GetCustomersUseCase.TAG, "customer ${invoice.iId} inserted")
         }
     }
+
+    suspend fun updateInvoice(invoice: InvoicesEntity?) {
+        if (invoice != null) {
+            repository.updateInvoice(invoice)
+            Log.v(GetCustomersUseCase.TAG, "customer ${invoice.iId} updated")
+        }
+    }
 }

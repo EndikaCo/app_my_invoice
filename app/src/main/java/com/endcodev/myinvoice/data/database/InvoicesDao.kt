@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface InvoicesDao {
@@ -19,6 +20,9 @@ interface InvoicesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertInvoice(invoice: InvoicesEntity)
+
+    @Update
+    suspend fun updateInvoice(invoice: InvoicesEntity)
 
     @Query("DELETE FROM invoices_table WHERE iId = :id")
     fun deleteInvoice(id: String)

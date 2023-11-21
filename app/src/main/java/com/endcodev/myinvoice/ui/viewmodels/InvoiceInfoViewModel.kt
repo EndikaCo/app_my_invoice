@@ -61,17 +61,15 @@ class InvoiceInfoViewModel @Inject constructor(
 
     fun saveInvoice() {
         viewModelScope.launch {
-
-            if (uiState.value.id.isNotEmpty() && uiState.value.id != "-")
+        Log.v("invoice", uiState.value.id)
+            if (uiState.value.id == "-")
                 getSimpleInvoiceUseCase.saveInvoice(
                     InvoicesEntity(
-                        iCustomer = uiState.value.customer!!.cIdentifier,
-                        iId = uiState.value.id.toInt()
-                    )
+                        iCustomer = uiState.value.customer!!.cIdentifier)
                 )
 
-            if (uiState.value.customer != null && uiState.value.customer!!.cFiscalName.isNotEmpty())
-                getSimpleInvoiceUseCase.saveInvoice(
+           else
+                getSimpleInvoiceUseCase.updateInvoice(
                     InvoicesEntity(iCustomer = uiState.value.customer!!.cIdentifier)
                 )
         }
