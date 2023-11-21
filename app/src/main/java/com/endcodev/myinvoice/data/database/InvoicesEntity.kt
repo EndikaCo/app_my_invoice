@@ -3,7 +3,6 @@ package com.endcodev.myinvoice.data.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.endcodev.myinvoice.data.model.CustomerModel
 import com.endcodev.myinvoice.data.model.InvoicesModel
 
 @Entity(tableName = "invoices_table")
@@ -13,4 +12,4 @@ data class InvoicesEntity(
     @ColumnInfo(name = "iCustomer") val iCustomer: String
     )
 
-fun InvoicesEntity.toDomain() = InvoicesModel( iId = iId, iCustomer =  iCustomer)
+fun InvoicesEntity.toDomain() = InvoicesModel( iId = iId, iCustomerId =  iCustomer)
