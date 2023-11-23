@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.model.InvoicesModel
-import com.endcodev.myinvoice.domain.GetInvoicesUseCase
+import com.endcodev.myinvoice.domain.models.InvoicesModel
+import com.endcodev.myinvoice.domain.usecases.GetInvoicesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

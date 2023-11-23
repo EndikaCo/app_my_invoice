@@ -68,7 +68,7 @@ fun PreviewAcceptCancelButtons() {
     }
 }
 
-@Preview(name = "Light Mode")
+@Preview(name = "Light Mode", backgroundColor = 0xFFC2C2C2)
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewAcceptCancelButtons2() {

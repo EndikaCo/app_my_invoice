@@ -1,6 +1,7 @@
-package com.endcodev.myinvoice.data.model
+package com.endcodev.myinvoice.domain.models
 
 import android.net.Uri
+import com.endcodev.myinvoice.data.database.CustomersEntity
 
 data class CustomerModel(
     val cImage: Uri?,
@@ -20,4 +21,15 @@ data class CustomerModel(
             it.contains(query, ignoreCase = true)
         }
     }
+
+    fun toEntity(): CustomersEntity {
+        return CustomersEntity(
+            cImage = cImage.toString(),
+            cIdentifier = cIdentifier,
+            cFiscalName = cFiscalName,
+            cTelephone = cTelephone,
+            cCountry = cCountry,
+        )
+    }
+
 }

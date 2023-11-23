@@ -1,12 +1,9 @@
-package com.endcodev.myinvoice.domain
+package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.data.database.CustomersEntity
 import com.endcodev.myinvoice.data.database.InvoicesEntity
-import com.endcodev.myinvoice.data.model.InvoicesModel
-import com.endcodev.myinvoice.data.repository.CustomersRepository
+import com.endcodev.myinvoice.domain.models.InvoicesModel
 import com.endcodev.myinvoice.data.repository.InvoicesRepository
 import javax.inject.Inject
 
@@ -18,7 +15,7 @@ class GetSimpleInvoiceUseCase @Inject constructor(
         const val TAG = "GetSimpleCustomerUseCase"
     }
 
-    suspend operator fun invoke(invoiceId: String?): InvoicesModel? {
+    operator fun invoke(invoiceId: String?): InvoicesModel? {
 
         var invoice : InvoicesModel? = null
 
@@ -34,17 +31,14 @@ class GetSimpleInvoiceUseCase @Inject constructor(
     }
 
 
-    suspend fun saveInvoice(invoice: InvoicesEntity?) {
-        if (invoice != null) {
+    suspend fun saveInvoice(invoice: InvoicesModel) {
             repository.insertInvoice(invoice)
             Log.v(GetCustomersUseCase.TAG, "customer ${invoice.iId} inserted")
-        }
     }
 
-    suspend fun updateInvoice(invoice: InvoicesEntity?) {
-        if (invoice != null) {
+    suspend fun updateInvoice(invoice: InvoicesModel) {
             repository.updateInvoice(invoice)
             Log.v(GetCustomersUseCase.TAG, "customer ${invoice.iId} updated")
-        }
+
     }
 }

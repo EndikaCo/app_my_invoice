@@ -19,8 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.endcodev.myinvoice.data.model.CountryModel
-import com.endcodev.myinvoice.data.model.allCountriesList
+import com.endcodev.myinvoice.domain.models.allCountriesList
 
 @Composable
 fun CountrySelection(modifier: Modifier, onSelection : (String) -> Unit) {

@@ -3,7 +3,7 @@ package com.endcodev.myinvoice.data.repository
 import com.endcodev.myinvoice.data.database.ItemsDao
 import com.endcodev.myinvoice.data.database.ItemsEntity
 import com.endcodev.myinvoice.data.database.toDomain
-import com.endcodev.myinvoice.data.model.ItemModel
+import com.endcodev.myinvoice.domain.models.ItemModel
 import javax.inject.Inject
 
 class ItemsRepository @Inject constructor(

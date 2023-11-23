@@ -1,10 +1,8 @@
-package com.endcodev.myinvoice.domain
+package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
-import com.endcodev.myinvoice.data.database.CustomersEntity
 import com.endcodev.myinvoice.data.database.ItemsEntity
-import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.data.model.ItemModel
+import com.endcodev.myinvoice.domain.models.ItemModel
 import com.endcodev.myinvoice.data.repository.ItemsRepository
 import javax.inject.Inject
 

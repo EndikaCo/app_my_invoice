@@ -4,11 +4,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.database.CustomersEntity
 import com.endcodev.myinvoice.data.database.ItemsEntity
-import com.endcodev.myinvoice.data.model.ItemModel
-import com.endcodev.myinvoice.data.model.ItemUiState
-import com.endcodev.myinvoice.domain.GetSimpleItemsUseCase
+import com.endcodev.myinvoice.domain.models.ItemModel
+import com.endcodev.myinvoice.domain.models.ItemUiState
+import com.endcodev.myinvoice.domain.usecases.GetSimpleItemsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

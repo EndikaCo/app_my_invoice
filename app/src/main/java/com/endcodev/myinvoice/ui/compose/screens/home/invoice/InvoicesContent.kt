@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.model.InvoicesModel
+import com.endcodev.myinvoice.domain.models.InvoicesModel
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
@@ -143,7 +143,7 @@ fun InvoicePreviewData(modifier: Modifier, invoice: InvoicesModel) {
                 .height(25.dp)
         )
         Text(
-            text = invoice.iCustomerId,
+            text = invoice.iCustomer.cFiscalName ?: "No customer",
             modifier = Modifier
                 .height(25.dp)
         )

@@ -2,20 +2,27 @@ package com.endcodev.myinvoice.ui.compose.screens.home.invoice
 
 import android.content.res.Configuration
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -30,7 +37,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,9 +49,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.data.model.InvoiceUiState
-import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
+import com.endcodev.myinvoice.domain.models.CustomerModel
+import com.endcodev.myinvoice.domain.models.InvoiceUiState
+import com.endcodev.myinvoice.domain.models.ItemModel
+import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.CDatePicker
 import com.endcodev.myinvoice.ui.compose.components.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
@@ -115,14 +127,22 @@ fun InvoiceInfoScreen(
                 )
             },
             bottomBar = {
-                AcceptCancelButtons(
-                    enabled = true,
-                    onAcceptClick = {
-                        onAcceptButton()
-                    },
-                    onCancelClick = {
-                        onCancelButton()
-                    })
+                Column {
+                    Divider(
+                        modifier = Modifier
+                            .background(Color(R.color.transparent))
+                            .height(1.dp)
+                            .fillMaxWidth()
+                    )
+                    ActionButtons(
+                        enabled = true,
+                        onAcceptClick = {
+                            onAcceptButton()
+                        },
+                        onCancelClick = {
+                            onCancelButton()
+                        })
+                }
             }
         )
 }
@@ -138,7 +158,7 @@ fun InvoiceInfoContent(
     onCustomerClick: () -> Unit,
     uiState: InvoiceUiState
 ) {
-    var mCustomer : CustomerModel? = uiState.customer
+    var mCustomer: CustomerModel? = uiState.customer
     if (mCustomer == null)
         mCustomer = CustomerModel(cImage = null, cFiscalName = "New Customer", cIdentifier = "-")
 
@@ -158,7 +178,98 @@ fun InvoiceInfoContent(
             DocSelection(onSelection = { }, docs = listOf("Invoice", "Receipt"))
         }
         SelectCustomer(customer = mCustomer, onIconClick = { onCustomerClick() })
+        Spacer(modifier = Modifier.height(16.dp))
+        ProductListTitle()
+        Spacer(modifier = Modifier.height(16.dp))
+        InvoiceItemsList()
+    }
+}
+
+@Composable
+fun InvoiceItemsList() {
+    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally)
+    {
+        items(10) {
+            InvoiceProduct(onItemClick = {}, null)
+        }
+    }
+}
+
+@Composable
+fun InvoiceProduct(onItemClick: () -> Unit, product: ItemModel?) {
+    ElevatedCard(
+        modifier = Modifier
+            .padding(bottom = 8.dp, start = 15.dp, end = 15.dp) //between items
+            .fillMaxWidth()
+            .clickable { onItemClick() }
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
+        ) {
+
+            val colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+            val image = painterResource(id = R.drawable.filter_24)
+
+            Spacer(modifier = Modifier.width(16.dp))
+            listImage(
+                image = image,
+                colorFilter = colorFilter
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = "PRO-3121")
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = "200")
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = "0,36€")
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = "50%")
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = "16.87€")
+        }
+    }
+}
+
+@Composable
+fun ProductListTitle() {
+    Row {
+        // Spacer(modifier = Modifier.width(16.dp))
+        //Text(text = "Img")
         Spacer(modifier = Modifier.width(16.dp))
+        Text(text = "Code")
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = "Units")
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = "Price")
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = "Disc")
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = "Total")
+    }
+}
+
+
+@Composable
+fun listImage(image: Painter, colorFilter: ColorFilter?) {
+
+    Box(
+        modifier = Modifier
+            .size(20.dp) // Size of the Box (background)
+            .border(
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
+                shape = CircleShape
+            ), contentAlignment = Alignment.Center // Center content in the Box
+    ) {
+        Image(
+            painter = image,
+            contentDescription = "customer Image",
+            modifier = Modifier
+                .height(25.dp)
+                .width(25.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop,
+            colorFilter = colorFilter
+        )
     }
 }
 

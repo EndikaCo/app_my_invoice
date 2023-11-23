@@ -1,11 +1,10 @@
 package com.endcodev.myinvoice.data.database
 
 import android.net.Uri
-import androidx.core.net.toUri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.endcodev.myinvoice.data.model.CustomerModel
+import com.endcodev.myinvoice.domain.models.CustomerModel
 
 @Entity(tableName = "customer_table")
 data class CustomersEntity(

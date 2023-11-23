@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.data.model
+package com.endcodev.myinvoice.domain.models
 
 data class InvoiceUiState(
     val customer : CustomerModel? = null,

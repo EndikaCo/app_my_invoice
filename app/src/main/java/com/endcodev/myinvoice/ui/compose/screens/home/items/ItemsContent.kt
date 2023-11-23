@@ -35,9 +35,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.database.toDomain
-import com.endcodev.myinvoice.data.model.FilterModel
-import com.endcodev.myinvoice.data.model.ItemModel
-import com.endcodev.myinvoice.domain.GetItemsUseCase
+import com.endcodev.myinvoice.domain.models.FilterModel
+import com.endcodev.myinvoice.domain.models.ItemModel
+import com.endcodev.myinvoice.domain.usecases.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton

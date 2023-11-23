@@ -2,9 +2,8 @@ package com.endcodev.myinvoice.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.model.CustomersListUiState
-import com.endcodev.myinvoice.data.model.FilterModel
-import com.endcodev.myinvoice.domain.GetCustomersUseCase
+import com.endcodev.myinvoice.domain.models.CustomersListUiState
+import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

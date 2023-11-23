@@ -40,10 +40,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.database.toDomain
-import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.data.model.FilterModel
-import com.endcodev.myinvoice.data.model.FilterType
-import com.endcodev.myinvoice.domain.GetCustomersUseCase
+import com.endcodev.myinvoice.domain.models.CustomerModel
+import com.endcodev.myinvoice.domain.models.FilterModel
+import com.endcodev.myinvoice.domain.models.FilterType
+import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton

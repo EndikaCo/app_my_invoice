@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.database.InvoicesEntity
-import com.endcodev.myinvoice.data.model.CustomerModel
-import com.endcodev.myinvoice.data.model.InvoiceUiState
-import com.endcodev.myinvoice.data.model.InvoicesModel
-import com.endcodev.myinvoice.domain.GetSimpleCustomerUseCase
-import com.endcodev.myinvoice.domain.GetSimpleInvoiceUseCase
+import com.endcodev.myinvoice.domain.models.CustomerModel
+import com.endcodev.myinvoice.domain.models.InvoiceUiState
+import com.endcodev.myinvoice.domain.models.InvoicesModel
+import com.endcodev.myinvoice.domain.usecases.GetSimpleCustomerUseCase
+import com.endcodev.myinvoice.domain.usecases.GetSimpleInvoiceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,7 +40,7 @@ class InvoiceInfoViewModel @Inject constructor(
             Log.v("invoiceId", invoiceId.toString())
             val invoice = getSimpleInvoiceUseCase.invoke(invoiceId)
             Log.v("invoice", invoice.toString())
-            val customer = getSimpleCustomerUseCase.invoke(invoice?.iCustomerId)
+            val customer = getSimpleCustomerUseCase.invoke(invoice?.iCustomer?.cIdentifier)
             Log.v("customer", customer.toString())
             withContext(Dispatchers.Main) {
                 if (invoice != null && customer != null)
@@ -62,16 +62,12 @@ class InvoiceInfoViewModel @Inject constructor(
     fun saveInvoice() {
         viewModelScope.launch {
         Log.v("invoice", uiState.value.id)
-            if (uiState.value.id == "-")
-                getSimpleInvoiceUseCase.saveInvoice(
-                    InvoicesEntity(
-                        iCustomer = uiState.value.customer!!.cIdentifier)
-                )
+            //if (uiState.value.id == "-")
+            uiState.value.customer?.let { InvoicesModel(iCustomer = it) }
+                ?.let { getSimpleInvoiceUseCase.saveInvoice(it) }
 
-           else
-                getSimpleInvoiceUseCase.updateInvoice(
-                    InvoicesEntity(iCustomer = uiState.value.customer!!.cIdentifier)
-                )
+           //else
+           ///     getSimpleInvoiceUseCase.updateInvoice(InvoicesModel(iCustomer = uiState.value.customer))
         }
     }
 }

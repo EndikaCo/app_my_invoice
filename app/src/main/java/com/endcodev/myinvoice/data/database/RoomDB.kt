@@ -2,6 +2,8 @@ package com.endcodev.myinvoice.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.endcodev.myinvoice.data.Converters
 
 @Database(
     entities = [
@@ -9,8 +11,9 @@ import androidx.room.RoomDatabase
         InvoicesEntity::class,
         ItemsEntity::class
     ],
-    version = 9
+    version = 10
 )
+@TypeConverters(Converters::class)
 abstract class RoomDB : RoomDatabase() {
     abstract fun getCustomerDao(): CustomersDao
     abstract fun getItemsDao(): ItemsDao

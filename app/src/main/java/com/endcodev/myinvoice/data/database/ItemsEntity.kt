@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.endcodev.myinvoice.data.model.ItemModel
+import com.endcodev.myinvoice.domain.models.ItemModel
 
 @Entity(tableName = "items_table")
 data class ItemsEntity(

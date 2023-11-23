@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.data.model
+package com.endcodev.myinvoice.domain.models
 
 import android.net.Uri
 

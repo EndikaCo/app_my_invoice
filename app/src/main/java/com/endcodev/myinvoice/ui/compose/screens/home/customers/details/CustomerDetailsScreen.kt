@@ -43,7 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.model.CustomerInfoUiState
+import com.endcodev.myinvoice.domain.models.CustomerInfoUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar

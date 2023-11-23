@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.model.ItemUiState
+import com.endcodev.myinvoice.domain.models.ItemUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CustomerInfoImage
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.pPadding
