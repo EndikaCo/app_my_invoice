@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
@@ -75,7 +76,7 @@ fun CancelButton(onButtonClick: () -> Unit) {
     Box(contentAlignment = Alignment.Center) {
         Button(
             onClick = { onButtonClick() },
-            shape = RectangleShape,
+            shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
                 contentColor = MaterialTheme.colorScheme.onBackground,
                 containerColor = Color(0xFF6B6B6B),
@@ -95,7 +96,7 @@ fun DeleteButton(onButtonClick: () -> Unit) {
     Box(contentAlignment = Alignment.Center) {
         Button(
             onClick = { onButtonClick() },
-            shape = RectangleShape,
+            shape = RoundedCornerShape(5.dp),
             colors = ButtonDefaults.buttonColors(
                 contentColor = MaterialTheme.colorScheme.onBackground,
                 containerColor = Color(0xFFAC3636),

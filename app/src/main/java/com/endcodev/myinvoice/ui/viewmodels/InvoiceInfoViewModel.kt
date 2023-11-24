@@ -3,7 +3,6 @@ package com.endcodev.myinvoice.ui.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.database.InvoicesEntity
 import com.endcodev.myinvoice.domain.models.CustomerModel
 import com.endcodev.myinvoice.domain.models.InvoiceUiState
 import com.endcodev.myinvoice.domain.models.InvoicesModel

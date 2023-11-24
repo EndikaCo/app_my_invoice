@@ -1,8 +1,8 @@
 package com.endcodev.myinvoice.data.repository
 
-import com.endcodev.myinvoice.data.database.ItemsDao
-import com.endcodev.myinvoice.data.database.ItemsEntity
-import com.endcodev.myinvoice.data.database.toDomain
+import com.endcodev.myinvoice.data.database.daos.ItemsDao
+import com.endcodev.myinvoice.data.database.entities.ItemsEntity
+import com.endcodev.myinvoice.data.database.entities.toDomain
 import com.endcodev.myinvoice.domain.models.ItemModel
 import javax.inject.Inject
 

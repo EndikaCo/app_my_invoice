@@ -48,7 +48,7 @@ import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
-import com.endcodev.myinvoice.ui.utils.uriToPainterImage
+import com.endcodev.myinvoice.ui.compose.uriToPainterImage
 
 val pPadding = 20.dp
 

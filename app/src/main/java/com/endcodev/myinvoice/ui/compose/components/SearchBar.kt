@@ -22,10 +22,14 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
-fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit, onFilterClick: () -> Unit) {
+fun CommonSearchBar(
+    searchText: String,
+    onTextChanged: (String) -> Unit,
+    onFilterClick: () -> Unit
+) {
     TextField(
         value = searchText,
-        onValueChange = { valueChanged(it) },
+        onValueChange = { onTextChanged(it) },
         leadingIcon = {
             Icon(Icons.Filled.Search, stringResource(R.string.search_bar_icon))
         },
@@ -39,7 +43,7 @@ fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit, onFilter
                 Icon(
                     Icons.Filled.Close,
                     contentDescription = stringResource(R.string.seach_bar_clean_content),
-                    Modifier.clickable { valueChanged("") })
+                    Modifier.clickable { onTextChanged("") })
                 Spacer(modifier = Modifier.size(8.dp))
             }
         },
@@ -53,6 +57,6 @@ fun CommonSearchBar(searchText: String, valueChanged: (String) -> Unit, onFilter
 @Composable
 fun SearchBarPreview() {
     MyInvoiceTheme {
-        CommonSearchBar(searchText = "Search", valueChanged = {}, onFilterClick = {})
+        CommonSearchBar(searchText = "Search", onTextChanged = {}, onFilterClick = {})
     }
 }

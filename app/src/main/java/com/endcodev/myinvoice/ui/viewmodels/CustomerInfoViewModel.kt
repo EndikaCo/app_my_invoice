@@ -3,7 +3,7 @@ package com.endcodev.myinvoice.ui.viewmodels
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.database.CustomersEntity
+import com.endcodev.myinvoice.data.database.entities.CustomersEntity
 import com.endcodev.myinvoice.domain.models.CustomerModel
 import com.endcodev.myinvoice.domain.models.CustomerInfoUiState
 import com.endcodev.myinvoice.domain.usecases.GetSimpleCustomerUseCase

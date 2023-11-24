@@ -3,7 +3,7 @@ package com.endcodev.myinvoice.domain.usecases
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.endcodev.myinvoice.domain.models.CustomerModel
-import com.endcodev.myinvoice.data.database.CustomersEntity
+import com.endcodev.myinvoice.data.database.entities.CustomersEntity
 import com.endcodev.myinvoice.data.repository.CustomersRepository
 import javax.inject.Inject
 

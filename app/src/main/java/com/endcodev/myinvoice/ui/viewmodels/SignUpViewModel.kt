@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.ui.utils.UiText
+import com.endcodev.myinvoice.ui.compose.UiText
 import com.endcodev.myinvoice.data.network.AuthError.*
 import com.endcodev.myinvoice.data.network.AuthenticationService
 import com.endcodev.myinvoice.data.network.FirebaseClient

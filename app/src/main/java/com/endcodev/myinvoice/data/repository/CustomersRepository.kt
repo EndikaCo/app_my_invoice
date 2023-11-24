@@ -1,9 +1,9 @@
 package com.endcodev.myinvoice.data.repository
 
 import com.endcodev.myinvoice.domain.models.CustomerModel
-import com.endcodev.myinvoice.data.database.CustomersDao
-import com.endcodev.myinvoice.data.database.CustomersEntity
-import com.endcodev.myinvoice.data.database.toDomain
+import com.endcodev.myinvoice.data.database.daos.CustomersDao
+import com.endcodev.myinvoice.data.database.entities.CustomersEntity
+import com.endcodev.myinvoice.data.database.entities.toDomain
 import javax.inject.Inject
 
 class CustomersRepository @Inject constructor(

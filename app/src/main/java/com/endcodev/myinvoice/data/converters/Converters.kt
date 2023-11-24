@@ -1,8 +1,8 @@
-package com.endcodev.myinvoice.data
+package com.endcodev.myinvoice.data.converters
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
-import com.endcodev.myinvoice.data.database.CustomersEntity
+import com.endcodev.myinvoice.data.database.entities.CustomersEntity
 import com.google.gson.Gson
 
 @ProvidedTypeConverter

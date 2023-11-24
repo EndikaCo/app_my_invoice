@@ -1,7 +1,7 @@
 package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
-import com.endcodev.myinvoice.data.database.InvoicesEntity
+import com.endcodev.myinvoice.data.database.entities.InvoicesEntity
 import com.endcodev.myinvoice.domain.models.InvoicesModel
 import com.endcodev.myinvoice.data.repository.InvoicesRepository
 import javax.inject.Inject

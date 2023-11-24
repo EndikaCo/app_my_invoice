@@ -2,8 +2,12 @@ package com.endcodev.myinvoice.ui.compose.screens.home.items
 
 import android.content.res.Configuration
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,9 +17,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,26 +34,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.data.database.toDomain
+import com.endcodev.myinvoice.data.database.entities.toDomain
 import com.endcodev.myinvoice.domain.models.FilterModel
 import com.endcodev.myinvoice.domain.models.ItemModel
 import com.endcodev.myinvoice.domain.usecases.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
 import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomerImage
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.FiltersDialog
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.compose.uriToPainterImage
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
-import com.endcodev.myinvoice.ui.utils.uriToPainterImage
 import com.endcodev.myinvoice.ui.viewmodels.ItemsViewModel
 
 @Composable
@@ -134,7 +143,7 @@ fun ItemsList(
 ) {
     LazyVerticalGrid(modifier = modifier,
         columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        contentPadding = PaddingValues(horizontal = 1.dp, vertical = 1.dp),
         verticalArrangement = Arrangement.spacedBy(space = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
         content = {
@@ -161,15 +170,14 @@ fun ProductItem(item: ItemModel, onItemClick: () -> Unit) {
 
     ElevatedCard(
         modifier = Modifier
-            .padding(bottom = 8.dp)
             .fillMaxWidth()
             .clickable { onItemClick() }
     ) {
         Row(
             modifier = Modifier
-                .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
+                .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
         ) {
-            CustomerImage(
+            ItemImage(
                 image = image,
                 colorFilter = colorFilter
             )
@@ -179,6 +187,36 @@ fun ProductItem(item: ItemModel, onItemClick: () -> Unit) {
                     .weight(1f), item
             )
         }
+        Text(
+            text = item.iName,
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+            maxLines = 1
+        )
+        Spacer(modifier = Modifier.size(8.dp))
+    }
+}
+
+@Composable
+fun ItemImage(image: Painter, colorFilter: ColorFilter?) {
+
+    Box(
+        modifier = Modifier
+            .size(50.dp) // Size of the Box (background)
+            .border(
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
+                shape = RoundedCornerShape(5.dp)
+            ), contentAlignment = Alignment.Center // Center content in the Box
+    ) {
+        Image(
+            painter = image,
+            contentDescription = "customer Image",
+            modifier = Modifier
+                .height(50.dp)
+                .width(50.dp)
+                .clip(RoundedCornerShape(5.dp)),
+            contentScale = ContentScale.Crop,
+            colorFilter = colorFilter
+        )
     }
 }
 
@@ -190,16 +228,18 @@ fun ItemNameAndIdentifier(modifier: Modifier, item: ItemModel) {
         Text(
             text = item.iCode,
             modifier = Modifier
-                .height(25.dp)
+                .height(25.dp),
+            maxLines = 1
         )
         Text(
-            text = item.iName,
+            text = item.iType,
             modifier = Modifier
-                .height(25.dp)
+                .height(25.dp),
+            maxLines = 1
+
         )
     }
 }
-
 
 
 @Preview(name = "Light Mode")

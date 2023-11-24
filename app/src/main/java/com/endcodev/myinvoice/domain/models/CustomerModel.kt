@@ -1,7 +1,7 @@
 package com.endcodev.myinvoice.domain.models
 
 import android.net.Uri
-import com.endcodev.myinvoice.data.database.CustomersEntity
+import com.endcodev.myinvoice.data.database.entities.CustomersEntity
 
 data class CustomerModel(
     val cImage: Uri?,

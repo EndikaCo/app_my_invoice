@@ -59,9 +59,6 @@ import com.endcodev.myinvoice.ui.compose.components.DocSelection
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoiceInfoViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @Composable
 fun InvoiceDetailActions(
@@ -147,10 +144,6 @@ fun InvoiceInfoScreen(
         )
 }
 
-fun now(): String {
-    return SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
-}
-
 @Composable
 fun InvoiceInfoContent(
     innerPadding: PaddingValues,
@@ -212,7 +205,7 @@ fun InvoiceProduct(onItemClick: () -> Unit, product: ItemModel?) {
             val image = painterResource(id = R.drawable.filter_24)
 
             Spacer(modifier = Modifier.width(16.dp))
-            listImage(
+            ListImage(
                 image = image,
                 colorFilter = colorFilter
             )
@@ -250,7 +243,7 @@ fun ProductListTitle() {
 
 
 @Composable
-fun listImage(image: Painter, colorFilter: ColorFilter?) {
+fun ListImage(image: Painter, colorFilter: ColorFilter?) {
 
     Box(
         modifier = Modifier
@@ -284,10 +277,7 @@ fun InvoiceNum(invoiceId: String) {
 }
 
 @Composable
-fun InvoiceDate(date1: String, onClick: () -> Unit, dateChanged: (String) -> Unit = {}) {
-    var date = date1
-    if (date1.isEmpty() || date1.isBlank())
-        date = now()
+fun InvoiceDate(date: String, onClick: () -> Unit, dateChanged: (String) -> Unit = {}) {
 
     OutlinedTextField(
         leadingIcon = {

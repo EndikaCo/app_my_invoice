@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.data.database
+package com.endcodev.myinvoice.data.database.entities
 
 import android.net.Uri
 import androidx.room.ColumnInfo

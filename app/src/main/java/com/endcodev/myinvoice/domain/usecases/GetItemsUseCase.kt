@@ -1,7 +1,7 @@
 package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
-import com.endcodev.myinvoice.data.database.ItemsEntity
+import com.endcodev.myinvoice.data.database.entities.ItemsEntity
 import com.endcodev.myinvoice.domain.models.ItemModel
 import com.endcodev.myinvoice.data.repository.ItemsRepository
 import javax.inject.Inject
@@ -32,16 +32,16 @@ class GetItemsUseCase @Inject constructor(
         fun exampleCustomers(): List<ItemsEntity> {
             return arrayListOf(
                 ItemsEntity(
-                    iCode = "1", iDescription = "example1", iName = "example1", iImage = null,
-                    iType = "type"
+                    iCode = "PRO-2345", iDescription = " 230V 3000K CRI85", iName = "Gu10 LED Lamp", iImage = null,
+                    iType = "LED Lamp"
                 ),
                 ItemsEntity(
-                    iCode = "2", iDescription = "example2", iName = "example3", iImage = null,
-                    iType = "type"
+                    iCode = "HK-2356", iDescription = "Installation of electric device in plant", iName = "Installation plant", iImage = null,
+                    iType = "Service"
                 ),
                 ItemsEntity(
-                    iCode = "3", iDescription = "example2", iName = "example3", iImage = null,
-                    iType = "type"
+                    iCode = "2321513", iDescription = "Wire to small voltage instalations", iName = "2x1mm Wire red and black", iImage = null,
+                    iType = "Wires"
                 ),
             )
         }

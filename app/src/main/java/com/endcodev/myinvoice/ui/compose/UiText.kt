@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.utils
+package com.endcodev.myinvoice.ui.compose
 
 import android.content.Context
 import androidx.annotation.StringRes

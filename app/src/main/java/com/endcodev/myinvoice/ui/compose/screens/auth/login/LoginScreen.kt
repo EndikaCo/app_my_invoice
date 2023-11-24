@@ -110,7 +110,7 @@ fun LoginBody(
         LoginEnterEmail(email) { onLoginChanged(it) }
         Spacer(modifier = Modifier.size(4.dp))
         LoginEnterPassWord(stringResource(R.string.login_password), password) { onPassChanged(it) }
-        Spacer(modifier = Modifier.size(16.dp))
+        Spacer(modifier = Modifier.size(10.dp))
         ForgotPassword(Modifier.align(Alignment.End), onForgotClick)
         Spacer(modifier = Modifier.size(16.dp))
         LoginButton(stringResource(R.string.login_login_bt), isLoginEnabled, onLoginClick)
@@ -195,10 +195,10 @@ fun LoginEnterPassWord(text: String, password: String, onTextChanged: (String) -
 fun ForgotPassword(modifier: Modifier, onForgotClick: () -> Unit) {
     Text(
         text = stringResource(R.string.login_forgot_password),
-        fontSize = 15.sp,
+        fontSize = 13.sp,
         modifier = modifier.clickable { onForgotClick() },
         textDecoration = TextDecoration.Underline,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.SemiBold,
     )
 }
 
@@ -209,7 +209,7 @@ fun LoginButton(text: String, loginEnabled: Boolean, onLoginClick: () -> Unit) {
         enabled = loginEnabled,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onBackground),
+        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
         colors = ButtonDefaults.buttonColors(
             disabledContainerColor = Color.Transparent,
             disabledContentColor = MaterialTheme.colorScheme.onBackground,

@@ -4,7 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.database.ItemsEntity
+import com.endcodev.myinvoice.data.database.entities.ItemsEntity
 import com.endcodev.myinvoice.domain.models.ItemModel
 import com.endcodev.myinvoice.domain.models.ItemUiState
 import com.endcodev.myinvoice.domain.usecases.GetSimpleItemsUseCase
@@ -49,12 +49,22 @@ class ItemInfoViewModel @Inject constructor(
         }
     }
 
-    fun onDataChanged(code: String, name: String, image : Uri?) {
+    fun onDataChanged(
+        code: String,
+        name: String,
+        image : Uri?,
+        type: String,
+        cost: Float,
+        price : Float,
+    ) {
         _uiState.update { currentState ->
             currentState.copy(
                 iName = name,
                 iCode = code,
                 iImage = image,
+                iType = type,
+                iPrice = price,
+                iCost = cost,
                 isAcceptEnabled = enableAccept(code, name)
             )
         }

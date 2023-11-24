@@ -1,11 +1,17 @@
 package com.endcodev.myinvoice.domain.models
 
-import com.endcodev.myinvoice.data.Converters
-import com.endcodev.myinvoice.data.database.InvoicesEntity
+import com.endcodev.myinvoice.data.converters.Converters
+import com.endcodev.myinvoice.data.database.entities.InvoicesEntity
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 data class InvoicesModel(
     val iId: Int? = null,
+    val iDate : String = timeNow(),
     val iCustomer: CustomerModel,
+    val iReference: String = "",
+    val iTotal: Float = 0f,
     )
 {
     fun doesMatchSearchQuery(query: String): Boolean {
@@ -26,4 +32,8 @@ data class InvoicesModel(
             iCustomer = Converters().customerToJson(iCustomer.toEntity()) ?: "poronga",
         )
     }
+}
+
+fun timeNow(): String {
+    return SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
 }

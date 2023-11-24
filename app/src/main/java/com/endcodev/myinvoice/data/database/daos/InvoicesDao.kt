@@ -1,10 +1,11 @@
-package com.endcodev.myinvoice.data.database
+package com.endcodev.myinvoice.data.database.daos
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.endcodev.myinvoice.data.database.entities.InvoicesEntity
 
 @Dao
 interface InvoicesDao {
