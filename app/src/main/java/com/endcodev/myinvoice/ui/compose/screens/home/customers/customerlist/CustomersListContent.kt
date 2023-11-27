@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,7 +47,7 @@ import com.endcodev.myinvoice.domain.models.FilterType
 import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
-import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
@@ -54,13 +55,14 @@ import com.endcodev.myinvoice.ui.compose.uriToPainterImage
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 
 @Composable
-fun CustomersListContentActions(navController: NavHostController) {
+fun CustomersListContentActions(navController: NavHostController, paddingValues: PaddingValues) {
 
     val viewModel: CustomersViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
     CustomersListContent(
+        paddingValues = paddingValues,
         searchText = uiState.searchText,
         customers = uiState.customersList,
         isLoading = uiState.isLoading,
@@ -87,12 +89,13 @@ fun CustomersListContent(
     filters: List<FilterModel>,
     onDialogExit: () -> Unit,
     showDialog: Boolean,
-    onFilterClick: () -> Unit
+    onFilterClick: () -> Unit,
+    paddingValues: PaddingValues
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(paddingValues).padding(10.dp)
     )
     {
         CommonSearchBar(searchText, onSearchTextChange, onFilterClick)
@@ -109,12 +112,10 @@ fun CustomersListContent(
 
         FloatingActionButton(
             Modifier
-                .weight(0.08f)
                 .align(Alignment.End),
             painterResource(R.drawable.customer_add_24),
             onFloatingButtonClick
         )
-        Spacer(Modifier.size(80.dp))
     }
 }
 
@@ -227,11 +228,12 @@ fun CustomersContentPreview() {
             customers = customers,
             isLoading = isSearching,
             onSearchTextChange = onSearchTextChange,
-            onFilterClick = {},
-            filters = mutableListOf(FilterModel(FilterType.COUNTRY, "Burkina Faso")),
             onFiltersChanged = {},
+            filters = mutableListOf(FilterModel(FilterType.COUNTRY, "Burkina Faso")),
             onDialogExit = {},
-            showDialog = false
+            showDialog = false,
+            onFilterClick = {},
+            paddingValues = PaddingValues()
         )
     }
 }

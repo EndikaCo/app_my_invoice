@@ -2,16 +2,15 @@ package com.endcodev.myinvoice.ui.compose.screens.home.invoice
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,15 +35,15 @@ import com.endcodev.myinvoice.domain.models.CustomerModel
 import com.endcodev.myinvoice.domain.models.InvoicesModel
 import com.endcodev.myinvoice.domain.models.timeNow
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
-import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoicesViewModel
 
-
 @Composable
 fun InvoicesListContentActions(
     navController: NavHostController,
+    paddingValues: PaddingValues,
 ) {
     val viewModel: InvoicesViewModel = hiltViewModel()
     val searchText by viewModel.searchText.collectAsState()
@@ -52,6 +51,7 @@ fun InvoicesListContentActions(
     val isSearching by viewModel.isSearching.collectAsState()
 
     InvoicesContent(
+        paddingValues = paddingValues,
         searchText = searchText,
         invoices = invoices,
         isLoading = isSearching,
@@ -69,12 +69,13 @@ fun InvoicesContent(
     invoices: List<InvoicesModel>,
     isLoading: Boolean,
     onSearchTextChange: (String) -> Unit,
+    paddingValues: PaddingValues,
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(paddingValues)
+            .padding(12.dp)
     ) {
         CommonSearchBar(searchText, onTextChanged = onSearchTextChange, onFilterClick = {})
         Spacer(modifier = Modifier.height(16.dp))
@@ -91,9 +92,6 @@ fun InvoicesContent(
             painter = painterResource(id = R.drawable.invoice_add_24),
             onFloatingButtonClick
         )
-        Spacer(modifier = Modifier
-            .size(80.dp)
-            .fillMaxWidth()) //navbar height
     }
 }
 
@@ -147,7 +145,7 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: InvoicesModel) {
     Column(
         modifier = modifier
     ) {
-        Row (modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             Text(
                 text = "00${invoice.iId}",
                 modifier = Modifier
@@ -161,13 +159,14 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: InvoicesModel) {
                     .weight(1f)
             )
             Text(
-                text = "Ref ",
+                text = "ref:",
                 modifier = Modifier
                     .height(25.dp),
-                color = Color.Gray
+                color = Color.Gray,
+                fontSize = 16.sp
             )
             Text(
-                text = "213214",
+                text = invoice.iReference,
                 modifier = Modifier
                     .height(25.dp)
             )
@@ -177,7 +176,7 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: InvoicesModel) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = invoice.iCustomer.cFiscalName ?: "No customer",
+                text = invoice.iCustomer.cFiscalName,
                 modifier = Modifier
                     .height(25.dp)
                     .weight(1f), // Take up available space
@@ -185,7 +184,7 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: InvoicesModel) {
                 fontWeight = FontWeight.SemiBold,
             )
             Text(
-                text = "125.57€",
+                text = "${invoice.iTotal}€",
                 modifier = Modifier
                     .height(25.dp),
                 fontSize = 16.sp,
@@ -199,14 +198,26 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: InvoicesModel) {
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun InvoicesContentPreview() {
+
     val customer = CustomerModel(null, "B9746473", "Manolo S.L")
+
     MyInvoiceTheme {
-        InvoicesContent(searchText = "searchText",
-            invoices = listOf(InvoicesModel(iId = 1, iCustomer = customer, iTotal = 125f, iDate = timeNow() )),
+        InvoicesContent(
+            onFloatingButtonClick = { },
+            onListItemClick = { },
+            searchText = "searchText",
+            invoices = listOf(
+                InvoicesModel(
+                    iId = 1,
+                    iCustomer = customer,
+                    iTotal = 125.54f,
+                    iDate = timeNow(),
+                    iReference = "DSADSA4325"
+                )
+            ),
             isLoading = false,
             onSearchTextChange = {},
-            onFloatingButtonClick = { },
-            onListItemClick = { }
+            paddingValues = PaddingValues(0.dp)
         )
     }
 }

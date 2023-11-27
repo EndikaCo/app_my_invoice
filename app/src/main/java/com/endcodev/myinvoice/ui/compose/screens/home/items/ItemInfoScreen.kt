@@ -186,7 +186,7 @@ fun ItemsInfoContent(
             ItemInfoImage(
                 singlePhotoPickerLauncher = singlePhotoPickerLauncher,
                 cImage = uiState.iImage,
-                defaultImage = painterResource(id = R.drawable.item_add_24)
+                defaultImage = painterResource(id = R.drawable.no_photo_24)
             )
         }
         ItemName(
@@ -253,7 +253,7 @@ fun ItemInfoImage(
                 }
                 .height(90.dp)
                 .width(90.dp)
-                .clip(CircleShape),
+                .clip(RoundedCornerShape(5.dp)),
             contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter,
             colorFilter = colorFilter

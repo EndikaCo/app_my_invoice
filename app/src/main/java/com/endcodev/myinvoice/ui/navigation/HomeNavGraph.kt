@@ -1,5 +1,6 @@
 package com.endcodev.myinvoice.ui.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -11,8 +12,6 @@ import androidx.navigation.navigation
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomersListContentActions
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CustomerDetailsActions
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoiceDetailActions
-import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoiceInfoScreen
-import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesContent
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesListContentActions
 import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemDetailActions
 import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsListContentActions
@@ -25,7 +24,7 @@ sealed class Routes(val routes: String) {
 
 //BOTTOM BAR
 @Composable
-fun HomeNavGraph(navController: NavHostController) {
+fun HomeNavGraph(navController: NavHostController, paddingValues: PaddingValues) {
     NavHost(
         navController = navController,
         route = Graph.HOME,
@@ -33,20 +32,19 @@ fun HomeNavGraph(navController: NavHostController) {
     ) {
         //HOME
         composable(route = Routes.InvoicesContent.routes) {
-            InvoicesListContentActions(navController)
+            InvoicesListContentActions(navController, paddingValues)
         }
         //CUSTOMERS
         composable(route = Routes.CustomerContent.routes) {
-            CustomersListContentActions(navController)
+            CustomersListContentActions(navController, paddingValues)
         }
         //ITEMS
         composable(route = Routes.ItemsContent.routes) {
-            ItemsListContentActions(navController)
+            ItemsListContentActions(navController, paddingValues)
         }
         detailsNavGraph(navController = navController)
     }
 }
-
 
 sealed class DetailsScreen(val route: String) {
     object Customer : DetailsScreen(route = "CUSTOMER")
@@ -54,7 +52,7 @@ sealed class DetailsScreen(val route: String) {
     object Item : DetailsScreen(route = "ITEM")
 }
 
-fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
+fun NavGraphBuilder.detailsNavGraph(navController: NavHostController, ) {
     navigation(
         route = Graph.DETAILS,
         startDestination = DetailsScreen.Customer.route
@@ -99,17 +97,11 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
         //ITEMS SCREEN (Without Arguments)
         composable(route = DetailsScreen.Item.route) {
             ItemDetailActions(itemId = null, navController = navController)
+            navController.popBackStack( //todo: check this
+                route = DetailsScreen.Item.route,
+                inclusive = false
+            )
         }
-
-        /*//ITEMS SCREEN
-        composable(route = DetailsScreen.Item.route) {
-            ItemsContent(name = DetailsScreen.Item.route) {
-                navController.popBackStack(
-                    route = DetailsScreen.Item.route,
-                    inclusive = false
-                )
-            }
-        }*/
     }
 }
 

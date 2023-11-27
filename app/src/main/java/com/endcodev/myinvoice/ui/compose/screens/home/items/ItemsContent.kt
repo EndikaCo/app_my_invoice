@@ -1,7 +1,6 @@
 package com.endcodev.myinvoice.ui.compose.screens.home.items
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -21,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -50,7 +48,7 @@ import com.endcodev.myinvoice.domain.models.ItemModel
 import com.endcodev.myinvoice.domain.usecases.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
-import com.endcodev.myinvoice.ui.compose.screens.home.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
 import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.FiltersDialog
 import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
 import com.endcodev.myinvoice.ui.compose.uriToPainterImage
@@ -61,25 +59,21 @@ import com.endcodev.myinvoice.ui.viewmodels.ItemsViewModel
 @Composable
 fun ItemsListContentActions(
     navController: NavHostController,
+    paddingValues: PaddingValues,
 ) {
     val viewModel: ItemsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val searchText by viewModel.userInput.collectAsState()
-
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
+    var showDialog by remember { mutableStateOf(false) }
 
     ItemsListContent(
+        paddingValues = paddingValues,
         searchText = searchText,
         items = uiState.itemsList,
         isLoading = uiState.isLoading,
         onSearchTextChange = viewModel::setSearchText,
         onFloatingButtonClick = { navController.navigate(DetailsScreen.Item.route) },
-        onListItemClick = {
-            Log.v("TAG", "ItemsListContentActions: $it")
-            navController.navigate("${DetailsScreen.Item.route}/${it}")
-        },
+        onListItemClick = { navController.navigate("${DetailsScreen.Item.route}/${it}") },
         onFilterClick = { showDialog = true },
         filters = uiState.filters,
         onFiltersChanged = { viewModel.changeFilters(it) },
@@ -101,11 +95,12 @@ fun ItemsListContent(
     onDialogExit: () -> Unit,
     showDialog: Boolean,
     onFilterClick: () -> Unit,
+    paddingValues: PaddingValues,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(paddingValues).padding(10.dp)
     )
     {
         CommonSearchBar(searchText, onSearchTextChange, onFilterClick)
@@ -125,13 +120,12 @@ fun ItemsListContent(
             FiltersDialog(onFiltersChanged, filters, onDialogExit)
 
         FloatingActionButton(
-            Modifier
+            modifier = Modifier
                 .weight(0.08f)
                 .align(Alignment.End),
-            painterResource(R.drawable.customer_add_24),
-            onFloatingButtonClick
+            painter = painterResource(R.drawable.customer_add_24),
+            onAddButtonClick = onFloatingButtonClick
         )
-        Spacer(Modifier.size(80.dp))
     }
 }
 
@@ -165,7 +159,7 @@ fun ProductItem(item: ItemModel, onItemClick: () -> Unit) {
     var image = uriToPainterImage(item.iImage)
     if (image == null) {
         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
-        image = painterResource(id = R.drawable.filter_24)
+        image = painterResource(id = R.drawable.no_photo_24)
     }
 
     ElevatedCard(
@@ -211,8 +205,8 @@ fun ItemImage(image: Painter, colorFilter: ColorFilter?) {
             painter = image,
             contentDescription = "customer Image",
             modifier = Modifier
-                .height(50.dp)
-                .width(50.dp)
+                .height(40.dp)
+                .width(40.dp)
                 .clip(RoundedCornerShape(5.dp)),
             contentScale = ContentScale.Crop,
             colorFilter = colorFilter
@@ -247,22 +241,22 @@ fun ItemNameAndIdentifier(modifier: Modifier, item: ItemModel) {
 @Composable
 fun CustomersContentPreview() {
 
-    val searchText = "Test"
     val items = GetItemsUseCase.exampleCustomers().map { it.toDomain() }
 
     MyInvoiceTheme {
         ItemsListContent(
-            searchText = searchText,
+            onFloatingButtonClick = { },
+            onListItemClick = {},
+            searchText = "Search",
             items = items,
             isLoading = false,
             onSearchTextChange = {},
-            onFloatingButtonClick = { },
-            onListItemClick = {},
-            onFilterClick = {},
-            filters = emptyList(),
             onFiltersChanged = { },
+            filters = emptyList(),
             onDialogExit = { },
-            showDialog = false
+            showDialog = false,
+            onFilterClick = {},
+            paddingValues = PaddingValues( )
         )
     }
 }
