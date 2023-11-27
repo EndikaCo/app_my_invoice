@@ -1,7 +1,8 @@
-package com.endcodev.myinvoice.ui.compose.screens.auth.signup
+package com.endcodev.myinvoice.ui.compose.screens.auth
 
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,20 +23,61 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.ui.compose.screens.auth.login.ImageLogo
-import com.endcodev.myinvoice.ui.compose.screens.auth.login.LoginButton
-import com.endcodev.myinvoice.ui.compose.screens.auth.login.LoginEnterEmail
-import com.endcodev.myinvoice.ui.compose.screens.auth.login.LoginEnterPassWord
-import com.endcodev.myinvoice.ui.compose.screens.auth.login.OrDivider
-import com.endcodev.myinvoice.ui.compose.screens.auth.login.SignUpLink
-import com.endcodev.myinvoice.ui.compose.screens.auth.login.SocialLogin
+import com.endcodev.myinvoice.ui.navigation.AuthScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
+import com.endcodev.myinvoice.ui.viewmodels.SignUpViewModel
+
+@Composable
+fun SignUpActions(navController: NavHostController) {
+    val viewModel: SignUpViewModel = hiltViewModel()
+
+    val email by viewModel.email.observeAsState(initial = "")
+    val password by viewModel.password.observeAsState(initial = "")
+    val repeatPassword by viewModel.repeatPassword.observeAsState(initial = "")
+    val isSignUpEnabled by viewModel.isSignUpEnabled.observeAsState(initial = false)
+    val isLoading by viewModel.isLoading.observeAsState(initial = false)
+    val success by viewModel.isSuccess.observeAsState(initial = false)
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.errors.collect { error ->
+            Toast.makeText(context, error.asString(context), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    SignUpScreen(
+        success = success,
+        isLoading = isLoading,
+        email = email,
+        password = password,
+        repeatPassword = repeatPassword,
+        isSignUpEnabled = isSignUpEnabled,
+        onSignUpClick = {
+            navController.navigate(AuthScreen.Login.route)
+            viewModel.createAccount()
+        },
+        onEmailChanged = {
+            viewModel.onSignUpChanged(email = it, password = password, repeat = repeatPassword)
+        },
+        onPassChanged = {
+            viewModel.onSignUpChanged(password = it, email = email, repeat = repeatPassword)
+        },
+        onVerifyChanged = {
+            viewModel.onSignUpChanged(password = password, email = email, repeat = it)
+        })
+}
 
 @Composable
 fun SignUpScreen(
@@ -171,7 +213,7 @@ fun SignUpFooter(onTextLinkClick: () -> Unit) {
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun LoginScreenPreview() {
+fun SignUpPreview() {
     MyInvoiceTheme {
 
         val success = false

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.endcodev.myinvoice.domain.models.allCountriesList
 
 @Composable
-fun CountrySelection(modifier: Modifier, onSelection : (String) -> Unit) {
+fun CountrySelection(modifier: Modifier, onSelection: (String) -> Unit) {
 
     val text = remember { mutableStateOf("") } // initial value
     val isOpen = remember { mutableStateOf(false) } // initial value

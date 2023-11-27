@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.invoice
+package com.endcodev.myinvoice.ui.compose.screens.home.content
 
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
@@ -50,7 +50,7 @@ fun InvoicesListContentActions(
     val invoices by viewModel.invoices.collectAsState()
     val isSearching by viewModel.isSearching.collectAsState()
 
-    InvoicesContent(
+    HomeInvoicesContent(
         paddingValues = paddingValues,
         searchText = searchText,
         invoices = invoices,
@@ -62,7 +62,7 @@ fun InvoicesListContentActions(
 }
 
 @Composable
-fun InvoicesContent(
+fun HomeInvoicesContent(
     onFloatingButtonClick: () -> Unit,
     onListItemClick: (String) -> Unit,
     searchText: String,
@@ -153,7 +153,7 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: InvoicesModel) {
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = "15/01/2023",
+                text = invoice.iDate,
                 modifier = Modifier
                     .height(25.dp)
                     .weight(1f)
@@ -202,7 +202,7 @@ fun InvoicesContentPreview() {
     val customer = CustomerModel(null, "B9746473", "Manolo S.L")
 
     MyInvoiceTheme {
-        InvoicesContent(
+        HomeInvoicesContent(
             onFloatingButtonClick = { },
             onListItemClick = { },
             searchText = "searchText",

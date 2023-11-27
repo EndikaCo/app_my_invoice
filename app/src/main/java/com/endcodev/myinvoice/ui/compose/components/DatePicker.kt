@@ -1,7 +1,6 @@
 package com.endcodev.myinvoice.ui.compose.components
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
@@ -15,11 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
-import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CDatePicker(openDialog: (Boolean) -> Unit, state: DatePickerState, newDate: (DatePickerState) -> Unit) {
+fun CDatePicker(
+    openDialog: (Boolean) -> Unit,
+    state: DatePickerState,
+    newDate: (DatePickerState) -> Unit
+) {
 
     DatePickerDialog(
         modifier = Modifier.wrapContentWidth(),
@@ -53,6 +55,7 @@ fun CDatePicker(openDialog: (Boolean) -> Unit, state: DatePickerState, newDate: 
         )
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)

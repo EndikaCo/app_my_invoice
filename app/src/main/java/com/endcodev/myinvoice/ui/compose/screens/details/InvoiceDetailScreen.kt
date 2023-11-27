@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.invoice
+package com.endcodev.myinvoice.ui.compose.screens.details
 
 import android.content.res.Configuration
 import android.util.Log
@@ -54,7 +54,7 @@ import com.endcodev.myinvoice.domain.models.InvoiceUiState
 import com.endcodev.myinvoice.domain.models.ItemModel
 import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.CDatePicker
-import com.endcodev.myinvoice.ui.compose.components.ChooseCustomerDialogActions
+import com.endcodev.myinvoice.ui.compose.dialogs.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme

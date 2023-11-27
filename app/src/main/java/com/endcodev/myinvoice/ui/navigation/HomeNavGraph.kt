@@ -9,12 +9,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomersListContentActions
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.CustomerDetailsActions
-import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoiceDetailActions
-import com.endcodev.myinvoice.ui.compose.screens.home.invoice.InvoicesListContentActions
-import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemDetailActions
-import com.endcodev.myinvoice.ui.compose.screens.home.items.ItemsListContentActions
+import com.endcodev.myinvoice.ui.compose.screens.home.content.CustomersListContentActions
+import com.endcodev.myinvoice.ui.compose.screens.details.CustomerDetailActions
+import com.endcodev.myinvoice.ui.compose.screens.details.InvoiceDetailActions
+import com.endcodev.myinvoice.ui.compose.screens.home.content.InvoicesListContentActions
+import com.endcodev.myinvoice.ui.compose.screens.details.ItemDetailActions
+import com.endcodev.myinvoice.ui.compose.screens.home.content.ItemsListContentActions
 
 sealed class Routes(val routes: String) {
     object InvoicesContent : Routes("invoices")
@@ -77,13 +77,13 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController, ) {
             arguments = listOf(navArgument("cIdentifier") { type = NavType.StringType })
         ) { backStackEntry ->
             val customerIdentifier = backStackEntry.arguments?.getString("cIdentifier")
-            CustomerDetailsActions(customerIdentifier = customerIdentifier, navController)
+            CustomerDetailActions(customerIdentifier = customerIdentifier, navController)
         }
         // CUSTOMER SCREEN (Without Arguments)
         composable(
             route = DetailsScreen.Customer.route,
         ) {
-            CustomerDetailsActions(customerIdentifier = null, navController)
+            CustomerDetailActions(customerIdentifier = null, navController)
         }
 
         // ITEMS SCREEN

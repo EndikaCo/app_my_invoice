@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist
+package com.endcodev.myinvoice.ui.compose.dialogs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

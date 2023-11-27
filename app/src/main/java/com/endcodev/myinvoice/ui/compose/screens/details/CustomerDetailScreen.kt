@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.customers.details
+package com.endcodev.myinvoice.ui.compose.screens.details
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -27,6 +27,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,13 +45,68 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.CustomerInfoUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
-import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.compose.screens.home.content.ProgressBar
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
-import com.endcodev.myinvoice.ui.compose.uriToPainterImage
+import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
+import com.endcodev.myinvoice.ui.navigation.Routes
+import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
+
+/**
+ * Handles actions related to customer details.
+ * @param customerIdentifier The identifier of the customer.
+ * @param navController The navigation controller used for navigation.
+ */
+@Composable
+fun CustomerDetailActions(
+    customerIdentifier: String?,
+    navController: NavHostController
+) {
+
+    val viewModel: CustomerInfoViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
+
+    if (customerIdentifier != null) {
+        LaunchedEffect(customerIdentifier) {
+            viewModel.getCustomer(customerIdentifier)
+        }
+    }
+
+    fun onUpdateData(
+        identifier: String? = null,
+        fiscalName: String? = null,
+        telephone: String? = null,
+        country: String? = null,
+        email: String? = null
+    ) {
+        viewModel.onDataChanged(
+            identifier = identifier ?: uiState.cIdentifier,
+            fiscalName = fiscalName ?: uiState.cFiscalName,
+            telephone = telephone ?: uiState.cTelephone,
+            country = country ?: uiState.cCountry,
+            email = email ?: uiState.cEmail
+        )
+    }
+
+    CustomerDetailScreen(
+        onAcceptButton = {
+            viewModel.saveCustomer()
+            navController.navigate(Routes.CustomerContent.routes)
+        },
+        onCancelButton = { navController.navigate(Routes.CustomerContent.routes) },
+        uiState,
+        onUriChanged = { viewModel.updateUri(it) },
+        onFiscalNameChange = { onUpdateData(fiscalName = it) },
+        onIdentifierChange = { onUpdateData(identifier = it) },
+        onCountryChange = { onUpdateData(country = it) },
+        onEmailChange = { onUpdateData(email = it) }
+    )
+}
 
 val pPadding = 20.dp
 
@@ -65,7 +123,7 @@ val pPadding = 20.dp
  * @param onEmailChange Callback function to be called when the email is changed.
  */
 @Composable
-fun CustomerDetailsScreen(
+fun CustomerDetailScreen(
     onAcceptButton: () -> Unit,
     onCancelButton: () -> Unit,
     uiState: CustomerInfoUiState,
@@ -278,9 +336,9 @@ fun CompanyEmail(cEmail: String, onEmailChanged: (String) -> Unit) {
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewCustomerInfoScreen() {
+fun PreviewCustomerDetailScreen() {
     MyInvoiceTheme {
-        CustomerDetailsScreen(
+        CustomerDetailScreen(
             onAcceptButton = {},
             onCancelButton = {},
             CustomerInfoUiState(),

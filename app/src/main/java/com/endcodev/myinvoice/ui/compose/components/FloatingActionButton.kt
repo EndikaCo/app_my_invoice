@@ -43,4 +43,5 @@ fun PreviewFloatingActionButton() {
             painter = painterResource(R.drawable.customer_add_24),
             onAddButtonClick = {}
         )
-    }}
+    }
+}

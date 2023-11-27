@@ -34,7 +34,7 @@ fun AcceptCancelButtons(
     ) {
         RectangleButton("CANCEL", Modifier.weight(1F), true, onCancelClick)
         Spacer(modifier = Modifier.width(25.dp))
-        RectangleButton("ACCEPT", Modifier.weight(1F), enabled,  onAcceptClick)
+        RectangleButton("ACCEPT", Modifier.weight(1F), enabled, onAcceptClick)
     }
 }
 
@@ -48,7 +48,8 @@ fun RectangleButton(text: String, modifier: Modifier, enabled: Boolean, onButton
         border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.onBackground),
         colors = ButtonDefaults.buttonColors(
             disabledContentColor = MaterialTheme.colorScheme.onBackground,
-            disabledContainerColor = Color.Transparent)
+            disabledContainerColor = Color.Transparent
+        )
     ) {
         Text(text = text, fontSize = 15.sp)
     }

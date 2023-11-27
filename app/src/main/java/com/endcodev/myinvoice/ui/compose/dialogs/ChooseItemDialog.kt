@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.components
+package com.endcodev.myinvoice.ui.compose.dialogs
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Column
@@ -17,8 +17,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.data.database.entities.toDomain
 import com.endcodev.myinvoice.domain.models.CustomerModel
 import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
-import com.endcodev.myinvoice.ui.compose.screens.auth.login.LoginHeader
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist.CustomerItem
+import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
+import com.endcodev.myinvoice.ui.compose.screens.auth.LoginHeader
+import com.endcodev.myinvoice.ui.compose.screens.home.content.CustomerItem
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.DialogViewModel
 

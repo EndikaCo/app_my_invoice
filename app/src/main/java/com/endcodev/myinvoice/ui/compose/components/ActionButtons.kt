@@ -40,7 +40,7 @@ fun ActionButtons(
             .padding(16.dp),
         horizontalArrangement = Arrangement.End
     ) {
-        DeleteButton (
+        DeleteButton(
             onAcceptClick,
         )
         Spacer(modifier = Modifier.width(8.dp))

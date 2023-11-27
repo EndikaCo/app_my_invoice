@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose
+package com.endcodev.myinvoice.ui.compose.components
 
 import android.net.Uri
 import androidx.compose.runtime.Composable

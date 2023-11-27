@@ -1,10 +1,11 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.customers.customerlist
+package com.endcodev.myinvoice.ui.compose.screens.home.content
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,11 +17,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,34 +43,36 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.database.entities.toDomain
-import com.endcodev.myinvoice.domain.models.CustomerModel
 import com.endcodev.myinvoice.domain.models.FilterModel
-import com.endcodev.myinvoice.domain.models.FilterType
-import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
+import com.endcodev.myinvoice.domain.models.ItemModel
+import com.endcodev.myinvoice.domain.usecases.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
 import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
-import com.endcodev.myinvoice.ui.compose.screens.home.invoice.ProgressBar
+import com.endcodev.myinvoice.ui.compose.dialogs.FiltersDialog
+import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
-import com.endcodev.myinvoice.ui.compose.uriToPainterImage
-import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
+import com.endcodev.myinvoice.ui.viewmodels.ItemsViewModel
 
 @Composable
-fun CustomersListContentActions(navController: NavHostController, paddingValues: PaddingValues) {
-
-    val viewModel: CustomersViewModel = hiltViewModel()
+fun ItemsListContentActions(
+    navController: NavHostController,
+    paddingValues: PaddingValues,
+) {
+    val viewModel: ItemsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
+    val searchText by viewModel.userInput.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
-    CustomersListContent(
+    ItemsListContent(
         paddingValues = paddingValues,
-        searchText = uiState.searchText,
-        customers = uiState.customersList,
+        searchText = searchText,
+        items = uiState.itemsList,
         isLoading = uiState.isLoading,
         onSearchTextChange = viewModel::setSearchText,
-        onFloatingButtonClick = { navController.navigate(DetailsScreen.Customer.route) },
-        onListItemClick = { navController.navigate("${DetailsScreen.Customer.route}/${it}") },
+        onFloatingButtonClick = { navController.navigate(DetailsScreen.Item.route) },
+        onListItemClick = { navController.navigate("${DetailsScreen.Item.route}/${it}") },
         onFilterClick = { showDialog = true },
         filters = uiState.filters,
         onFiltersChanged = { viewModel.changeFilters(it) },
@@ -78,11 +82,11 @@ fun CustomersListContentActions(navController: NavHostController, paddingValues:
 }
 
 @Composable
-fun CustomersListContent(
+fun ItemsListContent(
     onFloatingButtonClick: () -> Unit,
     onListItemClick: (String) -> Unit,
     searchText: String,
-    customers: List<CustomerModel>,
+    items: List<ItemModel>,
     isLoading: Boolean,
     onSearchTextChange: (String) -> Unit,
     onFiltersChanged: (List<FilterModel>) -> Unit,
@@ -90,7 +94,7 @@ fun CustomersListContent(
     onDialogExit: () -> Unit,
     showDialog: Boolean,
     onFilterClick: () -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     Column(
         modifier = Modifier
@@ -106,52 +110,103 @@ fun CustomersListContent(
         if (isLoading)
             ProgressBar()
         else
-            CustomersList(Modifier.weight(1f), customers, onListItemClick)
+            ItemsList(
+                Modifier.weight(1f),
+                items,
+                onListItemClick
+            )
         if (showDialog)
             FiltersDialog(onFiltersChanged, filters, onDialogExit)
 
         FloatingActionButton(
-            Modifier
+            modifier = Modifier
+                .weight(0.08f)
                 .align(Alignment.End),
-            painterResource(R.drawable.customer_add_24),
-            onFloatingButtonClick
+            painter = painterResource(R.drawable.customer_add_24),
+            onAddButtonClick = onFloatingButtonClick
         )
     }
 }
 
 @Composable
-fun CustomersList(
+fun ItemsList(
     modifier: Modifier,
-    customers: List<CustomerModel>,
+    products: List<ItemModel>,
     onItemClick: (String) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier
-    ) {
-        items(customers) { customer ->
-            CustomerItem(customer, onItemClick = { onItemClick(customer.cIdentifier) })
+    LazyVerticalGrid(modifier = modifier,
+        columns = GridCells.Fixed(2),
+        contentPadding = PaddingValues(horizontal = 1.dp, vertical = 1.dp),
+        verticalArrangement = Arrangement.spacedBy(space = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
+        content = {
+            items(products) { item ->
+                ProductItem(
+                    item = item,
+                    onItemClick = { onItemClick(item.iCode) }
+                )
+            }
         }
+    )
+
+}
+
+@Composable
+fun ProductItem(item: ItemModel, onItemClick: () -> Unit) {
+
+    var colorFilter: ColorFilter? = null
+    var image = uriToPainterImage(item.iImage)
+    if (image == null) {
+        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+        image = painterResource(id = R.drawable.no_photo_24)
+    }
+
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onItemClick() }
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
+        ) {
+            ItemImage(
+                image = image,
+                colorFilter = colorFilter
+            )
+            ItemNameAndIdentifier(
+                Modifier
+                    .padding(start = 12.dp)
+                    .weight(1f), item
+            )
+        }
+        Text(
+            text = item.iName,
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+            maxLines = 1
+        )
+        Spacer(modifier = Modifier.size(8.dp))
     }
 }
 
 @Composable
-fun CustomerImage(image: Painter, colorFilter: ColorFilter?) {
+fun ItemImage(image: Painter, colorFilter: ColorFilter?) {
 
     Box(
         modifier = Modifier
             .size(50.dp) // Size of the Box (background)
             .border(
-                border = BorderStroke(width = 1.dp, color = colorScheme.onBackground),
-                shape = CircleShape
+                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
+                shape = RoundedCornerShape(5.dp)
             ), contentAlignment = Alignment.Center // Center content in the Box
     ) {
         Image(
             painter = image,
             contentDescription = "customer Image",
             modifier = Modifier
-                .height(50.dp)
-                .width(50.dp)
-                .clip(CircleShape),
+                .height(40.dp)
+                .width(40.dp)
+                .clip(RoundedCornerShape(5.dp)),
             contentScale = ContentScale.Crop,
             colorFilter = colorFilter
         )
@@ -159,52 +214,22 @@ fun CustomerImage(image: Painter, colorFilter: ColorFilter?) {
 }
 
 @Composable
-fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
-
-    var colorFilter: ColorFilter? = null
-    var image = uriToPainterImage(customer.cImage)
-    if (image == null) {
-        colorFilter = ColorFilter.tint(color = colorScheme.onBackground)
-        image = painterResource(id = R.drawable.person_24)
-    }
-
-    ElevatedCard(
-        modifier = Modifier
-            .padding(bottom = 8.dp)
-            .fillMaxWidth()
-            .clickable { onItemClick() }
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
-        ) {
-            CustomerImage(
-                image = image,
-                colorFilter = colorFilter
-            )
-            CustomerNameAndIdentifier(
-                Modifier
-                    .padding(start = 12.dp)
-                    .weight(1f), customer
-            )
-        }
-    }
-}
-
-@Composable
-fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
+fun ItemNameAndIdentifier(modifier: Modifier, item: ItemModel) {
     Column(
         modifier = modifier
     ) {
         Text(
-            text = customer.cFiscalName,
+            text = item.iCode,
             modifier = Modifier
-                .height(25.dp)
+                .height(25.dp),
+            maxLines = 1
         )
         Text(
-            text = customer.cIdentifier,
+            text = item.iType,
             modifier = Modifier
-                .height(25.dp)
+                .height(25.dp),
+            maxLines = 1
+
         )
     }
 }
@@ -213,27 +238,26 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun CustomersContentPreview() {
+fun ItemContentPreview() {
 
-    val searchText = "Test"
-    val customers = GetCustomersUseCase.exampleCustomers().map { it.toDomain() }
-    val isSearching = false
-    val onSearchTextChange: (String) -> Unit = {}
+    val items = GetItemsUseCase.exampleCustomers().map { it.toDomain() }
 
     MyInvoiceTheme {
-        CustomersListContent(
-            onFloatingButtonClick = {},
+        ItemsListContent(
+            onFloatingButtonClick = { },
             onListItemClick = {},
-            searchText = searchText,
-            customers = customers,
-            isLoading = isSearching,
-            onSearchTextChange = onSearchTextChange,
-            onFiltersChanged = {},
-            filters = mutableListOf(FilterModel(FilterType.COUNTRY, "Burkina Faso")),
-            onDialogExit = {},
+            searchText = "Search",
+            items = items,
+            isLoading = false,
+            onSearchTextChange = {},
+            onFiltersChanged = { },
+            filters = emptyList(),
+            onDialogExit = { },
             showDialog = false,
             onFilterClick = {},
-            paddingValues = PaddingValues()
+            paddingValues = PaddingValues( )
         )
     }
 }
+
+

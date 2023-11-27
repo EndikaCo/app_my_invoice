@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.ui.compose.screens.home.items
+package com.endcodev.myinvoice.ui.compose.screens.details
 
 import android.content.Intent
 import android.content.res.Configuration
@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -47,8 +46,7 @@ import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.ItemUiState
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
-import com.endcodev.myinvoice.ui.compose.screens.home.customers.details.pPadding
-import com.endcodev.myinvoice.ui.compose.uriToPainterImage
+import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.ItemInfoViewModel

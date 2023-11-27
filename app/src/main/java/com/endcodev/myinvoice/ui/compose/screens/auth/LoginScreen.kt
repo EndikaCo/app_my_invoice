@@ -1,6 +1,8 @@
-package com.endcodev.myinvoice.ui.compose.screens.auth.login
+package com.endcodev.myinvoice.ui.compose.screens.auth
 
+import android.app.Activity
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,7 +31,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,8 +52,55 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
+import com.endcodev.myinvoice.ui.navigation.AuthScreen
+import com.endcodev.myinvoice.ui.navigation.Graph
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
+import com.endcodev.myinvoice.ui.viewmodels.LoginViewModel
+
+@Composable
+fun LoginActions(navController: NavHostController) {
+
+    val viewModel: LoginViewModel = hiltViewModel()
+    val email by viewModel.email.observeAsState(initial = "")
+    val password by viewModel.password.observeAsState(initial = "")
+    val isLoginEnabled by viewModel.isLoginEnabled.observeAsState(initial = false)
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = viewModel) {
+        viewModel.errors.collect { error ->
+            error.asString(context)
+            Toast.makeText(context, error.asString(context), Toast.LENGTH_LONG).show()
+        }
+    }
+    val activity = LocalContext.current as Activity
+    LoginScreen(
+
+        email = email,
+        password = password,
+        isLoginEnables = isLoginEnabled,
+        onLoginClick = {
+            viewModel.login()
+            navController.popBackStack() // clear nav history
+            navController.navigate(Graph.HOME)
+        },
+        onSignUpClick = {
+            navController.navigate(AuthScreen.SignUp.route)
+        },
+        onForgotClick = {
+            navController.navigate(AuthScreen.Forgot.route)
+        },
+        onEmailChanged = {
+            viewModel.onLoginChanged(it, password)
+        },
+        onPassChanged = {
+            viewModel.onLoginChanged(password = it, email = email)
+        },
+        onExitClick = {activity.finish()}
+    )
+}
 
 @Composable
 fun LoginScreen(

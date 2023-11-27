@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.ui.compose.UiText
+import com.endcodev.myinvoice.ui.compose.components.UiText
 import com.endcodev.myinvoice.data.network.FirebaseClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
