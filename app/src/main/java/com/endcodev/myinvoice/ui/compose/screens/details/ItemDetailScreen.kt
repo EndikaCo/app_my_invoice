@@ -12,6 +12,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -38,6 +40,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,7 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.ItemUiState
-import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
+import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
@@ -94,6 +97,7 @@ fun ItemDetailActions(
         onTypeChanged = { onUpdateData(type = it) },
         onCostChanged = { onUpdateData(cost = it.toFloat()) },
         onPriceChanged = { onUpdateData(price = it.toFloat()) },
+        onDeleteButton = { viewModel.deleteItem() }
     )
 }
 
@@ -101,6 +105,7 @@ fun ItemDetailActions(
 fun ItemInfoScreen(
     onAcceptButton: () -> Unit,
     onCancelButton: () -> Unit,
+    onDeleteButton: () -> Unit,
     uiState: ItemUiState,
     onCodeChanged: (String) -> Unit,
     onNameChanged: (String) -> Unit,
@@ -124,10 +129,10 @@ fun ItemInfoScreen(
             )
         },
         bottomBar = {
-            AcceptCancelButtons(
+            ActionButtons(
                 uiState.isAcceptEnabled,
                 onAcceptButton,
-                onCancelButton
+                onDeleteButton,
             )
         }
     )
@@ -167,19 +172,33 @@ fun ItemsInfoContent(
             .padding(innerPadding)
             .fillMaxWidth()
     ) {
-        Row(
+        Text(
+            text = "Product Info",
             modifier = Modifier.padding(start = pPadding, end = pPadding, top = pPadding),
+            fontSize = 24.sp
+        )
+        Row(
+            modifier = Modifier.padding(start = pPadding, end = pPadding),
         ) {
-            Column(Modifier.weight(0.5F)) {
-                Text(
-                    text = "Product Info",
-                    modifier = Modifier,
-                    fontSize = 24.sp
-                )
+            Column(
+                modifier = Modifier.width(240.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
                 IdNum(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 10.dp),
                     idNum = uiState.iCode,
                     onTextChanged = { onCodeChanged(it) },
                 )
+                ItemName(
+                    label = "Item type",
+                    cFiscalName = uiState.iType,
+                    onTextChanged = { onTypeChanged(it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 10.dp),
+                    )
             }
             ItemInfoImage(
                 singlePhotoPickerLauncher = singlePhotoPickerLauncher,
@@ -187,18 +206,15 @@ fun ItemsInfoContent(
                 defaultImage = painterResource(id = R.drawable.no_photo_24)
             )
         }
-        ItemName(
-            label = "Item name",
-            cFiscalName = uiState.iName,
-            onTextChanged = { onNameChanged(it) }
-        )
-        ItemName(
-            label = "Item type",
-            cFiscalName = uiState.iType,
-            onTextChanged = { onTypeChanged(it) }
-        )
+        Column(modifier = Modifier.padding(start = pPadding, end = pPadding)) {
 
-        Row (modifier = Modifier.padding(start = pPadding, end = pPadding)) {
+            ItemName(
+                label = "Item name",
+                cFiscalName = uiState.iName,
+                onTextChanged = { onNameChanged(it) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
             ItemCost(
                 label = "Item cost",
                 amount = uiState.iCost,
@@ -207,6 +223,11 @@ fun ItemsInfoContent(
             ItemCost(
                 label = "Item price",
                 amount = uiState.iPrice,
+                onAmountChanged = { onPriceChanged(it) }
+            )
+            ItemStock(
+                label = "Item stock",
+                amount = uiState.iStock,
                 onAmountChanged = { onPriceChanged(it) }
             )
         }
@@ -224,7 +245,6 @@ fun ItemInfoImage(
     cImage: Uri?,
     defaultImage: Painter
 ) {
-
     var colorFilter: ColorFilter? = null
     var image = uriToPainterImage(cImage)
     if (image == null) {
@@ -234,11 +254,13 @@ fun ItemInfoImage(
 
     Box(
         modifier = Modifier
-            .size(100.dp) // Size of the Box (background)
+            .size(130.dp) // Size of the Box (background)
             .border(
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
                 shape = RoundedCornerShape(5.dp)
-            ), contentAlignment = Alignment.Center // Center content in the Box
+            ),
+        contentAlignment = Alignment.Center, // Center content in the Box
+
     ) {
         Image(
             painter = image,
@@ -249,8 +271,8 @@ fun ItemInfoImage(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
                 }
-                .height(90.dp)
-                .width(90.dp)
+                .height(120.dp)
+                .width(120.dp)
                 .clip(RoundedCornerShape(5.dp)),
             contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter,
@@ -260,10 +282,9 @@ fun ItemInfoImage(
 }
 
 @Composable
-fun IdNum(idNum: String, onTextChanged: (String) -> Unit) {
-    OutlinedTextField(modifier = Modifier
-        .fillMaxWidth()
-        .padding(end = 16.dp),
+fun IdNum(modifier: Modifier, idNum: String, onTextChanged: (String) -> Unit) {
+    OutlinedTextField(
+        modifier = modifier,
         value = idNum,
         onValueChange = { onTextChanged(it) },
         label = { Text("Product code") }
@@ -271,11 +292,14 @@ fun IdNum(idNum: String, onTextChanged: (String) -> Unit) {
 }
 
 @Composable
-fun ItemName(label: String, cFiscalName: String, onTextChanged: (String) -> Unit) {
+fun ItemName(
+    modifier: Modifier,
+    label: String,
+    cFiscalName: String,
+    onTextChanged: (String) -> Unit
+) {
     OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = pPadding, end = pPadding),
+        modifier = modifier,
         value = cFiscalName,
         onValueChange = { onTextChanged(it) },
         label = { Text(label) }
@@ -285,9 +309,22 @@ fun ItemName(label: String, cFiscalName: String, onTextChanged: (String) -> Unit
 @Composable
 fun ItemCost(label: String, amount: Float, onAmountChanged: (Float) -> Unit) {
     OutlinedTextField(
+        modifier = Modifier.width(100.dp),
         value = amount.toString(),
         onValueChange = { onAmountChanged(it.toFloat()) },
-        label = { Text(label) }
+        label = { Text(label) },
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
+    )
+}
+
+@Composable
+fun ItemStock(label: String, amount: Float, onAmountChanged: (Float) -> Unit) {
+    OutlinedTextField(
+        modifier = Modifier.width(100.dp),
+        value = amount.toString(),
+        onValueChange = { onAmountChanged(it.toFloat()) },
+        label = { Text(label) },
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
     )
 }
 
@@ -299,13 +336,14 @@ fun PreviewCustomerInfoScreen() {
         ItemInfoScreen(
             onAcceptButton = {},
             onCancelButton = {},
+            onDeleteButton = {},
             uiState = ItemUiState(),
             onNameChanged = {},
             onCodeChanged = {},
             onUriChanged = {},
             onTypeChanged = {},
             onCostChanged = {},
-            onPriceChanged = {}
+            onPriceChanged = {},
         )
     }
 }

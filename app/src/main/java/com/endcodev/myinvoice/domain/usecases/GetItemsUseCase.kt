@@ -2,8 +2,8 @@ package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
 import com.endcodev.myinvoice.data.database.entities.ItemsEntity
-import com.endcodev.myinvoice.domain.models.ItemModel
 import com.endcodev.myinvoice.data.repository.ItemsRepository
+import com.endcodev.myinvoice.domain.models.ItemModel
 import javax.inject.Inject
 
 class GetItemsUseCase @Inject constructor(
@@ -32,16 +32,25 @@ class GetItemsUseCase @Inject constructor(
         fun exampleCustomers(): List<ItemsEntity> {
             return arrayListOf(
                 ItemsEntity(
-                    iCode = "PRO-2345", iDescription = " 230V 3000K CRI85", iName = "Gu10 LED Lamp", iImage = null,
-                    iType = "LED Lamp"
+                    iCode = "BFP420E6327",
+                    iDescription = "40V 800mA 300MHz",
+                    iName = "Transistor 2N2222A",
+                    iImage = null,
+                    iType = "Transistor NPN"
                 ),
                 ItemsEntity(
-                    iCode = "HK-2356", iDescription = "Installation of electric device in plant", iName = "Installation plant", iImage = null,
-                    iType = "Service"
+                    iCode = "2449-A61C",
+                    iDescription = "Relay automotive SPDT 30A 12V",
+                    iName = "30A 12V Relay",
+                    iImage = null,
+                    iType = "12VCC Relay"
                 ),
                 ItemsEntity(
-                    iCode = "2321513", iDescription = "Wire to small voltage instalations", iName = "2x1mm Wire red and black", iImage = null,
-                    iType = "Wires"
+                    iCode = "PRC-231DDD",
+                    iDescription = "230VAC 8W 90CRI 2700K",
+                    iName = "Led GU10 2K7",
+                    iImage = null,
+                    iType = "AC Led Lamp"
                 ),
             )
         }

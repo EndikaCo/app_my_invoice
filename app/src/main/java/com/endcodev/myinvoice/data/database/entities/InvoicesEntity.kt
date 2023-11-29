@@ -14,7 +14,7 @@ data class InvoicesEntity(
 )
 
 fun InvoicesEntity.toDomain() =
-    Converters().toCustomersEntity(iCustomer)?.let {
+    Converters().jsonToCustomerEntity(iCustomer)?.let {
         InvoicesModel(
         iId = iId,
         iCustomer = it.toDomain()

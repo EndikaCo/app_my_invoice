@@ -89,4 +89,8 @@ class ItemInfoViewModel @Inject constructor(
 
     private fun enableAccept(code: String, name: String) =
         code.isNotEmpty() && name.isNotEmpty()
+
+    fun deleteItem() {
+        TODO("Not yet implemented")
+    }
 }

@@ -49,7 +49,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.CustomerInfoUiState
-import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
+import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.compose.screens.home.content.ProgressBar
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
@@ -104,7 +104,8 @@ fun CustomerDetailActions(
         onFiscalNameChange = { onUpdateData(fiscalName = it) },
         onIdentifierChange = { onUpdateData(identifier = it) },
         onCountryChange = { onUpdateData(country = it) },
-        onEmailChange = { onUpdateData(email = it) }
+        onEmailChange = { onUpdateData(email = it) },
+        onDeleteClick = { viewModel.deleteCustomer() }
     )
 }
 
@@ -132,6 +133,7 @@ fun CustomerDetailScreen(
     onIdentifierChange: (String) -> Unit,
     onCountryChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     if (uiState.isLoading)
         ProgressBar()
@@ -150,10 +152,10 @@ fun CustomerDetailScreen(
                 )
             },
             bottomBar = {
-                AcceptCancelButtons(
+                ActionButtons(
                     uiState.isAcceptEnabled,
                     onAcceptButton,
-                    onCancelButton
+                    onDeleteClick
                 )
             }
         )
@@ -346,7 +348,8 @@ fun PreviewCustomerDetailScreen() {
             onFiscalNameChange = {},
             onIdentifierChange = {},
             onCountryChange = {},
-            onEmailChange = {}
+            onEmailChange = {},
+            onDeleteClick = {}
         )
     }
 }

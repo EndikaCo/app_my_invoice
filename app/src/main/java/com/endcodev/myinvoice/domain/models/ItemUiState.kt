@@ -9,6 +9,7 @@ data class ItemUiState(
     val iType : String = "",
     val iCost : Float = 0f,
     val iPrice : Float = 0f,
+    val iStock: Float = 0F,
     val isLoading : Boolean = false,
     val isAcceptEnabled : Boolean = false
 ) {

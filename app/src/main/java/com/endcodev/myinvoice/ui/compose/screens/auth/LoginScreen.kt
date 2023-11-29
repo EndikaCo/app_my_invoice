@@ -266,7 +266,7 @@ fun LoginButton(text: String, loginEnabled: Boolean, onLoginClick: () -> Unit) {
             disabledContainerColor = Color.Transparent,
             disabledContentColor = MaterialTheme.colorScheme.onBackground,
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onBackground
+            contentColor = Color.Black
             ),
 
     ) {

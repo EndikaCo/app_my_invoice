@@ -88,5 +88,9 @@ class CustomerInfoViewModel @Inject constructor(
             )
         }
     }
+
+    fun deleteCustomer() {
+        TODO("Not yet implemented")
+    }
 }
 

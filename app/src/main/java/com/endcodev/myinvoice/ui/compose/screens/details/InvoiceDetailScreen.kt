@@ -44,8 +44,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
@@ -54,8 +56,8 @@ import com.endcodev.myinvoice.domain.models.InvoiceUiState
 import com.endcodev.myinvoice.domain.models.ItemModel
 import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.CDatePicker
-import com.endcodev.myinvoice.ui.compose.dialogs.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
+import com.endcodev.myinvoice.ui.compose.dialogs.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoiceInfoViewModel
@@ -81,7 +83,8 @@ fun InvoiceDetailActions(
         },
         uiState = uiState,
         onCustomerChange = viewModel::setCustomer,
-        onCancelButton = { navController.popBackStack() }
+        onCancelButton = { navController.popBackStack() },
+        onDeleteButton = { viewModel.deleteInvoice() }
     )
 }
 
@@ -90,6 +93,7 @@ fun InvoiceDetailActions(
 fun InvoiceInfoScreen(
     onAcceptButton: () -> Unit,
     onCancelButton: () -> Unit,
+    onDeleteButton: () -> Unit,
     uiState: InvoiceUiState,
     onCustomerChange: (CustomerModel) -> Unit
 ) {
@@ -136,8 +140,8 @@ fun InvoiceInfoScreen(
                         onAcceptClick = {
                             onAcceptButton()
                         },
-                        onCancelClick = {
-                            onCancelButton()
+                        onDeleteClick = {
+                            onDeleteButton()
                         })
                 }
             }
@@ -172,8 +176,6 @@ fun InvoiceInfoContent(
         }
         SelectCustomer(customer = mCustomer, onIconClick = { onCustomerClick() })
         Spacer(modifier = Modifier.height(16.dp))
-        ProductListTitle()
-        Spacer(modifier = Modifier.height(16.dp))
         InvoiceItemsList()
     }
 }
@@ -199,6 +201,9 @@ fun InvoiceProduct(onItemClick: () -> Unit, product: ItemModel?) {
         Row(
             modifier = Modifier
                 .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
+                .height(40.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
         ) {
 
             val colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
@@ -210,44 +215,36 @@ fun InvoiceProduct(onItemClick: () -> Unit, product: ItemModel?) {
                 colorFilter = colorFilter
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "PRO-3121")
+            ColumnDesk("PRO-3121", "ref")
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "200")
+            ColumnDesk("233", "pc")
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "0,36€")
+            ColumnDesk("0,36", "(eur)")
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "50%")
+            ColumnDesk("50", "%")
             Spacer(modifier = Modifier.width(16.dp))
-            Text(text = "16.87€")
+            ColumnDesk("44,36", "EUR")
         }
     }
 }
 
 @Composable
-fun ProductListTitle() {
-    Row {
-        // Spacer(modifier = Modifier.width(16.dp))
-        //Text(text = "Img")
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Code")
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Units")
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Price")
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Disc")
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = "Total")
+fun ColumnDesk(topText: String, bottomDesc: String) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(text = topText, textAlign = TextAlign.Center, fontSize = 16.sp)
+        Text(text = bottomDesc, textAlign = TextAlign.Center, fontSize = 9.sp)
     }
 }
-
 
 @Composable
 fun ListImage(image: Painter, colorFilter: ColorFilter?) {
 
     Box(
         modifier = Modifier
-            .size(20.dp) // Size of the Box (background)
+            .size(35.dp) // Size of the Box (background)
             .border(
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
                 shape = CircleShape
@@ -257,8 +254,8 @@ fun ListImage(image: Painter, colorFilter: ColorFilter?) {
             painter = image,
             contentDescription = "customer Image",
             modifier = Modifier
-                .height(25.dp)
-                .width(25.dp)
+                .height(35.dp)
+                .width(35.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
             colorFilter = colorFilter
@@ -307,11 +304,12 @@ fun SelectCustomer(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp)
-            .border(shape = shape, width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
+            .border(shape = shape, width = 1.dp, color = MaterialTheme.colorScheme.onBackground)
+            .background(MaterialTheme.colorScheme.surfaceVariant),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
 
-    ) {
+        ) {
         Image(
             painter = painterResource(id = R.drawable.image_search_24),
             contentDescription = "",
@@ -337,6 +335,8 @@ fun PreviewInvoiceInfoScreen() {
             onAcceptButton = {},
             uiState = InvoiceUiState(),
             onCustomerChange = {},
-            onCancelButton = {})
+            onCancelButton = {},
+            onDeleteButton = {}
+        )
     }
 }

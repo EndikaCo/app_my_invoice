@@ -16,14 +16,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.endcodev.myinvoice.domain.models.NavBarItem
 import com.endcodev.myinvoice.ui.navigation.HomeNavGraph
 import com.endcodev.myinvoice.ui.navigation.Routes.*
@@ -33,10 +31,9 @@ import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
     Scaffold(
+        content = { paddingValues -> HomeNavGraph(navController = navController, paddingValues) },
         bottomBar = { NavigationBar(navController = navController) },
-    ) { paddingValues ->
-        HomeNavGraph(navController = navController, paddingValues)
-    }
+    )
 }
 
 @Composable
@@ -123,6 +120,5 @@ fun ItemBadge(item: NavBarItem, index: Int, selectedItemIndex: Int) {
 @Composable
 fun HomePreview() {
     MyInvoiceTheme {
-        HomeScreen()
     }
 }

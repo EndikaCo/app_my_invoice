@@ -69,4 +69,8 @@ class InvoiceInfoViewModel @Inject constructor(
            ///     getSimpleInvoiceUseCase.updateInvoice(InvoicesModel(iCustomer = uiState.value.customer))
         }
     }
+
+    fun deleteInvoice() {
+
+    }
 }

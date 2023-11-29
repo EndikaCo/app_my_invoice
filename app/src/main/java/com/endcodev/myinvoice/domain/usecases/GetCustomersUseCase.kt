@@ -39,25 +39,32 @@ class GetCustomersUseCase @Inject constructor(
 
                 CustomersEntity(
                     cImage = null,
-                    cFiscalName = "Example 1",
-                    cIdentifier = "B95768523",
-                    cTelephone = "+34623213213",
-                    cCountry = ""
+                    cFiscalName = "Toyota Motor Corporation",
+                    cIdentifier = "KDJ9576852",
+                    cTelephone = "+81 623213276",
+                    cCountry = "Japan"
                 ),
                 CustomersEntity(
                     cImage = null,
-                    cFiscalName = "Example 2",
-                    cIdentifier = "1608876623V",
-                    cTelephone = "+86732132133",
-                    cCountry = ""
+                    cFiscalName = "Alibaba Group Holding Limited",
+                    cIdentifier = "08876623VT",
+                    cTelephone = "+86 732132133",
+                    cCountry = "China"
 
                 ),
                 CustomersEntity(
                     cImage = null,
-                    cFiscalName = "Example 3",
-                    cIdentifier = "A323145125212",
-                    cTelephone = "+51624223213",
-                    cCountry = ""
+                    cFiscalName = "Vodafone Group plc",
+                    cIdentifier = "HJ3145125212",
+                    cTelephone = "+44 624223213",
+                    cCountry = "United Kingdom"
+                ),
+                CustomersEntity(
+                    cImage = null,
+                    cFiscalName = "Samsung Electronics Co., Ltd.",
+                    cIdentifier = "HSG23145112F",
+                    cTelephone = "+82 624223213",
+                    cCountry = "South Korea"
                 )
             )
         }

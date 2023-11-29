@@ -195,10 +195,7 @@ fun ItemImage(image: Painter, colorFilter: ColorFilter?) {
     Box(
         modifier = Modifier
             .size(50.dp) // Size of the Box (background)
-            .border(
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
-                shape = RoundedCornerShape(5.dp)
-            ), contentAlignment = Alignment.Center // Center content in the Box
+            , contentAlignment = Alignment.Center // Center content in the Box
     ) {
         Image(
             painter = image,

@@ -55,7 +55,6 @@ fun RectangleButton(text: String, modifier: Modifier, enabled: Boolean, onButton
     }
 }
 
-
 @Preview(name = "ENABLED - Light Mode")
 @Preview(name = "ENABLED - Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable

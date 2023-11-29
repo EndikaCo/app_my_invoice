@@ -63,7 +63,6 @@ fun DocSelection(onSelection: (String) -> Unit, docs: List<String>) {
     }
 }
 
-
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable

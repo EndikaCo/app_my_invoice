@@ -8,12 +8,12 @@ import com.google.gson.Gson
 @ProvidedTypeConverter
 class Converters {
     @TypeConverter
-    fun customerToJson(customer: CustomersEntity?): String? {
+    fun customerEntityToJson(customer: CustomersEntity?): String? {
         return Gson().toJson(customer)
     }
 
     @TypeConverter
-    fun toCustomersEntity(json: String?): CustomersEntity? {
+    fun jsonToCustomerEntity(json: String?): CustomersEntity? {
         return Gson().fromJson(json, CustomersEntity::class.java)
     }
 }

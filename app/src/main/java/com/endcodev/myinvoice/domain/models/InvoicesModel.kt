@@ -29,7 +29,7 @@ data class InvoicesModel(
     fun toEntity(): InvoicesEntity {
         return InvoicesEntity(
             iId = iId ?: 0,
-            iCustomer = Converters().customerToJson(iCustomer.toEntity()) ?: "poronga",
+            iCustomer = Converters().customerEntityToJson(iCustomer.toEntity()) ?: "poronga",
         )
     }
 }
