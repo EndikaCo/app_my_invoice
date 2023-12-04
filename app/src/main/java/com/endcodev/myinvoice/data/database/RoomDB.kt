@@ -17,7 +17,7 @@ import com.endcodev.myinvoice.data.database.entities.ItemsEntity
         InvoicesEntity::class,
         ItemsEntity::class
     ],
-    version = 10
+    version = 11
 )
 
 @TypeConverters(Converters::class)

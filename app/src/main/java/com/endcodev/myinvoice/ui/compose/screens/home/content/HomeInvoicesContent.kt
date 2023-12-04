@@ -33,7 +33,7 @@ import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.CustomerModel
 import com.endcodev.myinvoice.domain.models.InvoicesModel
-import com.endcodev.myinvoice.domain.models.timeNow
+import com.endcodev.myinvoice.domain.models.getDate
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
@@ -211,7 +211,7 @@ fun InvoicesContentPreview() {
                     iId = 1,
                     iCustomer = customer,
                     iTotal = 125.54f,
-                    iDate = timeNow(),
+                    iDate = getDate(),
                     iReference = "DSADSA4325"
                 )
             ),

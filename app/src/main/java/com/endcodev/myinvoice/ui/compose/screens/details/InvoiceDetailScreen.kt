@@ -54,6 +54,7 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.CustomerModel
 import com.endcodev.myinvoice.domain.models.InvoiceUiState
 import com.endcodev.myinvoice.domain.models.ItemModel
+import com.endcodev.myinvoice.domain.models.ItemSaleModel
 import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.CDatePicker
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
@@ -61,6 +62,10 @@ import com.endcodev.myinvoice.ui.compose.dialogs.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoiceInfoViewModel
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun InvoiceDetailActions(
@@ -83,8 +88,8 @@ fun InvoiceDetailActions(
         },
         uiState = uiState,
         onCustomerChange = viewModel::setCustomer,
-        onCancelButton = { navController.popBackStack() },
-        onDeleteButton = { viewModel.deleteInvoice() }
+        onDeleteButton = { viewModel.deleteInvoice() },
+        onDateChanged = { viewModel.setDate(it) }
     )
 }
 
@@ -92,21 +97,26 @@ fun InvoiceDetailActions(
 @Composable
 fun InvoiceInfoScreen(
     onAcceptButton: () -> Unit,
-    onCancelButton: () -> Unit,
     onDeleteButton: () -> Unit,
     uiState: InvoiceUiState,
-    onCustomerChange: (CustomerModel) -> Unit
+    onCustomerChange: (CustomerModel) -> Unit,
+    onDateChanged: (String) -> Unit
 ) {
 
     val state = rememberDatePickerState()
-    val dateDialog = remember { mutableStateOf(false) }
-    val customerDialog = remember { mutableStateOf(false) }
+    val dateDialog = remember { mutableStateOf(false) } //show DatePicker dialog
+    val customerDialog = remember { mutableStateOf(false) } //show CustomerSelect dialog
 
     if (dateDialog.value)
         CDatePicker(
             openDialog = { dateDialog.value = it },
             state,
-            newDate = { Log.v("new date", it.selectedDateMillis.toString()) })
+            newDate = {
+                val instant = Instant.ofEpochMilli(it.selectedDateMillis ?: (0L))
+                val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+                onDateChanged( formatter.format(date))
+            })
 
     if (customerDialog.value)
         ChooseCustomerDialogActions(
@@ -155,10 +165,6 @@ fun InvoiceInfoContent(
     onCustomerClick: () -> Unit,
     uiState: InvoiceUiState
 ) {
-    var mCustomer: CustomerModel? = uiState.customer
-    if (mCustomer == null)
-        mCustomer = CustomerModel(cImage = null, cFiscalName = "New Customer", cIdentifier = "-")
-
     Column(
         modifier = Modifier.padding(innerPadding),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -168,13 +174,13 @@ fun InvoiceInfoContent(
                 .padding(16.dp)
                 .fillMaxWidth(),
         ) {
-            InvoiceNum(invoiceId = uiState.id)
+            InvoiceNum(invoiceId = uiState.invoicesModel.iId.toString())
             Spacer(modifier = Modifier.width(8.dp))
-            InvoiceDate("", onClick = { onDateClick() }) //todo
+            InvoiceDate(uiState.invoicesModel.iDate, onClick = { onDateClick() }) //todo
             Spacer(modifier = Modifier.width(8.dp))
             DocSelection(onSelection = { }, docs = listOf("Invoice", "Receipt"))
         }
-        SelectCustomer(customer = mCustomer, onIconClick = { onCustomerClick() })
+        SelectCustomer(customer = uiState.invoicesModel.iCustomer, onIconClick = { onCustomerClick() })
         Spacer(modifier = Modifier.height(16.dp))
         InvoiceItemsList()
     }
@@ -185,13 +191,18 @@ fun InvoiceItemsList() {
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally)
     {
         items(10) {
-            InvoiceProduct(onItemClick = {}, null)
+            InvoiceProduct(
+                onItemClick = {}, ItemSaleModel(
+                    ItemModel(null, "PRO-3121", "233", "das", ""), 31F,
+                    12F, 10
+                )
+            )
         }
     }
 }
 
 @Composable
-fun InvoiceProduct(onItemClick: () -> Unit, product: ItemModel?) {
+fun InvoiceProduct(onItemClick: () -> Unit, itemSale: ItemSaleModel?) {
     ElevatedCard(
         modifier = Modifier
             .padding(bottom = 8.dp, start = 15.dp, end = 15.dp) //between items
@@ -215,15 +226,17 @@ fun InvoiceProduct(onItemClick: () -> Unit, product: ItemModel?) {
                 colorFilter = colorFilter
             )
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk("PRO-3121", "ref")
+            ColumnDesk(itemSale!!.sProduct.iCode, "ref") //Todo
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk("233", "pc")
+            ColumnDesk(itemSale.sQuantity.toString(), "pc")
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk("0,36", "(eur)")
+            ColumnDesk(itemSale.sPrice.toString(), "(eur)")
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk("50", "%")
+            ColumnDesk(itemSale.sDiscount.toString(), "%")
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk("44,36", "EUR")
+
+            val total = (itemSale.sPrice * itemSale.sQuantity) * (1 - itemSale.sDiscount / 100)
+            ColumnDesk(total.toString(), "EUR")
         }
     }
 }
@@ -241,7 +254,6 @@ fun ColumnDesk(topText: String, bottomDesc: String) {
 
 @Composable
 fun ListImage(image: Painter, colorFilter: ColorFilter?) {
-
     Box(
         modifier = Modifier
             .size(35.dp) // Size of the Box (background)
@@ -279,7 +291,6 @@ fun InvoiceDate(date: String, onClick: () -> Unit, dateChanged: (String) -> Unit
     OutlinedTextField(
         leadingIcon = {
             Image(
-                //show calendar icon
                 painterResource(id = R.drawable.calendar_24),
                 contentDescription = "",
                 colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
@@ -290,7 +301,6 @@ fun InvoiceDate(date: String, onClick: () -> Unit, dateChanged: (String) -> Unit
         onValueChange = { dateChanged(it) },
         label = { Text(text = "date") },
         modifier = Modifier.width(160.dp)
-
     )
 }
 
@@ -335,8 +345,8 @@ fun PreviewInvoiceInfoScreen() {
             onAcceptButton = {},
             uiState = InvoiceUiState(),
             onCustomerChange = {},
-            onCancelButton = {},
-            onDeleteButton = {}
+            onDeleteButton = {},
+            onDateChanged = {}
         )
     }
 }

@@ -16,55 +16,57 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.Instant.now
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class InvoiceInfoViewModel @Inject constructor(
     private val getSimpleInvoiceUseCase: GetSimpleInvoiceUseCase,
-    private val getSimpleCustomerUseCase: GetSimpleCustomerUseCase
-
 ) : ViewModel() {
-
+    
     private val _uiState = MutableStateFlow(InvoiceUiState())
     val uiState: StateFlow<InvoiceUiState> = _uiState.asStateFlow()
 
     fun setCustomer(customer: CustomerModel) {
         _uiState.update {
-            it.copy(customer = customer)
+            it.copy(
+                invoicesModel = it.invoicesModel.copy(iCustomer = customer)
+            )
+        }
+    }
+
+    fun setDate(date: String) {
+        _uiState.update {
+            it.copy(invoicesModel = it.invoicesModel.copy(iDate = date ) )
         }
     }
 
     fun getInvoice(invoiceId: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.v("invoiceId", invoiceId.toString())
             val invoice = getSimpleInvoiceUseCase.invoke(invoiceId)
-            Log.v("invoice", invoice.toString())
-            val customer = getSimpleCustomerUseCase.invoke(invoice?.iCustomer?.cIdentifier)
-            Log.v("customer", customer.toString())
             withContext(Dispatchers.Main) {
-                if (invoice != null && customer != null)
-                    updateUi(invoice, customer)
+                if (invoice != null)
+                    updateUi(invoice)
+                else
+                    updateUi(InvoicesModel(iCustomer = CustomerModel(cImage = null, cFiscalName = "Select Customer", cIdentifier = "0")))
             }
         }
     }
 
-    private fun updateUi(invoice: InvoicesModel, customer: CustomerModel) {
+    private fun updateUi(invoice: InvoicesModel) {
         _uiState.update { currentState ->
             currentState.copy(
-                customer = customer,
-                id = invoice.iId.toString(),
-                isLoading = false,
+                invoicesModel = invoice,
             )
         }
     }
 
     fun saveInvoice() {
         viewModelScope.launch {
-        Log.v("invoice", uiState.value.id)
-            //if (uiState.value.id == "-")
-            uiState.value.customer?.let { InvoicesModel(iCustomer = it) }
-                ?.let { getSimpleInvoiceUseCase.saveInvoice(it) }
-
+                _uiState.value.invoicesModel.let { getSimpleInvoiceUseCase.saveInvoice(it) }
            //else
            ///     getSimpleInvoiceUseCase.updateInvoice(InvoicesModel(iCustomer = uiState.value.customer))
         }

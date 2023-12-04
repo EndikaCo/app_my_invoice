@@ -8,7 +8,7 @@ import java.util.Locale
 
 data class InvoicesModel(
     val iId: Int? = null,
-    val iDate : String = timeNow(),
+    val iDate : String = getDate(),//todo
     val iCustomer: CustomerModel,
     val iReference: String = "",
     val iTotal: Float = 0f,
@@ -29,11 +29,8 @@ data class InvoicesModel(
     fun toEntity(): InvoicesEntity {
         return InvoicesEntity(
             iId = iId ?: 0,
-            iCustomer = Converters().customerEntityToJson(iCustomer.toEntity()) ?: "poronga",
+            iCustomer = Converters().customerEntityToJson(iCustomer.toEntity()) ?: "error",
+            iDate = iDate,
         )
     }
-}
-
-fun timeNow(): String {
-    return SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(Date())
 }

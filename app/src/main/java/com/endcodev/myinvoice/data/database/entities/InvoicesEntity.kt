@@ -11,12 +11,15 @@ data class InvoicesEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "iId") val iId: Int = 0,
     @ColumnInfo(name = "iCustomer") val iCustomer: String,
-)
+    @ColumnInfo(name = "iDate") val iDate: String,
+
+    )
 
 fun InvoicesEntity.toDomain() =
     Converters().jsonToCustomerEntity(iCustomer)?.let {
         InvoicesModel(
         iId = iId,
+        iDate = iDate,
         iCustomer = it.toDomain()
         )
     }

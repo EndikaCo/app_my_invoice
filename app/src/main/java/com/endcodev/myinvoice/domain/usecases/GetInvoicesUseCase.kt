@@ -22,18 +22,6 @@ class GetInvoicesUseCase @Inject constructor(
         } catch (e: Exception){
             Log.e(TAG, "No items found, $e" )
         }
-        //if (invoicesList.isNullOrEmpty()){
-            //invoicesRepository.insertAllItems(exampleInvoices())
-            //invoicesList = invoicesRepository.getAllInvoicesFromDB()
-        //}
         return invoicesList
-    }
-
-
-
-    private fun exampleInvoices(): MutableList<InvoicesEntity> {
-        return arrayListOf(
-            InvoicesEntity(iId = 1, iCustomer = "Manolo")
-        )
     }
 }
