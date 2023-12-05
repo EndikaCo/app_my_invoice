@@ -1,9 +1,9 @@
-package com.endcodev.myinvoice.domain.models
+package com.endcodev.myinvoice.domain.models.customer
 
 import android.net.Uri
 import com.endcodev.myinvoice.data.database.entities.CustomersEntity
 
-data class CustomerModel(
+data class Customer(
     val cImage: Uri?,
     val cIdentifier: String = "-",
     val cFiscalName: String,

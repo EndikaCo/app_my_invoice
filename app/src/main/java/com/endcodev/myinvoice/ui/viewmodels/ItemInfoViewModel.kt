@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.database.entities.ItemsEntity
-import com.endcodev.myinvoice.domain.models.ItemModel
-import com.endcodev.myinvoice.domain.models.ItemUiState
+import com.endcodev.myinvoice.domain.models.product.Product
+import com.endcodev.myinvoice.domain.models.product.ProductUiState
 import com.endcodev.myinvoice.domain.usecases.GetSimpleItemsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,8 +23,8 @@ class ItemInfoViewModel @Inject constructor(
     private val getSimpleItemUseCase: GetSimpleItemsUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ItemUiState())
-    val uiState: StateFlow<ItemUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ProductUiState())
+    val uiState: StateFlow<ProductUiState> = _uiState.asStateFlow()
 
 
     fun getItem(itemId: String?) {
@@ -37,7 +37,7 @@ class ItemInfoViewModel @Inject constructor(
         }
     }
 
-    private fun updateUi(item: ItemModel) {
+    private fun updateUi(item: Product) {
         _uiState.update { currentState ->
             currentState.copy(
                 iCode = item.iCode,

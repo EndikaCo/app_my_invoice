@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.domain.models.ItemUiState
+import com.endcodev.myinvoice.domain.models.product.ProductUiState
 import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.navigation.Routes
@@ -106,7 +106,7 @@ fun ItemInfoScreen(
     onAcceptButton: () -> Unit,
     onCancelButton: () -> Unit,
     onDeleteButton: () -> Unit,
-    uiState: ItemUiState,
+    uiState: ProductUiState,
     onCodeChanged: (String) -> Unit,
     onNameChanged: (String) -> Unit,
     onUriChanged: (Uri) -> Unit,
@@ -141,7 +141,7 @@ fun ItemInfoScreen(
 @Composable
 fun ItemsInfoContent(
     innerPadding: PaddingValues,
-    uiState: ItemUiState,
+    uiState: ProductUiState,
     onCodeChanged: (String) -> Unit,
     onNameChanged: (String) -> Unit,
     onUriChanged: (Uri) -> Unit,
@@ -337,7 +337,7 @@ fun PreviewCustomerInfoScreen() {
             onAcceptButton = {},
             onCancelButton = {},
             onDeleteButton = {},
-            uiState = ItemUiState(),
+            uiState = ProductUiState(),
             onNameChanged = {},
             onCodeChanged = {},
             onUriChanged = {},

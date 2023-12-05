@@ -1,15 +1,13 @@
-package com.endcodev.myinvoice.domain.models
+package com.endcodev.myinvoice.domain.models.invoice
 
 import com.endcodev.myinvoice.data.converters.Converters
 import com.endcodev.myinvoice.data.database.entities.InvoicesEntity
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.endcodev.myinvoice.domain.models.customer.Customer
 
-data class InvoicesModel(
+data class Invoice(
     val iId: Int? = null,
     val iDate : String = getDate(),//todo
-    val iCustomer: CustomerModel,
+    val iCustomer: Customer,
     val iReference: String = "",
     val iTotal: Float = 0f,
     )

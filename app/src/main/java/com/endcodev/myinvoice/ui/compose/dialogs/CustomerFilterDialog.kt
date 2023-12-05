@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.endcodev.myinvoice.domain.models.FilterModel
+import com.endcodev.myinvoice.domain.models.common.FilterModel
 import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme

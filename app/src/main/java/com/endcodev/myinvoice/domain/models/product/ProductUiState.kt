@@ -1,8 +1,8 @@
-package com.endcodev.myinvoice.domain.models
+package com.endcodev.myinvoice.domain.models.product
 
 import android.net.Uri
 
-data class ItemUiState(
+data class ProductUiState(
     val iImage : Uri? = null,
     val iCode : String = "",
     val iName : String = "",

@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.data.database.entities.toDomain
-import com.endcodev.myinvoice.domain.models.CustomerModel
+import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.screens.auth.LoginHeader
@@ -26,7 +26,7 @@ import com.endcodev.myinvoice.ui.viewmodels.DialogViewModel
 @Composable
 fun ChooseCustomerDialogActions(
     onDismissRequest: () -> Unit,
-    onAcceptRequest: (CustomerModel) -> Unit,
+    onAcceptRequest: (Customer) -> Unit,
 ) {
     val viewModel: DialogViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -44,8 +44,8 @@ fun ChooseCustomerDialogActions(
 fun ChooseCustomerDialog(
     searchText: String,
     onTextChange: (String) -> Unit,
-    itemList: List<CustomerModel>,
-    onAcceptRequest: (CustomerModel) -> Unit,
+    itemList: List<Customer>,
+    onAcceptRequest: (Customer) -> Unit,
     onDismissRequest: () -> Unit = {}
 ) {
     Column {

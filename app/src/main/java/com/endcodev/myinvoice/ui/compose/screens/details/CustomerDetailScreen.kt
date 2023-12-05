@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.domain.models.CustomerInfoUiState
+import com.endcodev.myinvoice.domain.models.customer.CustomerUiState
 import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.compose.screens.home.content.ProgressBar
@@ -127,7 +127,7 @@ val pPadding = 20.dp
 fun CustomerDetailScreen(
     onAcceptButton: () -> Unit,
     onCancelButton: () -> Unit,
-    uiState: CustomerInfoUiState,
+    uiState: CustomerUiState,
     onUriChanged: (Uri?) -> Unit,
     onFiscalNameChange: (String) -> Unit,
     onIdentifierChange: (String) -> Unit,
@@ -175,7 +175,7 @@ fun CustomerDetailScreen(
 fun CustomerInfoContent(
     innerPadding: PaddingValues,
     onUriChanged: (Uri?) -> Unit,
-    uiState: CustomerInfoUiState,
+    uiState: CustomerUiState,
     onFiscalNameChange: (String) -> Unit,
     onIdentifierChange: (String) -> Unit,
     onCountryChange: (String) -> Unit,
@@ -343,7 +343,7 @@ fun PreviewCustomerDetailScreen() {
         CustomerDetailScreen(
             onAcceptButton = {},
             onCancelButton = {},
-            CustomerInfoUiState(),
+            CustomerUiState(),
             onUriChanged = {},
             onFiscalNameChange = {},
             onIdentifierChange = {},

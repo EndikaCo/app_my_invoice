@@ -1,7 +1,6 @@
 package com.endcodev.myinvoice.ui.compose.screens.details
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,14 +50,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.domain.models.CustomerModel
-import com.endcodev.myinvoice.domain.models.InvoiceUiState
-import com.endcodev.myinvoice.domain.models.ItemModel
-import com.endcodev.myinvoice.domain.models.ItemSaleModel
+import com.endcodev.myinvoice.domain.models.customer.Customer
+import com.endcodev.myinvoice.domain.models.invoice.InvoiceUiState
+import com.endcodev.myinvoice.domain.models.product.Product
+import com.endcodev.myinvoice.domain.models.invoice.SaleItem
 import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.CDatePicker
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
 import com.endcodev.myinvoice.ui.compose.dialogs.ChooseCustomerDialogActions
+import com.endcodev.myinvoice.ui.compose.dialogs.InvoiceProductAddDialogActions
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoiceInfoViewModel
@@ -89,7 +89,8 @@ fun InvoiceDetailActions(
         uiState = uiState,
         onCustomerChange = viewModel::setCustomer,
         onDeleteButton = { viewModel.deleteInvoice() },
-        onDateChanged = { viewModel.setDate(it) }
+        onDateChanged = { viewModel.setDate(it) },
+        onProductChanged = {}
     )
 }
 
@@ -99,13 +100,16 @@ fun InvoiceInfoScreen(
     onAcceptButton: () -> Unit,
     onDeleteButton: () -> Unit,
     uiState: InvoiceUiState,
-    onCustomerChange: (CustomerModel) -> Unit,
-    onDateChanged: (String) -> Unit
+    onCustomerChange: (Customer) -> Unit,
+    onDateChanged: (String) -> Unit,
+    onProductChanged: (Product) -> Unit
 ) {
 
     val state = rememberDatePickerState()
     val dateDialog = remember { mutableStateOf(false) } //show DatePicker dialog
     val customerDialog = remember { mutableStateOf(false) } //show CustomerSelect dialog
+    val productDialog = remember { mutableStateOf(false) }
+
 
     if (dateDialog.value)
         CDatePicker(
@@ -115,7 +119,17 @@ fun InvoiceInfoScreen(
                 val instant = Instant.ofEpochMilli(it.selectedDateMillis ?: (0L))
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
                 val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
-                onDateChanged( formatter.format(date))
+                onDateChanged(formatter.format(date))
+            })
+
+    if (productDialog.value)
+        InvoiceProductAddDialogActions(
+            onDialogAccept = {
+                productDialog.value = false
+                onProductChanged(it)
+            },
+            onDialogCancel = {
+                productDialog.value = false
             })
 
     if (customerDialog.value)
@@ -134,7 +148,8 @@ fun InvoiceInfoScreen(
                     innerPadding = innerPadding,
                     onDateClick = { dateDialog.value = true },
                     onCustomerClick = { customerDialog.value = true },
-                    uiState = uiState
+                    uiState = uiState,
+                    onProductClick = {}
                 )
             },
             bottomBar = {
@@ -163,7 +178,8 @@ fun InvoiceInfoContent(
     innerPadding: PaddingValues,
     onDateClick: () -> Unit,
     onCustomerClick: () -> Unit,
-    uiState: InvoiceUiState
+    uiState: InvoiceUiState,
+    onProductClick: (SaleItem) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(innerPadding),
@@ -174,26 +190,31 @@ fun InvoiceInfoContent(
                 .padding(16.dp)
                 .fillMaxWidth(),
         ) {
-            InvoiceNum(invoiceId = uiState.invoicesModel.iId.toString())
+            InvoiceNum(invoiceId = uiState.invoice.iId.toString())
             Spacer(modifier = Modifier.width(8.dp))
-            InvoiceDate(uiState.invoicesModel.iDate, onClick = { onDateClick() }) //todo
+            InvoiceDate(uiState.invoice.iDate, onClick = { onDateClick() }) //todo
             Spacer(modifier = Modifier.width(8.dp))
             DocSelection(onSelection = { }, docs = listOf("Invoice", "Receipt"))
         }
-        SelectCustomer(customer = uiState.invoicesModel.iCustomer, onIconClick = { onCustomerClick() })
+        SelectCustomer(
+            customer = uiState.invoice.iCustomer,
+            onIconClick = { onCustomerClick() })
         Spacer(modifier = Modifier.height(16.dp))
-        InvoiceItemsList()
+        InvoiceItemsList(onProductClick)
     }
 }
 
 @Composable
-fun InvoiceItemsList() {
+fun InvoiceItemsList(onProductClick: (SaleItem) -> Unit) {
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally)
     {
         items(10) {
             InvoiceProduct(
-                onItemClick = {}, ItemSaleModel(
-                    ItemModel(null, "PRO-3121", "233", "das", ""), 31F,
+                onItemClick = {
+                    onProductClick(it)
+                },
+                SaleItem(
+                    Product(null, "PRO-3121", "233", "das", ""), 31F,
                     12F, 10
                 )
             )
@@ -202,12 +223,12 @@ fun InvoiceItemsList() {
 }
 
 @Composable
-fun InvoiceProduct(onItemClick: () -> Unit, itemSale: ItemSaleModel?) {
+fun InvoiceProduct(onItemClick: (SaleItem) -> Unit, itemSaleItem: SaleItem?) {
     ElevatedCard(
         modifier = Modifier
             .padding(bottom = 8.dp, start = 15.dp, end = 15.dp) //between items
             .fillMaxWidth()
-            .clickable { onItemClick() }
+            .clickable { onItemClick(itemSaleItem!!) }
     ) {
         Row(
             modifier = Modifier
@@ -226,16 +247,16 @@ fun InvoiceProduct(onItemClick: () -> Unit, itemSale: ItemSaleModel?) {
                 colorFilter = colorFilter
             )
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk(itemSale!!.sProduct.iCode, "ref") //Todo
+            ColumnDesk(itemSaleItem!!.sProduct.iCode, "ref") //Todo
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk(itemSale.sQuantity.toString(), "pc")
+            ColumnDesk(itemSaleItem.sQuantity.toString(), "pc")
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk(itemSale.sPrice.toString(), "(eur)")
+            ColumnDesk(itemSaleItem.sPrice.toString(), "(eur)")
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk(itemSale.sDiscount.toString(), "%")
+            ColumnDesk(itemSaleItem.sDiscount.toString(), "%")
             Spacer(modifier = Modifier.width(16.dp))
 
-            val total = (itemSale.sPrice * itemSale.sQuantity) * (1 - itemSale.sDiscount / 100)
+            val total = (itemSaleItem.sPrice * itemSaleItem.sQuantity) * (1 - itemSaleItem.sDiscount / 100)
             ColumnDesk(total.toString(), "EUR")
         }
     }
@@ -306,7 +327,7 @@ fun InvoiceDate(date: String, onClick: () -> Unit, dateChanged: (String) -> Unit
 
 @Composable
 fun SelectCustomer(
-    customer: CustomerModel,
+    customer: Customer,
     onIconClick: () -> Unit
 ) {
     val shape = RoundedCornerShape(20)
@@ -346,7 +367,8 @@ fun PreviewInvoiceInfoScreen() {
             uiState = InvoiceUiState(),
             onCustomerChange = {},
             onDeleteButton = {},
-            onDateChanged = {}
+            onDateChanged = {},
+            onProductChanged = {}
         )
     }
 }

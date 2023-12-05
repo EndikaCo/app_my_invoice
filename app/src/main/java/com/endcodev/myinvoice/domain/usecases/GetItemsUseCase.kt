@@ -3,15 +3,15 @@ package com.endcodev.myinvoice.domain.usecases
 import android.util.Log
 import com.endcodev.myinvoice.data.database.entities.ItemsEntity
 import com.endcodev.myinvoice.data.repository.ItemsRepository
-import com.endcodev.myinvoice.domain.models.ItemModel
+import com.endcodev.myinvoice.domain.models.product.Product
 import javax.inject.Inject
 
 class GetItemsUseCase @Inject constructor(
     private val itemsRepository: ItemsRepository
 ) {
 
-    suspend operator fun invoke(): List<ItemModel> {
-        var itemsList: List<ItemModel>? = null
+    suspend operator fun invoke(): List<Product> {
+        var itemsList: List<Product>? = null
 
         try {
             itemsList = itemsRepository.getAllItemsFromDB()
@@ -20,7 +20,7 @@ class GetItemsUseCase @Inject constructor(
         }
         if (itemsList.isNullOrEmpty()) {
             Log.v(TAG, "null items list")
-            itemsRepository.insertAllItems(exampleCustomers())
+            itemsRepository.insertAllItems(exampleProducts())
             itemsList = itemsRepository.getAllItemsFromDB()
         }
         return itemsList
@@ -29,7 +29,7 @@ class GetItemsUseCase @Inject constructor(
     companion object {
         const val TAG = "GetItemsUseCase"
 
-        fun exampleCustomers(): List<ItemsEntity> {
+        fun exampleProducts(): List<ItemsEntity> {
             return arrayListOf(
                 ItemsEntity(
                     iCode = "BFP420E6327",

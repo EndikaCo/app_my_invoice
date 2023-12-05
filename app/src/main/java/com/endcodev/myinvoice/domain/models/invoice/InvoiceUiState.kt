@@ -1,5 +1,6 @@
-package com.endcodev.myinvoice.domain.models
+package com.endcodev.myinvoice.domain.models.invoice
 
+import com.endcodev.myinvoice.domain.models.customer.Customer
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -10,7 +11,7 @@ data class InvoiceUiState(
     //val isLoading : Boolean = true,
     //val id : String = "-",
     //val date: String
-    val invoicesModel: InvoicesModel = InvoicesModel(0, getDate(), CustomerModel(cImage = null, cFiscalName = "Select Customer", cIdentifier = "0"))
+    val invoice: Invoice = Invoice(0, getDate(), Customer(cImage = null, cFiscalName = "Select Customer", cIdentifier = "0"))
     )
 
 fun getDate(): String {

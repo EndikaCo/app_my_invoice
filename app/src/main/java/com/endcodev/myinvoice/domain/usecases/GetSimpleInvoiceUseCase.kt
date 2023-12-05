@@ -2,7 +2,7 @@ package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.endcodev.myinvoice.domain.models.InvoicesModel
+import com.endcodev.myinvoice.domain.models.invoice.Invoice
 import com.endcodev.myinvoice.data.repository.InvoicesRepository
 import javax.inject.Inject
 
@@ -14,9 +14,9 @@ class GetSimpleInvoiceUseCase @Inject constructor(
         const val TAG = "GetSimpleCustomerUseCase"
     }
 
-    operator fun invoke(invoiceId: String?): InvoicesModel? {
+    operator fun invoke(invoiceId: String?): Invoice? {
 
-        var invoice : InvoicesModel? = null
+        var invoice : Invoice? = null
 
         if(invoiceId == null)
             return null
@@ -30,12 +30,12 @@ class GetSimpleInvoiceUseCase @Inject constructor(
     }
 
 
-    suspend fun saveInvoice(invoice: InvoicesModel) {
+    suspend fun saveInvoice(invoice: Invoice) {
             repository.insertInvoice(invoice)
             Log.v(GetCustomersUseCase.TAG, "customer ${invoice.iId} inserted")
     }
 
-    suspend fun updateInvoice(invoice: InvoicesModel) {
+    suspend fun updateInvoice(invoice: Invoice) {
             repository.updateInvoice(invoice)
             Log.v(GetCustomersUseCase.TAG, "customer ${invoice.iId} updated")
 

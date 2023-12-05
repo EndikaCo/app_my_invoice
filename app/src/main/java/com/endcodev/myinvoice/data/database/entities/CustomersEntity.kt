@@ -4,7 +4,7 @@ import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.endcodev.myinvoice.domain.models.CustomerModel
+import com.endcodev.myinvoice.domain.models.customer.Customer
 
 @Entity(tableName = "customer_table")
 data class CustomersEntity(
@@ -19,7 +19,7 @@ data class CustomersEntity(
         get() = cImage?.let { Uri.parse(it) }
 }
 
-fun CustomersEntity.toDomain() = CustomerModel(
+fun CustomersEntity.toDomain() = Customer(
     cImage = cImageUri,
     cIdentifier = cIdentifier,
     cFiscalName = cFiscalName,

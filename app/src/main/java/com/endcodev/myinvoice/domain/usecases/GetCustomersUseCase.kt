@@ -2,7 +2,7 @@ package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
 import com.endcodev.myinvoice.data.database.entities.CustomersEntity
-import com.endcodev.myinvoice.domain.models.CustomerModel
+import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.data.repository.CustomersRepository
 import javax.inject.Inject
 
@@ -10,8 +10,8 @@ class GetCustomersUseCase @Inject constructor(
     private val repository: CustomersRepository
 ) {
 
-    suspend operator fun invoke(): List<CustomerModel> {
-        var customersList: List<CustomerModel>? = null
+    suspend operator fun invoke(): List<Customer> {
+        var customersList: List<Customer>? = null
 
         try {
             customersList = repository.getAllCustomersFromDB()

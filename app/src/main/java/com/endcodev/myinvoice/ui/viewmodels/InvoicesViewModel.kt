@@ -12,10 +12,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.domain.models.InvoicesModel
+import com.endcodev.myinvoice.domain.models.invoice.Invoice
 import com.endcodev.myinvoice.domain.usecases.GetInvoicesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,7 +30,7 @@ class InvoicesViewModel @Inject constructor(
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
 
-    private val _invoices = MutableStateFlow(emptyList<InvoicesModel>())
+    private val _invoices = MutableStateFlow(emptyList<Invoice>())
     val invoices = searchText
         .debounce(1000L)
         .onEach { _isSearching.update { true } }

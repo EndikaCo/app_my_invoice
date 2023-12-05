@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.domain.models.CustomerModel
-import com.endcodev.myinvoice.domain.models.InvoicesModel
-import com.endcodev.myinvoice.domain.models.getDate
+import com.endcodev.myinvoice.domain.models.customer.Customer
+import com.endcodev.myinvoice.domain.models.invoice.Invoice
+import com.endcodev.myinvoice.domain.models.invoice.getDate
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
@@ -66,7 +66,7 @@ fun HomeInvoicesContent(
     onFloatingButtonClick: () -> Unit,
     onListItemClick: (String) -> Unit,
     searchText: String,
-    invoices: List<InvoicesModel>,
+    invoices: List<Invoice>,
     isLoading: Boolean,
     onSearchTextChange: (String) -> Unit,
     paddingValues: PaddingValues,
@@ -107,7 +107,7 @@ fun ProgressBar() {
 @Composable
 fun InvoicesList(
     modifier: Modifier,
-    invoices: List<InvoicesModel>,
+    invoices: List<Invoice>,
     onItemClick: (String) -> Unit
 ) {
     LazyColumn(
@@ -120,7 +120,7 @@ fun InvoicesList(
 }
 
 @Composable
-fun InvoiceItem(invoice: InvoicesModel, onItemClick: () -> Unit) {
+fun InvoiceItem(invoice: Invoice, onItemClick: () -> Unit) {
     ElevatedCard(
         modifier = Modifier
             .padding(bottom = 8.dp) //between items
@@ -141,7 +141,7 @@ fun InvoiceItem(invoice: InvoicesModel, onItemClick: () -> Unit) {
 }
 
 @Composable
-fun InvoiceIdAndFiscal(modifier: Modifier, invoice: InvoicesModel) {
+fun InvoiceIdAndFiscal(modifier: Modifier, invoice: Invoice) {
     Column(
         modifier = modifier
     ) {
@@ -199,7 +199,7 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: InvoicesModel) {
 @Composable
 fun InvoicesContentPreview() {
 
-    val customer = CustomerModel(null, "B9746473", "Manolo S.L")
+    val customer = Customer(null, "B9746473", "Manolo S.L")
 
     MyInvoiceTheme {
         HomeInvoicesContent(
@@ -207,7 +207,7 @@ fun InvoicesContentPreview() {
             onListItemClick = { },
             searchText = "searchText",
             invoices = listOf(
-                InvoicesModel(
+                Invoice(
                     iId = 1,
                     iCustomer = customer,
                     iTotal = 125.54f,

@@ -2,7 +2,7 @@ package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
 import com.endcodev.myinvoice.data.database.entities.ItemsEntity
-import com.endcodev.myinvoice.domain.models.ItemModel
+import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.data.repository.ItemsRepository
 import javax.inject.Inject
 
@@ -12,9 +12,9 @@ import javax.inject.Inject
 
         companion object { const val TAG = "GetSimpleItemsUseCase"}
 
-        operator fun invoke(itemId : String ?): ItemModel? {
+        operator fun invoke(itemId : String ?): Product? {
 
-            var item: ItemModel? = null
+            var item: Product? = null
 
             if (itemId == null)
                 return null

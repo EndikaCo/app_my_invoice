@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.domain.models
+package com.endcodev.myinvoice.domain.models.common
 
 data class FilterModel(
     val type : FilterType,

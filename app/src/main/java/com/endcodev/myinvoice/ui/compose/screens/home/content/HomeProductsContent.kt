@@ -1,9 +1,7 @@
 package com.endcodev.myinvoice.ui.compose.screens.home.content
 
 import android.content.res.Configuration
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,8 +41,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.database.entities.toDomain
-import com.endcodev.myinvoice.domain.models.FilterModel
-import com.endcodev.myinvoice.domain.models.ItemModel
+import com.endcodev.myinvoice.domain.models.common.FilterModel
+import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.usecases.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
@@ -86,7 +84,7 @@ fun ItemsListContent(
     onFloatingButtonClick: () -> Unit,
     onListItemClick: (String) -> Unit,
     searchText: String,
-    items: List<ItemModel>,
+    items: List<Product>,
     isLoading: Boolean,
     onSearchTextChange: (String) -> Unit,
     onFiltersChanged: (List<FilterModel>) -> Unit,
@@ -113,7 +111,7 @@ fun ItemsListContent(
             ItemsList(
                 Modifier.weight(1f),
                 items,
-                onListItemClick
+                onItemClick = {onListItemClick(it.iCode)}
             )
         if (showDialog)
             FiltersDialog(onFiltersChanged, filters, onDialogExit)
@@ -131,8 +129,8 @@ fun ItemsListContent(
 @Composable
 fun ItemsList(
     modifier: Modifier,
-    products: List<ItemModel>,
-    onItemClick: (String) -> Unit
+    products: List<Product>,
+    onItemClick: (Product) -> Unit
 ) {
     LazyVerticalGrid(modifier = modifier,
         columns = GridCells.Fixed(2),
@@ -143,7 +141,7 @@ fun ItemsList(
             items(products) { item ->
                 ProductItem(
                     item = item,
-                    onItemClick = { onItemClick(item.iCode) }
+                    onItemClick = { onItemClick(item) }
                 )
             }
         }
@@ -152,7 +150,7 @@ fun ItemsList(
 }
 
 @Composable
-fun ProductItem(item: ItemModel, onItemClick: () -> Unit) {
+fun ProductItem(item: Product, onItemClick: () -> Unit) {
 
     var colorFilter: ColorFilter? = null
     var image = uriToPainterImage(item.iImage)
@@ -211,7 +209,7 @@ fun ItemImage(image: Painter, colorFilter: ColorFilter?) {
 }
 
 @Composable
-fun ItemNameAndIdentifier(modifier: Modifier, item: ItemModel) {
+fun ItemNameAndIdentifier(modifier: Modifier, item: Product) {
     Column(
         modifier = modifier
     ) {
@@ -237,7 +235,7 @@ fun ItemNameAndIdentifier(modifier: Modifier, item: ItemModel) {
 @Composable
 fun ItemContentPreview() {
 
-    val items = GetItemsUseCase.exampleCustomers().map { it.toDomain() }
+    val items = GetItemsUseCase.exampleProducts().map { it.toDomain() }
 
     MyInvoiceTheme {
         ItemsListContent(

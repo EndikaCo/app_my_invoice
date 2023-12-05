@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.domain.models
+package com.endcodev.myinvoice.domain.models.common
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

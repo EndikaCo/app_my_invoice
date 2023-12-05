@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.endcodev.myinvoice.R
-import com.endcodev.myinvoice.domain.models.FilterModel
+import com.endcodev.myinvoice.domain.models.common.FilterModel
 
 
 @Composable

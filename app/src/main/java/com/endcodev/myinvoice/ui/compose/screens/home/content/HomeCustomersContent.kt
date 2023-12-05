@@ -41,9 +41,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.database.entities.toDomain
-import com.endcodev.myinvoice.domain.models.CustomerModel
-import com.endcodev.myinvoice.domain.models.FilterModel
-import com.endcodev.myinvoice.domain.models.FilterType
+import com.endcodev.myinvoice.domain.models.customer.Customer
+import com.endcodev.myinvoice.domain.models.common.FilterModel
+import com.endcodev.myinvoice.domain.models.common.FilterType
 import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
@@ -82,7 +82,7 @@ fun CustomersListContent(
     onFloatingButtonClick: () -> Unit,
     onListItemClick: (String) -> Unit,
     searchText: String,
-    customers: List<CustomerModel>,
+    customers: List<Customer>,
     isLoading: Boolean,
     onSearchTextChange: (String) -> Unit,
     onFiltersChanged: (List<FilterModel>) -> Unit,
@@ -122,7 +122,7 @@ fun CustomersListContent(
 @Composable
 fun CustomersList(
     modifier: Modifier,
-    customers: List<CustomerModel>,
+    customers: List<Customer>,
     onItemClick: (String) -> Unit
 ) {
     LazyColumn(
@@ -159,7 +159,7 @@ fun CustomerImage(image: Painter, colorFilter: ColorFilter?) {
 }
 
 @Composable
-fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
+fun CustomerItem(customer: Customer, onItemClick: () -> Unit) {
 
     var colorFilter: ColorFilter? = null
     var image = uriToPainterImage(customer.cImage)
@@ -192,7 +192,7 @@ fun CustomerItem(customer: CustomerModel, onItemClick: () -> Unit) {
 }
 
 @Composable
-fun CustomerNameAndIdentifier(modifier: Modifier, customer: CustomerModel) {
+fun CustomerNameAndIdentifier(modifier: Modifier, customer: Customer) {
     Column(
         modifier = modifier
     ) {

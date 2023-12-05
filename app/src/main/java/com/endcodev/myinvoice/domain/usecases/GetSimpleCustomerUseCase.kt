@@ -2,7 +2,7 @@ package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.endcodev.myinvoice.domain.models.CustomerModel
+import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.data.database.entities.CustomersEntity
 import com.endcodev.myinvoice.data.repository.CustomersRepository
 import javax.inject.Inject
@@ -15,9 +15,9 @@ class GetSimpleCustomerUseCase @Inject constructor(
         const val TAG = "GetSimpleCustomerUseCase"
     }
 
-    operator fun invoke(customerIdentifier: String?): CustomerModel? {
+    operator fun invoke(customerIdentifier: String?): Customer? {
 
-        var customer : CustomerModel? = null
+        var customer : Customer? = null
 
         if(customerIdentifier == null)
             return null

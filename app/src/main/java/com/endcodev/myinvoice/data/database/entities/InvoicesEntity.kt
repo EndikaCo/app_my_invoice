@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.endcodev.myinvoice.data.converters.Converters
-import com.endcodev.myinvoice.domain.models.InvoicesModel
+import com.endcodev.myinvoice.domain.models.invoice.Invoice
 
 @Entity(tableName = "invoices_table")
 data class InvoicesEntity(
@@ -17,7 +17,7 @@ data class InvoicesEntity(
 
 fun InvoicesEntity.toDomain() =
     Converters().jsonToCustomerEntity(iCustomer)?.let {
-        InvoicesModel(
+        Invoice(
         iId = iId,
         iDate = iDate,
         iCustomer = it.toDomain()

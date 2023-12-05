@@ -2,7 +2,7 @@ package com.endcodev.myinvoice.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.domain.models.CustomersListUiState
+import com.endcodev.myinvoice.domain.models.customer.CustomerListUiState
 import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -18,8 +18,8 @@ class DialogViewModel @Inject constructor(
     private val getCustomersUseCase: GetCustomersUseCase,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CustomersListUiState())
-    val uiState: StateFlow<CustomersListUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(CustomerListUiState())
+    val uiState: StateFlow<CustomerListUiState> = _uiState.asStateFlow()
 
     private suspend fun getCustomers(searchText: String) {
         _uiState.update { it.copy(isLoading = true) }

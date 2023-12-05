@@ -3,18 +3,18 @@ package com.endcodev.myinvoice.data.repository
 import com.endcodev.myinvoice.data.database.daos.ItemsDao
 import com.endcodev.myinvoice.data.database.entities.ItemsEntity
 import com.endcodev.myinvoice.data.database.entities.toDomain
-import com.endcodev.myinvoice.domain.models.ItemModel
+import com.endcodev.myinvoice.domain.models.product.Product
 import javax.inject.Inject
 
 class ItemsRepository @Inject constructor(
     private val itemsDao : ItemsDao
 ) {
-    suspend fun getAllItemsFromDB() : List<ItemModel> {
+    suspend fun getAllItemsFromDB() : List<Product> {
         val response : List<ItemsEntity> = itemsDao.getAllItems()
         return response.map { it.toDomain() }
     }
 
-    fun getItemById(itemId : String) : ItemModel {
+    fun getItemById(itemId : String) : Product {
         val response : ItemsEntity = itemsDao.getItemById(itemId)
         return response.toDomain()
     }

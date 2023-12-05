@@ -1,8 +1,8 @@
-package com.endcodev.myinvoice.domain.models
+package com.endcodev.myinvoice.domain.models.customer
 
 import android.net.Uri
 
-data class CustomerInfoUiState (
+data class CustomerUiState (
     val cImage: Uri? = null, //todo use the CustomerModel abd isLoading etc appart?
     val cIdentifier : String = "",
     val cFiscalName : String = "",
