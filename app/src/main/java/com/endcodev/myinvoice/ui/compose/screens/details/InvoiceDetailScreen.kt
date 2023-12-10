@@ -18,10 +18,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -110,7 +111,6 @@ fun InvoiceInfoScreen(
     val customerDialog = remember { mutableStateOf(false) } //show CustomerSelect dialog
     val productDialog = remember { mutableStateOf(false) }
 
-
     if (dateDialog.value)
         CDatePicker(
             openDialog = { dateDialog.value = it },
@@ -149,7 +149,8 @@ fun InvoiceInfoScreen(
                     onDateClick = { dateDialog.value = true },
                     onCustomerClick = { customerDialog.value = true },
                     uiState = uiState,
-                    onProductClick = {}
+                    onProductClick = {},
+                    onPricesClick = {}
                 )
             },
             bottomBar = {
@@ -179,7 +180,8 @@ fun InvoiceInfoContent(
     onDateClick: () -> Unit,
     onCustomerClick: () -> Unit,
     uiState: InvoiceUiState,
-    onProductClick: (SaleItem) -> Unit
+    onProductClick: () -> Unit,
+    onPricesClick: () -> Unit
 ) {
     Column(
         modifier = Modifier.padding(innerPadding),
@@ -200,44 +202,46 @@ fun InvoiceInfoContent(
             customer = uiState.invoice.iCustomer,
             onIconClick = { onCustomerClick() })
         Spacer(modifier = Modifier.height(16.dp))
-        InvoiceItemsList(onProductClick)
+        InvoiceItemsList(salesList, onProductClick, onPricesClick)
     }
 }
 
+val salesList =listOf(SaleItem(
+    Product(null, "PRO-3121", "233", "das", ""), 31F,
+    12F, 10
+))
 @Composable
-fun InvoiceItemsList(onProductClick: (SaleItem) -> Unit) {
-    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally)
-    {
-        items(10) {
-            InvoiceProduct(
-                onItemClick = {
-                    onProductClick(it)
-                },
-                SaleItem(
-                    Product(null, "PRO-3121", "233", "das", ""), 31F,
-                    12F, 10
+fun InvoiceItemsList(salesList : List<SaleItem> ,onProductClick: () -> Unit, onPricesClick: () -> Unit) {
+    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
+        content = {
+            items(salesList) { sale ->
+                InvoiceProduct(
+                    onCustomerClick = {
+                        onProductClick()
+                    },
+                    onPricesClick = {
+                        onPricesClick()
+                    },
+                    sale
                 )
-            )
-        }
-    }
+            }
+        })
 }
 
 @Composable
-fun InvoiceProduct(onItemClick: (SaleItem) -> Unit, itemSaleItem: SaleItem?) {
-    ElevatedCard(
-        modifier = Modifier
-            .padding(bottom = 8.dp, start = 15.dp, end = 15.dp) //between items
-            .fillMaxWidth()
-            .clickable { onItemClick(itemSaleItem!!) }
-    ) {
+fun InvoiceProduct(onCustomerClick: () -> Unit, onPricesClick: () -> Unit, itemSaleItem: SaleItem?) {
+
+    Row(){
         Row(
             modifier = Modifier
+                .clickable { onCustomerClick() } //todo
                 .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
                 .height(40.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
         ) {
 
+            //todo first box
             val colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
             val image = painterResource(id = R.drawable.filter_24)
 
@@ -248,8 +252,19 @@ fun InvoiceProduct(onItemClick: (SaleItem) -> Unit, itemSaleItem: SaleItem?) {
             )
             Spacer(modifier = Modifier.width(16.dp))
             ColumnDesk(itemSaleItem!!.sProduct.iCode, "ref") //Todo
+        }
+
+        //todo second box
+        Row(
+            modifier = Modifier
+                .clickable { onPricesClick() } //todo
+                .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
+                .height(40.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
             Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk(itemSaleItem.sQuantity.toString(), "pc")
+            ColumnDesk(itemSaleItem!!.sQuantity.toString(), "pc")
             Spacer(modifier = Modifier.width(16.dp))
             ColumnDesk(itemSaleItem.sPrice.toString(), "(eur)")
             Spacer(modifier = Modifier.width(16.dp))
@@ -257,9 +272,9 @@ fun InvoiceProduct(onItemClick: (SaleItem) -> Unit, itemSaleItem: SaleItem?) {
             Spacer(modifier = Modifier.width(16.dp))
 
             val total = (itemSaleItem.sPrice * itemSaleItem.sQuantity) * (1 - itemSaleItem.sDiscount / 100)
-            ColumnDesk(total.toString(), "EUR")
-        }
+            ColumnDesk(total.toString(), "EUR")}
     }
+
 }
 
 @Composable
@@ -355,7 +370,6 @@ fun SelectCustomer(
         )
     }
 }
-
 
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
