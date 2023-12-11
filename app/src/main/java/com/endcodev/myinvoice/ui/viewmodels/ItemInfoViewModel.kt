@@ -26,7 +26,6 @@ class ItemInfoViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ProductUiState())
     val uiState: StateFlow<ProductUiState> = _uiState.asStateFlow()
 
-
     fun getItem(itemId: String?) {
         viewModelScope.launch(Dispatchers.IO) {
             val item = getSimpleItemUseCase.invoke(itemId)
@@ -86,6 +85,9 @@ class ItemInfoViewModel @Inject constructor(
         }
     }
 
+    private fun enableDelete(itemId: String?) : Boolean{
+        return itemId != null
+    }
 
     private fun enableAccept(code: String, name: String) =
         code.isNotEmpty() && name.isNotEmpty()

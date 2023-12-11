@@ -16,7 +16,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -25,8 +24,10 @@ import androidx.navigation.compose.rememberNavController
 import com.endcodev.myinvoice.domain.models.common.NavBarItem
 import com.endcodev.myinvoice.ui.navigation.HomeNavGraph
 import com.endcodev.myinvoice.ui.navigation.Routes.*
-import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
+/**
+ * Home screen for the app.
+ */
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
 
@@ -36,6 +37,9 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
     )
 }
 
+/**
+ * Navigation Bar for the app.
+ */
 @Composable
 fun NavigationBar(navController: NavHostController) {
 
@@ -50,8 +54,8 @@ fun NavigationBar(navController: NavHostController) {
             route = CustomerContent.routes,
             selectedIcon = Icons.Filled.Person,
             unselectedIcon = Icons.Outlined.Person,
-            hasNews = false,
-            badgeCount = 45
+            hasNews = true,
+            badgeCount = 4
         ),
         NavBarItem(
             route = ItemsContent.routes,
@@ -94,6 +98,13 @@ fun NavigationBar(navController: NavHostController) {
     }
 }
 
+/**
+ * Creates a badge for a navigation bar item.
+ *
+ * @param item The NavBarItem for which the badge is being created. It contains properties like badgeCount, hasNews, selectedIcon, unselectedIcon, and route.
+ * @param index The index of the NavBarItem in the list of navigation bar items.
+ * @param selectedItemIndex The index of the currently selected NavBarItem in the navigation bar.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemBadge(item: NavBarItem, index: Int, selectedItemIndex: Int) {
@@ -113,12 +124,5 @@ fun ItemBadge(item: NavBarItem, index: Int, selectedItemIndex: Int) {
                 item.unselectedIcon,
             contentDescription = item.route
         )
-    }
-}
-
-@Preview
-@Composable
-fun HomePreview() {
-    MyInvoiceTheme {
     }
 }

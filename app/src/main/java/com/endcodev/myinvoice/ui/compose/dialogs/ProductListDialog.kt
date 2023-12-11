@@ -17,7 +17,7 @@ import com.endcodev.myinvoice.data.database.entities.toDomain
 import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.usecases.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
-import com.endcodev.myinvoice.ui.compose.screens.home.content.ItemsList
+import com.endcodev.myinvoice.ui.compose.screens.home.content.ProductList
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.AddProductViewModel
 
@@ -55,7 +55,7 @@ fun InvoiceProductAddDialog(
             CommonSearchBar(searchText, onTextChange, onFilterClick = {})
             Spacer(modifier = Modifier.height(16.dp))
 
-            ItemsList(
+            ProductList(
                 Modifier,
                 itemList,
                 onDialogAccept

@@ -20,8 +20,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -60,6 +63,7 @@ import com.endcodev.myinvoice.ui.compose.components.CDatePicker
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
 import com.endcodev.myinvoice.ui.compose.dialogs.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.ui.compose.dialogs.InvoiceProductAddDialogActions
+import com.endcodev.myinvoice.ui.compose.dialogs.ProductDialog
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoiceInfoViewModel
@@ -109,7 +113,9 @@ fun InvoiceInfoScreen(
     val state = rememberDatePickerState()
     val dateDialog = remember { mutableStateOf(false) } //show DatePicker dialog
     val customerDialog = remember { mutableStateOf(false) } //show CustomerSelect dialog
-    val productDialog = remember { mutableStateOf(false) }
+    val productDialog = remember { mutableIntStateOf(0) }
+    val priceDialog = remember { mutableStateOf(false) }
+
 
     if (dateDialog.value)
         CDatePicker(
@@ -120,17 +126,30 @@ fun InvoiceInfoScreen(
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
                 val date = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
                 onDateChanged(formatter.format(date))
-            })
+            }
+        )
 
-    if (productDialog.value)
+    if (productDialog.intValue != 0)
         InvoiceProductAddDialogActions(
             onDialogAccept = {
-                productDialog.value = false
+                productDialog.intValue = 0
                 onProductChanged(it)
             },
             onDialogCancel = {
-                productDialog.value = false
-            })
+                productDialog.intValue = 0
+            }
+        )
+
+    if (priceDialog.value)
+        ProductDialog(
+            sale = SaleItem(
+                Product(null, "PRO-3121", "233", "das", ""), 31F,
+                12F, 10
+            ),
+            onDialogAccept = {},
+            onDialogCancel = {},
+            onPriceChanged = {}
+        )
 
     if (customerDialog.value)
         ChooseCustomerDialogActions(
@@ -149,12 +168,15 @@ fun InvoiceInfoScreen(
                     onDateClick = { dateDialog.value = true },
                     onCustomerClick = { customerDialog.value = true },
                     uiState = uiState,
-                    onProductClick = {},
-                    onPricesClick = {}
+                    onProductClick = { productDialog.intValue = it },
+                    onPricesClick = { priceDialog.value = true }
                 )
             },
             bottomBar = {
                 Column {
+                    Button(onClick = { productDialog.intValue = uiState.invoice.iSaleList.size }){
+                        Text(text = "Add Product")
+                    }
                     Divider(
                         modifier = Modifier
                             .background(Color(R.color.transparent))
@@ -163,12 +185,8 @@ fun InvoiceInfoScreen(
                     )
                     ActionButtons(
                         enabled = true,
-                        onAcceptClick = {
-                            onAcceptButton()
-                        },
-                        onDeleteClick = {
-                            onDeleteButton()
-                        })
+                        onAcceptClick = { onAcceptButton() },
+                        onDeleteClick = { onDeleteButton() })
                 }
             }
         )
@@ -180,7 +198,7 @@ fun InvoiceInfoContent(
     onDateClick: () -> Unit,
     onCustomerClick: () -> Unit,
     uiState: InvoiceUiState,
-    onProductClick: () -> Unit,
+    onProductClick: (Int) -> Unit,
     onPricesClick: () -> Unit
 ) {
     Column(
@@ -206,18 +224,25 @@ fun InvoiceInfoContent(
     }
 }
 
-val salesList =listOf(SaleItem(
-    Product(null, "PRO-3121", "233", "das", ""), 31F,
-    12F, 10
-))
+val salesList = listOf(
+    SaleItem(
+        Product(null, "PRO-3121", "233", "das", ""), 31F,
+        12F, 10
+    )
+)
+
 @Composable
-fun InvoiceItemsList(salesList : List<SaleItem> ,onProductClick: () -> Unit, onPricesClick: () -> Unit) {
+fun InvoiceItemsList(
+    salesList: List<SaleItem>,
+    onProductClick: (Int) -> Unit,
+    onPricesClick: () -> Unit
+) {
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
         content = {
-            items(salesList) { sale ->
+            itemsIndexed(salesList) {index, sale ->
                 InvoiceProduct(
                     onCustomerClick = {
-                        onProductClick()
+                        onProductClick(index)
                     },
                     onPricesClick = {
                         onPricesClick()
@@ -229,9 +254,13 @@ fun InvoiceItemsList(salesList : List<SaleItem> ,onProductClick: () -> Unit, onP
 }
 
 @Composable
-fun InvoiceProduct(onCustomerClick: () -> Unit, onPricesClick: () -> Unit, itemSaleItem: SaleItem?) {
+fun InvoiceProduct(
+    onCustomerClick: () -> Unit,
+    onPricesClick: () -> Unit,
+    itemSaleItem: SaleItem?
+) {
 
-    Row(){
+    Row() {
         Row(
             modifier = Modifier
                 .clickable { onCustomerClick() } //todo
@@ -271,8 +300,10 @@ fun InvoiceProduct(onCustomerClick: () -> Unit, onPricesClick: () -> Unit, itemS
             ColumnDesk(itemSaleItem.sDiscount.toString(), "%")
             Spacer(modifier = Modifier.width(16.dp))
 
-            val total = (itemSaleItem.sPrice * itemSaleItem.sQuantity) * (1 - itemSaleItem.sDiscount / 100)
-            ColumnDesk(total.toString(), "EUR")}
+            val total =
+                (itemSaleItem.sPrice * itemSaleItem.sQuantity) * (1 - itemSaleItem.sDiscount / 100)
+            ColumnDesk(total.toString(), "EUR")
+        }
     }
 
 }

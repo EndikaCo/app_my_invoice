@@ -40,8 +40,14 @@ import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoicesViewModel
 
+/**
+ * Handles the actions for the [HomeInvoicesContent].
+ *
+ * @param navController The NavController used for navigation actions.
+ * @param paddingValues The PaddingValues used for padding in the [HomeInvoicesContent].
+ */
 @Composable
-fun InvoicesListContentActions(
+fun HomeInvoicesContentActions(
     navController: NavHostController,
     paddingValues: PaddingValues,
 ) {
@@ -77,7 +83,11 @@ fun HomeInvoicesContent(
             .padding(paddingValues)
             .padding(12.dp)
     ) {
-        CommonSearchBar(searchText, onTextChanged = onSearchTextChange, onFilterClick = {})
+        CommonSearchBar(
+            searchText = searchText,
+            onTextChanged = onSearchTextChange,
+            onFilterClick = {/*Todo*/ }
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
         if (isLoading)
@@ -86,11 +96,9 @@ fun HomeInvoicesContent(
             InvoicesList(Modifier.weight(1f), invoices, onListItemClick)
 
         FloatingActionButton(
-            Modifier
-                .weight(0.08f)
-                .align(Alignment.End),
+            modifier = Modifier.align(Alignment.End),
             painter = painterResource(id = R.drawable.invoice_add_24),
-            onFloatingButtonClick
+            onClick = onFloatingButtonClick
         )
     }
 }
@@ -212,7 +220,7 @@ fun InvoicesContentPreview() {
                     iCustomer = customer,
                     iTotal = 125.54f,
                     iDate = getDate(),
-                    iReference = "DSADSA4325"
+                    iReference = "HK4325"
                 )
             ),
             isLoading = false,

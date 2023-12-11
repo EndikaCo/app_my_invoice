@@ -55,16 +55,14 @@ import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.ItemInfoViewModel
 
 @Composable
-fun ItemDetailActions(
+fun ProductsDetailScreenActions(
     itemId: String?,
     navController: NavHostController,
 ) {
     val viewModel: ItemInfoViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
-    if (itemId != null) {
-        LaunchedEffect(itemId) { viewModel.getItem(itemId) }
-    }
+    itemId?.let { LaunchedEffect(it) { viewModel.getItem(it) } }
 
     fun onUpdateData(
         code: String? = null,
@@ -84,27 +82,28 @@ fun ItemDetailActions(
         )
     }
 
-    ItemInfoScreen(
+    ProductsDetailScreen(
         onAcceptButton = {
             viewModel.saveItem()
             navController.navigate(Routes.ItemsContent.routes)
         },
-        onCancelButton = { navController.navigate(Routes.ItemsContent.routes) },
         uiState = uiState,
         onCodeChanged = { onUpdateData(code = it) },
         onNameChanged = { onUpdateData(name = it) },
         onUriChanged = { onUpdateData(image = it) },
         onTypeChanged = { onUpdateData(type = it) },
-        onCostChanged = { onUpdateData(cost = it.toFloat()) },
-        onPriceChanged = { onUpdateData(price = it.toFloat()) },
-        onDeleteButton = { viewModel.deleteItem() }
+        onCostChanged = { onUpdateData(cost = it) },
+        onPriceChanged = { onUpdateData(price = it) },
+        onDeleteButton = {
+            viewModel.deleteItem()
+            navController.navigate(Routes.ItemsContent.routes)
+        }
     )
 }
 
 @Composable
-fun ItemInfoScreen(
+fun ProductsDetailScreen(
     onAcceptButton: () -> Unit,
-    onCancelButton: () -> Unit,
     onDeleteButton: () -> Unit,
     uiState: ProductUiState,
     onCodeChanged: (String) -> Unit,
@@ -198,7 +197,7 @@ fun ItemsInfoContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 10.dp),
-                    )
+                )
             }
             ItemInfoImage(
                 singlePhotoPickerLauncher = singlePhotoPickerLauncher,
@@ -333,9 +332,8 @@ fun ItemStock(label: String, amount: Float, onAmountChanged: (Float) -> Unit) {
 @Composable
 fun PreviewCustomerInfoScreen() {
     MyInvoiceTheme {
-        ItemInfoScreen(
+        ProductsDetailScreen(
             onAcceptButton = {},
-            onCancelButton = {},
             onDeleteButton = {},
             uiState = ProductUiState(),
             onNameChanged = {},

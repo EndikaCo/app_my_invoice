@@ -10,6 +10,7 @@ data class Invoice(
     val iCustomer: Customer,
     val iReference: String = "",
     val iTotal: Float = 0f,
+    val iSaleList : List<SaleItem> = listOf(),
     )
 {
     fun doesMatchSearchQuery(query: String): Boolean {

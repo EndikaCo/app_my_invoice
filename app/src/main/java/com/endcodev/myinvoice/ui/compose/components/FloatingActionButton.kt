@@ -16,11 +16,11 @@ import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 fun FloatingActionButton(
     modifier: Modifier,
     painter: Painter,
-    onAddButtonClick: () -> Unit,
+    onClick: () -> Unit,
 ) {
     ExtendedFloatingActionButton(
         onClick = {
-            onAddButtonClick()
+            onClick()
         },
         modifier = modifier,
         shape = CircleShape,
@@ -40,7 +40,7 @@ fun PreviewFloatingActionButton() {
         FloatingActionButton(
             modifier = Modifier,
             painter = painterResource(R.drawable.customer_add_24),
-            onAddButtonClick = {}
+            onClick = {}
         )
     }
 }

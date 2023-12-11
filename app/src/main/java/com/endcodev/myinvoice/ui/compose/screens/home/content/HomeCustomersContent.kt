@@ -54,14 +54,20 @@ import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.compose.dialogs.FiltersDialog
 import com.endcodev.myinvoice.ui.viewmodels.CustomersViewModel
 
+/**
+ * Handles the actions for the [HomeCustomersContent].
+ *
+ * @param navController The NavController used for navigation actions.
+ * @param paddingValues The PaddingValues used for padding in the [HomeCustomersContent].
+ */
 @Composable
-fun CustomersListContentActions(navController: NavHostController, paddingValues: PaddingValues) {
+fun HomeCustomersContentActions(navController: NavHostController, paddingValues: PaddingValues) {
 
     val viewModel: CustomersViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
-    CustomersListContent(
+    HomeCustomersContent(
         paddingValues = paddingValues,
         searchText = uiState.searchText,
         customers = uiState.customersList,
@@ -78,7 +84,7 @@ fun CustomersListContentActions(navController: NavHostController, paddingValues:
 }
 
 @Composable
-fun CustomersListContent(
+fun HomeCustomersContent(
     onFloatingButtonClick: () -> Unit,
     onListItemClick: (String) -> Unit,
     searchText: String,
@@ -221,7 +227,7 @@ fun CustomersContentPreview() {
     val onSearchTextChange: (String) -> Unit = {}
 
     MyInvoiceTheme {
-        CustomersListContent(
+        HomeCustomersContent(
             onFloatingButtonClick = {},
             onListItemClick = {},
             searchText = searchText,

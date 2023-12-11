@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -47,14 +46,20 @@ import com.endcodev.myinvoice.domain.usecases.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
 import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.components.filteredImage
 import com.endcodev.myinvoice.ui.compose.dialogs.FiltersDialog
-import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.ItemsViewModel
 
+/**
+ * Handles the actions for the [HomeProductsContent].
+ *
+ * @param navController The NavController used for navigation actions.
+ * @param paddingValues The PaddingValues used for padding in the [HomeProductsContent].
+ */
 @Composable
-fun ItemsListContentActions(
+fun HomeProductContentActions(
     navController: NavHostController,
     paddingValues: PaddingValues,
 ) {
@@ -63,41 +68,42 @@ fun ItemsListContentActions(
     val searchText by viewModel.userInput.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
 
-    ItemsListContent(
+    HomeProductsContent(
         paddingValues = paddingValues,
         searchText = searchText,
         items = uiState.itemsList,
+        filters = uiState.filters,
         isLoading = uiState.isLoading,
+        showDialog = showDialog,
         onSearchTextChange = viewModel::setSearchText,
         onFloatingButtonClick = { navController.navigate(DetailsScreen.Item.route) },
         onListItemClick = { navController.navigate("${DetailsScreen.Item.route}/${it}") },
         onFilterClick = { showDialog = true },
-        filters = uiState.filters,
         onFiltersChanged = { viewModel.changeFilters(it) },
         onDialogExit = { showDialog = false },
-        showDialog = showDialog
     )
 }
 
 @Composable
-fun ItemsListContent(
-    onFloatingButtonClick: () -> Unit,
-    onListItemClick: (String) -> Unit,
+fun HomeProductsContent(
+    paddingValues: PaddingValues,
     searchText: String,
     items: List<Product>,
+    filters: List<FilterModel>,
     isLoading: Boolean,
+    showDialog: Boolean,
+    onFloatingButtonClick: () -> Unit,
+    onListItemClick: (String) -> Unit,
     onSearchTextChange: (String) -> Unit,
     onFiltersChanged: (List<FilterModel>) -> Unit,
-    filters: List<FilterModel>,
     onDialogExit: () -> Unit,
-    showDialog: Boolean,
     onFilterClick: () -> Unit,
-    paddingValues: PaddingValues,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues).padding(10.dp)
+            .padding(paddingValues)
+            .padding(10.dp)
     )
     {
         CommonSearchBar(searchText, onSearchTextChange, onFilterClick)
@@ -108,29 +114,27 @@ fun ItemsListContent(
         if (isLoading)
             ProgressBar()
         else
-            ItemsList(
+            ProductList(
                 Modifier.weight(1f),
                 items,
-                onItemClick = {onListItemClick(it.iCode)}
+                onProductClick = { onListItemClick(it.iCode) }
             )
         if (showDialog)
             FiltersDialog(onFiltersChanged, filters, onDialogExit)
 
         FloatingActionButton(
-            modifier = Modifier
-                .weight(0.08f)
-                .align(Alignment.End),
-            painter = painterResource(R.drawable.customer_add_24),
-            onAddButtonClick = onFloatingButtonClick
+            modifier = Modifier.align(Alignment.End),
+            painter = painterResource(R.drawable.library_add_24),
+            onClick = onFloatingButtonClick
         )
     }
 }
 
 @Composable
-fun ItemsList(
+fun ProductList(
     modifier: Modifier,
-    products: List<Product>,
-    onItemClick: (Product) -> Unit
+    productList: List<Product>,
+    onProductClick: (Product) -> Unit
 ) {
     LazyVerticalGrid(modifier = modifier,
         columns = GridCells.Fixed(2),
@@ -138,10 +142,10 @@ fun ItemsList(
         verticalArrangement = Arrangement.spacedBy(space = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
         content = {
-            items(products) { item ->
+            items(productList) { item ->
                 ProductItem(
-                    item = item,
-                    onItemClick = { onItemClick(item) }
+                    product = item,
+                    onProductClick = { onProductClick(item) }
                 )
             }
         }
@@ -150,36 +154,31 @@ fun ItemsList(
 }
 
 @Composable
-fun ProductItem(item: Product, onItemClick: () -> Unit) {
+fun ProductItem(product: Product, onProductClick: () -> Unit) {
 
-    var colorFilter: ColorFilter? = null
-    var image = uriToPainterImage(item.iImage)
-    if (image == null) {
-        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
-        image = painterResource(id = R.drawable.no_photo_24)
-    }
+    val image = filteredImage(product.iImage)
 
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onItemClick() }
+            .clickable { onProductClick() }
     ) {
         Row(
             modifier = Modifier
                 .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
         ) {
             ItemImage(
-                image = image,
-                colorFilter = colorFilter
+                image = image.image,
+                colorFilter = image.filter
             )
             ItemNameAndIdentifier(
                 Modifier
                     .padding(start = 12.dp)
-                    .weight(1f), item
+                    .weight(1f), product
             )
         }
         Text(
-            text = item.iName,
+            text = product.iName,
             modifier = Modifier.padding(start = 8.dp, end = 8.dp),
             maxLines = 1
         )
@@ -193,7 +192,7 @@ fun ItemImage(image: Painter, colorFilter: ColorFilter?) {
     Box(
         modifier = Modifier
             .size(50.dp) // Size of the Box (background)
-            , contentAlignment = Alignment.Center // Center content in the Box
+        , contentAlignment = Alignment.Center // Center content in the Box
     ) {
         Image(
             painter = image,
@@ -224,11 +223,9 @@ fun ItemNameAndIdentifier(modifier: Modifier, item: Product) {
             modifier = Modifier
                 .height(25.dp),
             maxLines = 1
-
         )
     }
 }
-
 
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -238,7 +235,7 @@ fun ItemContentPreview() {
     val items = GetItemsUseCase.exampleProducts().map { it.toDomain() }
 
     MyInvoiceTheme {
-        ItemsListContent(
+        HomeProductsContent(
             onFloatingButtonClick = { },
             onListItemClick = {},
             searchText = "Search",
@@ -250,7 +247,7 @@ fun ItemContentPreview() {
             onDialogExit = { },
             showDialog = false,
             onFilterClick = {},
-            paddingValues = PaddingValues( )
+            paddingValues = PaddingValues()
         )
     }
 }

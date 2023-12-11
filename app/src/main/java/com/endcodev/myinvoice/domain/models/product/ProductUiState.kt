@@ -11,6 +11,6 @@ data class ProductUiState(
     val iPrice : Float = 0f,
     val iStock: Float = 0F,
     val isLoading : Boolean = false,
-    val isAcceptEnabled : Boolean = false
-) {
-}
+    val isAcceptEnabled : Boolean = false,
+    val isDeleteEnabled : Boolean = false
+)
