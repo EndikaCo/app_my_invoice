@@ -43,9 +43,9 @@ import com.endcodev.myinvoice.data.database.entities.toDomain
 import com.endcodev.myinvoice.domain.models.common.FilterModel
 import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.usecases.GetItemsUseCase
-import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
+import com.endcodev.myinvoice.ui.compose.components.MySearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
-import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.components.MyFloatingButton
 import com.endcodev.myinvoice.ui.compose.components.filteredImage
 import com.endcodev.myinvoice.ui.compose.dialogs.FiltersDialog
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
@@ -106,7 +106,7 @@ fun HomeProductsContent(
             .padding(10.dp)
     )
     {
-        CommonSearchBar(searchText, onSearchTextChange, onFilterClick)
+        MySearchBar(searchText, onSearchTextChange, onFilterClick)
         Spacer(Modifier.size(11.dp))
         FiltersView(onFiltersChanged, filters)
         Spacer(Modifier.size(11.dp))
@@ -122,7 +122,7 @@ fun HomeProductsContent(
         if (showDialog)
             FiltersDialog(onFiltersChanged, filters, onDialogExit)
 
-        FloatingActionButton(
+        MyFloatingButton(
             modifier = Modifier.align(Alignment.End),
             painter = painterResource(R.drawable.library_add_24),
             onClick = onFloatingButtonClick

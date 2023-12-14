@@ -56,20 +56,39 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
+
 }
 
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
-    implementation("androidx.activity:activity-compose:1.8.0")
+    implementation("androidx.activity:activity-compose:1.8.1")
     implementation(platform("androidx.compose:compose-bom:2023.10.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
 
+    //Testing
+
+    // Required -- JUnit 4 framework
     testImplementation("junit:junit:4.13.2")
+    // Optional -- Robolectric environment
+    //testImplementation ("androidx.test:core:1.5.0")
+    // Mockito framework
+    testImplementation ("org.mockito:mockito-core:3.12.4")
+    // Optional -- mockito-kotlin
+    //testImplementation ("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    // Optional -- Mockk framework
+    testImplementation ("io.mockk:mockk:1.12.0")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("junit:junit:4.13.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -83,7 +102,7 @@ dependencies {
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
     //firebase
-    implementation("com.google.firebase:firebase-auth-ktx:22.2.0")
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.0")
     implementation("com.google.firebase:firebase-database-ktx:20.3.0")
     implementation("com.google.firebase:firebase-common-ktx:20.4.2")
 
@@ -103,7 +122,7 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
 
     //room
-    val roomVersion = "2.6.0"
+    val roomVersion = "2.6.1"
     implementation ("androidx.room:room-ktx:$roomVersion")
     implementation ("androidx.room:room-runtime:$roomVersion")
     annotationProcessor ("androidx.room:room-compiler:$roomVersion")
@@ -113,9 +132,9 @@ dependencies {
     implementation ("io.coil-kt:coil-compose:2.2.2")
 
     //Json
-    implementation ("com.google.code.gson:gson:2.8.9")
+    implementation ("com.google.code.gson:gson:2.10")
 
     //extended icons
-    implementation("androidx.compose.material:material-icons-extended:1.4.3")
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
 }

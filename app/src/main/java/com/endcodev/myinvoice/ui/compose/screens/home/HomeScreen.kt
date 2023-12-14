@@ -16,12 +16,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.endcodev.myinvoice.domain.models.common.NavBarItem
+import com.endcodev.myinvoice.ui.compose.components.MyNavigationBar
 import com.endcodev.myinvoice.ui.navigation.HomeNavGraph
 import com.endcodev.myinvoice.ui.navigation.Routes.*
 
@@ -76,25 +78,12 @@ fun NavigationBar(navController: NavHostController) {
     }
 
     if (bottomBarDestination) {
-        androidx.compose.material3.NavigationBar {
-
-            items.forEachIndexed { index, navItem ->
-
-                NavigationBarItem(
-                    label = { Text(text = navItem.route) },
-                    icon = { ItemBadge(navItem, index, selectedIndex) },
-                    onClick = {
-                        navController.navigate(navItem.route) {
-                            popUpTo(navController.graph.findStartDestination().id)
-                            launchSingleTop = true
-                        }
-                    },
-                    selected = currentDestination?.hierarchy?.any { navDestination ->
-                        navDestination.route == navItem.route
-                    } == true,
-                )
-            }
-        }
+        MyNavigationBar(
+            navController = navController,
+            currentDestination = currentDestination,
+            items = items,
+            selectedIndex = selectedIndex
+        )
     }
 }
 
@@ -126,3 +115,4 @@ fun ItemBadge(item: NavBarItem, index: Int, selectedItemIndex: Int) {
         )
     }
 }
+

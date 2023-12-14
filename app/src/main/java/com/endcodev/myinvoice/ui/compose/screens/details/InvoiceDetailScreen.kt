@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -58,9 +56,9 @@ import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.domain.models.invoice.InvoiceUiState
 import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.models.invoice.SaleItem
-import com.endcodev.myinvoice.ui.compose.components.ActionButtons
-import com.endcodev.myinvoice.ui.compose.components.CDatePicker
+import com.endcodev.myinvoice.ui.compose.components.MyDatePicker
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
+import com.endcodev.myinvoice.ui.compose.components.MyBottomBar
 import com.endcodev.myinvoice.ui.compose.dialogs.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.ui.compose.dialogs.InvoiceProductAddDialogActions
 import com.endcodev.myinvoice.ui.compose.dialogs.ProductDialog
@@ -95,7 +93,7 @@ fun InvoiceDetailActions(
         onCustomerChange = viewModel::setCustomer,
         onDeleteButton = { viewModel.deleteInvoice() },
         onDateChanged = { viewModel.setDate(it) },
-        onProductChanged = {}
+        onSaleChanged = { viewModel.addSale(it) },
     )
 }
 
@@ -107,7 +105,7 @@ fun InvoiceInfoScreen(
     uiState: InvoiceUiState,
     onCustomerChange: (Customer) -> Unit,
     onDateChanged: (String) -> Unit,
-    onProductChanged: (Product) -> Unit
+    onSaleChanged: (SaleItem) -> Unit,
 ) {
 
     val state = rememberDatePickerState()
@@ -116,9 +114,8 @@ fun InvoiceInfoScreen(
     val productDialog = remember { mutableIntStateOf(0) }
     val priceDialog = remember { mutableStateOf(false) }
 
-
     if (dateDialog.value)
-        CDatePicker(
+        MyDatePicker(
             openDialog = { dateDialog.value = it },
             state,
             newDate = {
@@ -129,26 +126,30 @@ fun InvoiceInfoScreen(
             }
         )
 
-    if (productDialog.intValue != 0)
-        InvoiceProductAddDialogActions(
-            onDialogAccept = {
-                productDialog.intValue = 0
-                onProductChanged(it)
-            },
-            onDialogCancel = {
-                productDialog.intValue = 0
-            }
-        )
+    if (productDialog.intValue != 0){
+        val sale = uiState.invoice.iSaleList[productDialog.intValue]
+        if(sale != null)
+            InvoiceProductAddDialogActions(
+                onDialogAccept = { product ->
+                    onSaleChanged(SaleItem(productDialog.intValue, product, 0F, 0F, 0))
+                },
+                onDialogCancel = {
+                    productDialog.intValue = 0
+                },
+                saleItem = sale
+            )
+    }
 
     if (priceDialog.value)
         ProductDialog(
             sale = SaleItem(
-                Product(null, "PRO-3121", "233", "das", ""), 31F,
-                12F, 10
+                sId = 1,
+                sProduct = Product(null, "PRO-3121", "233", "das", ""), 31F,
+                sQuantity = 12F,
+                sDiscount = 10
             ),
             onDialogAccept = {},
-            onDialogCancel = {},
-            onPriceChanged = {}
+            onDialogCancel = { priceDialog.value = false },
         )
 
     if (customerDialog.value)
@@ -174,7 +175,9 @@ fun InvoiceInfoScreen(
             },
             bottomBar = {
                 Column {
-                    Button(onClick = { productDialog.intValue = uiState.invoice.iSaleList.size }){
+                    Button(onClick = {
+                        productDialog.intValue = uiState.invoice.iSaleList.size + 1
+                    }) {
                         Text(text = "Add Product")
                     }
                     Divider(
@@ -183,10 +186,13 @@ fun InvoiceInfoScreen(
                             .height(1.dp)
                             .fillMaxWidth()
                     )
-                    ActionButtons(
-                        enabled = true,
-                        onAcceptClick = { onAcceptButton() },
-                        onDeleteClick = { onDeleteButton() })
+                    MyBottomBar(
+                        enableDelete =true,
+                        enableSave = true,
+                        onAcceptClick = onAcceptButton,
+                        onAddItemClick = {}, //todo
+                        onDeleteClick = onDeleteButton,
+                    )
                 }
             }
         )
@@ -220,16 +226,9 @@ fun InvoiceInfoContent(
             customer = uiState.invoice.iCustomer,
             onIconClick = { onCustomerClick() })
         Spacer(modifier = Modifier.height(16.dp))
-        InvoiceItemsList(salesList, onProductClick, onPricesClick)
+        InvoiceItemsList(uiState.invoice.iSaleList, onProductClick, onPricesClick)
     }
 }
-
-val salesList = listOf(
-    SaleItem(
-        Product(null, "PRO-3121", "233", "das", ""), 31F,
-        12F, 10
-    )
-)
 
 @Composable
 fun InvoiceItemsList(
@@ -239,10 +238,10 @@ fun InvoiceItemsList(
 ) {
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
         content = {
-            itemsIndexed(salesList) {index, sale ->
+            itemsIndexed(salesList) { index, sale ->
                 InvoiceProduct(
                     onCustomerClick = {
-                        onProductClick(index)
+                        onProductClick(index + 1)
                     },
                     onPricesClick = {
                         onPricesClick()
@@ -413,7 +412,7 @@ fun PreviewInvoiceInfoScreen() {
             onCustomerChange = {},
             onDeleteButton = {},
             onDateChanged = {},
-            onProductChanged = {}
+            onSaleChanged = {},
         )
     }
 }

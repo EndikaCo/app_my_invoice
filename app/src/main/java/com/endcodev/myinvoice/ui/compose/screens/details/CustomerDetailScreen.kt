@@ -49,8 +49,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.customer.CustomerUiState
-import com.endcodev.myinvoice.ui.compose.components.ActionButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
+import com.endcodev.myinvoice.ui.compose.components.MyBottomBar
 import com.endcodev.myinvoice.ui.compose.screens.home.content.ProgressBar
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
@@ -152,10 +152,12 @@ fun CustomerDetailScreen(
                 )
             },
             bottomBar = {
-                ActionButtons(
-                    uiState.isAcceptEnabled,
-                    onAcceptButton,
-                    onDeleteClick
+                MyBottomBar(
+                    enableDelete = uiState.isAcceptEnabled,
+                    enableSave = true,
+                    onDeleteClick = onAcceptButton,
+                    onAddItemClick = {}, //todo
+                    onAcceptClick = onDeleteClick
                 )
             }
         )
@@ -187,11 +189,10 @@ fun CustomerInfoContent(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
 
-            if (uri == null){
+            if (uri == null) {
                 Log.e("SinglePhotoPickerLauncher", "Image not valid")
                 onUriChanged(null)
-            }
-            else {
+            } else {
                 // Grant read permission to the obtained URI
                 val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 context.contentResolver.takePersistableUriPermission(uri, flag)
@@ -246,12 +247,12 @@ fun CustomerInfoContent(
 fun CustomerInfoImage(
     singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
     cImage: Uri?,
-    defaultImage : Painter
+    defaultImage: Painter
 ) {
 
-    var colorFilter : ColorFilter? = null
+    var colorFilter: ColorFilter? = null
     var image = uriToPainterImage(cImage)
-    if (image == null){
+    if (image == null) {
         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
         image = defaultImage
     }
@@ -263,7 +264,7 @@ fun CustomerInfoImage(
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
                 shape = CircleShape
             ), contentAlignment = Alignment.Center // Center content in the Box
-    ){
+    ) {
         Image(
             painter = image,
             contentDescription = "customer Image",

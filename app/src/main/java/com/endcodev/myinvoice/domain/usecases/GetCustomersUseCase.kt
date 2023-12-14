@@ -25,11 +25,6 @@ class GetCustomersUseCase @Inject constructor(
         return customersList
     }
 
-    fun deleteCustomer(id: String) {
-        repository.deleteCustomer(id)
-        Log.e(TAG, "customer with $id deleted ")
-    }
-
     companion object {
 
         const val TAG = "GetCustomersUseCase"

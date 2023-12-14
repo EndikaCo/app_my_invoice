@@ -45,9 +45,9 @@ import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.domain.models.common.FilterModel
 import com.endcodev.myinvoice.domain.models.common.FilterType
 import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
-import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
+import com.endcodev.myinvoice.ui.compose.components.MySearchBar
 import com.endcodev.myinvoice.ui.compose.components.FiltersView
-import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.components.MyFloatingButton
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
@@ -104,7 +104,7 @@ fun HomeCustomersContent(
             .padding(paddingValues).padding(10.dp)
     )
     {
-        CommonSearchBar(searchText, onSearchTextChange, onFilterClick)
+        MySearchBar(searchText, onSearchTextChange, onFilterClick)
         Spacer(Modifier.size(11.dp))
         FiltersView(onFiltersChanged, filters)
         Spacer(Modifier.size(11.dp))
@@ -116,11 +116,10 @@ fun HomeCustomersContent(
         if (showDialog)
             FiltersDialog(onFiltersChanged, filters, onDialogExit)
 
-        FloatingActionButton(
-            Modifier
-                .align(Alignment.End),
-            painterResource(R.drawable.customer_add_24),
-            onFloatingButtonClick
+        MyFloatingButton(
+            modifier = Modifier.align(Alignment.End),
+            painter = painterResource(R.drawable.customer_add_24),
+            onClick = onFloatingButtonClick
         )
     }
 }
@@ -219,7 +218,7 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: Customer) {
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun CustomersContentPreview() {
+fun HomeCustomersContentPreview() {
 
     val searchText = "Test"
     val customers = GetCustomersUseCase.exampleCustomers().map { it.toDomain() }

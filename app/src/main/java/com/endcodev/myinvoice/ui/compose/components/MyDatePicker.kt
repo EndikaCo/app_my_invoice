@@ -17,7 +17,7 @@ import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CDatePicker(
+fun MyDatePicker(
     openDialog: (Boolean) -> Unit,
     state: DatePickerState,
     newDate: (DatePickerState) -> Unit
@@ -62,6 +62,6 @@ fun CDatePicker(
 @Composable
 fun CustomersContentPreview() {
     MyInvoiceTheme {
-        CDatePicker(openDialog = {}, state = rememberDatePickerState(), newDate = {})
+        MyDatePicker(openDialog = {}, state = rememberDatePickerState(), newDate = {})
     }
 }

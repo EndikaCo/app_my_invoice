@@ -22,7 +22,7 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
-fun CommonSearchBar(
+fun MySearchBar(
     searchText: String,
     onTextChanged: (String) -> Unit,
     onFilterClick: () -> Unit
@@ -57,6 +57,6 @@ fun CommonSearchBar(
 @Composable
 fun SearchBarPreview() {
     MyInvoiceTheme {
-        CommonSearchBar(searchText = "Search", onTextChanged = {}, onFilterClick = {})
+        MySearchBar(searchText = "Search", onTextChanged = {}, onFilterClick = {})
     }
 }

@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.domain.models.invoice.InvoiceUiState
 import com.endcodev.myinvoice.domain.models.invoice.Invoice
+import com.endcodev.myinvoice.domain.models.invoice.SaleItem
+import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.usecases.GetSimpleInvoiceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -68,5 +70,21 @@ class InvoiceInfoViewModel @Inject constructor(
 
     fun deleteInvoice() {
 
+    }
+
+    fun addSale(sale: SaleItem) {
+
+        //add sale item to SaleList
+        _uiState.update {
+            it.copy(
+                invoice = it.invoice.copy(
+                    iSaleList = it.invoice.iSaleList.plus(sale)
+                )
+            )
+        }
+    }
+
+    fun setSaleProduct(product: Product) {
+        _uiState.value.invoice.iSaleList
     }
 }

@@ -30,11 +30,15 @@ class GetSimpleCustomerUseCase @Inject constructor(
         return customer
     }
 
-
     suspend fun saveCustomer(customer: CustomersEntity?) {
         if (customer != null) {
             repository.insertCustomer(customer)
             Log.v(GetCustomersUseCase.TAG, "customer ${customer.cFiscalName} inserted")
         }
+    }
+
+    fun deleteCustomer(id: String) {
+        repository.deleteCustomer(id)
+        Log.e(GetCustomersUseCase.TAG, "customer with $id deleted")
     }
 }

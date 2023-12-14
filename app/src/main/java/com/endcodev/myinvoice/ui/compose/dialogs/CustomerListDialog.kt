@@ -24,8 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.endcodev.myinvoice.data.database.entities.toDomain
 import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.domain.usecases.GetCustomersUseCase
-import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
-import com.endcodev.myinvoice.ui.compose.screens.auth.LoginHeader
+import com.endcodev.myinvoice.ui.compose.components.MySearchBar
 import com.endcodev.myinvoice.ui.compose.screens.home.content.CustomerItem
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.DialogViewModel
@@ -59,7 +58,7 @@ fun ChooseCustomerDialog(
 
         Dialog(onDismissRequest = { onDismissRequest() }) {
             Column {
-                CommonSearchBar(searchText, onTextChange, onFilterClick = {})
+                MySearchBar(searchText, onTextChange, onFilterClick = {})
                 Spacer(modifier = Modifier.height(16.dp))
                 LazyColumn(
                     modifier = Modifier

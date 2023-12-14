@@ -48,7 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.product.ProductUiState
-import com.endcodev.myinvoice.ui.compose.components.ActionButtons
+import com.endcodev.myinvoice.ui.compose.components.MyBottomBar
 import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
@@ -128,10 +128,13 @@ fun ProductsDetailScreen(
             )
         },
         bottomBar = {
-            ActionButtons(
-                uiState.isAcceptEnabled,
-                onAcceptButton,
-                onDeleteButton,
+
+            MyBottomBar(
+                enableDelete =uiState.isAcceptEnabled,
+                enableSave = true,
+                onAcceptClick = onAcceptButton,
+                onAddItemClick = {}, //todo
+                onDeleteClick = onDeleteButton,
             )
         }
     )

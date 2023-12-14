@@ -34,8 +34,8 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.domain.models.invoice.Invoice
 import com.endcodev.myinvoice.domain.models.invoice.getDate
-import com.endcodev.myinvoice.ui.compose.components.CommonSearchBar
-import com.endcodev.myinvoice.ui.compose.components.FloatingActionButton
+import com.endcodev.myinvoice.ui.compose.components.MySearchBar
+import com.endcodev.myinvoice.ui.compose.components.MyFloatingButton
 import com.endcodev.myinvoice.ui.navigation.DetailsScreen
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.ui.viewmodels.InvoicesViewModel
@@ -83,7 +83,7 @@ fun HomeInvoicesContent(
             .padding(paddingValues)
             .padding(12.dp)
     ) {
-        CommonSearchBar(
+        MySearchBar(
             searchText = searchText,
             onTextChanged = onSearchTextChange,
             onFilterClick = {/*Todo*/ }
@@ -95,7 +95,7 @@ fun HomeInvoicesContent(
         else
             InvoicesList(Modifier.weight(1f), invoices, onListItemClick)
 
-        FloatingActionButton(
+        MyFloatingButton(
             modifier = Modifier.align(Alignment.End),
             painter = painterResource(id = R.drawable.invoice_add_24),
             onClick = onFloatingButtonClick

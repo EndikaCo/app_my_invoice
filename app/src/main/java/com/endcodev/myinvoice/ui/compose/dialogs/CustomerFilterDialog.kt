@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.endcodev.myinvoice.domain.models.common.FilterModel
-import com.endcodev.myinvoice.ui.compose.components.AcceptCancelButtons
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
+import com.endcodev.myinvoice.ui.compose.components.MyActionButtons
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
@@ -36,35 +36,28 @@ fun FiltersDialog(
         onDismissRequest = { onDialogCancel() },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
     ) {
-        Card(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp)
-                .height(IntrinsicSize.Min)
-        )
-        {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .background(Color.White)
-                    .padding(8.dp)
-            ) {
-                Text(
-                    text = "Filter by",
-                    modifier = Modifier
-                        .padding(8.dp, 16.dp, 8.dp, 2.dp)
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(), fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
 
-                CountrySelection(Modifier, onSelection = {})
-            }
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(8.dp)
+        ) {
+            Text(
+                text = "Filter by",
+                modifier = Modifier
+                    .padding(8.dp, 16.dp, 8.dp, 2.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth(), fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
+            CountrySelection(Modifier, onSelection = {})
+
             Spacer(Modifier.height(16.dp))
-            AcceptCancelButtons(
-                enabled = true,
+            MyActionButtons(
+                enableAccept = true,
                 onAcceptClick = { onFilterAdded(filters) },
                 onCancelClick = onDialogCancel
             )

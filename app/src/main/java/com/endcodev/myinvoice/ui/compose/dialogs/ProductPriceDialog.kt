@@ -2,13 +2,25 @@ package com.endcodev.myinvoice.ui.compose.dialogs
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -20,7 +32,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.data.database.entities.toDomain
 import com.endcodev.myinvoice.domain.models.invoice.SaleItem
-import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.usecases.GetItemsUseCase
 import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.compose.screens.details.ItemCost
@@ -29,25 +40,10 @@ import com.endcodev.myinvoice.ui.compose.screens.home.content.ItemNameAndIdentif
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
-fun ProductDialogActions(
-    onDialogAccept: (Product) -> Unit,
-    onDialogCancel: () -> Unit,
-    sale: SaleItem
-) {
-    ProductDialog(
-        sale,
-        onDialogAccept,
-        onDialogCancel,
-        onPriceChanged = {}
-    )
-}
-
-@Composable
 fun ProductDialog(
     sale: SaleItem,
-    onDialogAccept: (Product) -> Unit,
+    onDialogAccept: (SaleItem) -> Unit,
     onDialogCancel: () -> Unit,
-    onPriceChanged: (Float) -> Unit,
 ) {
     Dialog(
         onDismissRequest = { onDialogCancel() },
@@ -60,7 +56,7 @@ fun ProductDialog(
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
             image = painterResource(id = R.drawable.no_photo_24)
         }
-        Column {
+        Column (Modifier.border(1.dp, MaterialTheme.colorScheme.onBackground, MaterialTheme.shapes.medium).padding(8.dp)){
             Row(
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
@@ -94,10 +90,23 @@ fun ProductDialog(
                     amount = sale.sQuantity * sale.sPrice,
                     onAmountChanged = {}
                 )
+
+            }
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+            ) {
+                Button(onClick = { onDialogCancel() }) {
+                    Text(text = "Cancel")
+                }
+                Button(onClick = {  }) {
+                    Text(text = "Accept")
+                }
             }
         }
     }
 }
+
 
 
 @Preview(name = "Light Mode")
@@ -109,10 +118,9 @@ fun SaleItemDialogDialogPreview() {
         val products = GetItemsUseCase.exampleProducts().map { it.toDomain() }
 
         ProductDialog(
-            SaleItem(products[1], 5F, 10F, 13),
+            SaleItem(sId = 1, products[1], 5F, 10F, 13),
             {},
             {},
-            {}
         )
     }
 }

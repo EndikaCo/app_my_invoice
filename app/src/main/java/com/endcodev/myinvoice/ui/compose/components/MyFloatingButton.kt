@@ -2,7 +2,7 @@ package com.endcodev.myinvoice.ui.compose.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,17 +13,17 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
-fun FloatingActionButton(
+fun MyFloatingButton(
     modifier: Modifier,
     painter: Painter,
     onClick: () -> Unit,
 ) {
-    ExtendedFloatingActionButton(
+    FloatingActionButton(
         onClick = {
             onClick()
         },
         modifier = modifier,
-        shape = CircleShape,
+        shape = CircleShape
     ) {
         Icon(
             painter = painter,
@@ -37,9 +37,9 @@ fun FloatingActionButton(
 @Composable
 fun PreviewFloatingActionButton() {
     MyInvoiceTheme {
-        FloatingActionButton(
+        MyFloatingButton(
             modifier = Modifier,
-            painter = painterResource(R.drawable.customer_add_24),
+            painter = painterResource(R.drawable.ic_launcher_foreground),
             onClick = {}
         )
     }
