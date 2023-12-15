@@ -33,7 +33,6 @@ import com.endcodev.myinvoice.ui.viewmodels.AddProductViewModel
 fun InvoiceProductAddDialogActions(
     onDialogAccept: (Product) -> Unit,
     onDialogCancel: () -> Unit,
-    saleItem: SaleItem?,
 ) {
     val viewModel: AddProductViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()

@@ -53,9 +53,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.customer.Customer
+import com.endcodev.myinvoice.domain.models.invoice.Invoice
 import com.endcodev.myinvoice.domain.models.invoice.InvoiceUiState
 import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.models.invoice.SaleItem
+import com.endcodev.myinvoice.domain.models.invoice.getDate
 import com.endcodev.myinvoice.ui.compose.components.MyDatePicker
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
 import com.endcodev.myinvoice.ui.compose.components.MyBottomBar
@@ -111,7 +113,7 @@ fun InvoiceInfoScreen(
     val state = rememberDatePickerState()
     val dateDialog = remember { mutableStateOf(false) } //show DatePicker dialog
     val customerDialog = remember { mutableStateOf(false) } //show CustomerSelect dialog
-    val productDialog = remember { mutableIntStateOf(0) }
+    val productDialog = remember { mutableIntStateOf(-1) }
     val priceDialog = remember { mutableStateOf(false) }
 
     if (dateDialog.value)
@@ -126,25 +128,37 @@ fun InvoiceInfoScreen(
             }
         )
 
-    if (productDialog.intValue != 0){
-        val sale = uiState.invoice.iSaleList[productDialog.intValue]
-        if(sale != null)
-            InvoiceProductAddDialogActions(
-                onDialogAccept = { product ->
-                    onSaleChanged(SaleItem(productDialog.intValue, product, 0F, 0F, 0))
-                },
-                onDialogCancel = {
-                    productDialog.intValue = 0
-                },
-                saleItem = sale
-            )
+    if (productDialog.intValue != -1) {
+        InvoiceProductAddDialogActions(
+            onDialogAccept = { product ->
+                onSaleChanged(
+                    SaleItem(
+                        sId = productDialog.intValue,
+                        sProduct = product,
+                        sPrice = 0F,
+                        sQuantity = 0F,
+                        sDiscount = 0
+                    )
+                )
+            },
+            onDialogCancel = {
+                productDialog.intValue = -1
+            },
+        )
     }
 
     if (priceDialog.value)
         ProductDialog(
             sale = SaleItem(
                 sId = 1,
-                sProduct = Product(null, "PRO-3121", "233", "das", ""), 31F,
+                sProduct = Product(
+                    null,
+                    "PRO-3121",
+                    "233",
+                    "das",
+                    ""
+                ),
+                31F,
                 sQuantity = 12F,
                 sDiscount = 10
             ),
@@ -175,11 +189,6 @@ fun InvoiceInfoScreen(
             },
             bottomBar = {
                 Column {
-                    Button(onClick = {
-                        productDialog.intValue = uiState.invoice.iSaleList.size + 1
-                    }) {
-                        Text(text = "Add Product")
-                    }
                     Divider(
                         modifier = Modifier
                             .background(Color(R.color.transparent))
@@ -187,10 +196,13 @@ fun InvoiceInfoScreen(
                             .fillMaxWidth()
                     )
                     MyBottomBar(
-                        enableDelete =true,
+                        enableDelete = true,
                         enableSave = true,
+                        addItemVisible = true,
                         onAcceptClick = onAcceptButton,
-                        onAddItemClick = {}, //todo
+                        onAddItemClick = {
+                            productDialog.intValue = uiState.invoice.iSaleList.size
+                        },
                         onDeleteClick = onDeleteButton,
                     )
                 }
@@ -406,9 +418,23 @@ fun SelectCustomer(
 @Composable
 fun PreviewInvoiceInfoScreen() {
     MyInvoiceTheme {
+
+        val uiState = InvoiceUiState(
+            Invoice(
+                iId = null,
+                iDate = getDate(),
+                iCustomer = Customer(null, "Select Customer", "0"),
+                iReference = "",
+                iTotal = 0f,
+                iSaleList = listOf(
+                    SaleItem(0,Product(null, "LSD1", "", "", ""), 0f, 0f, 0),
+                    )
+                )
+            )
+        )
         InvoiceInfoScreen(
             onAcceptButton = {},
-            uiState = InvoiceUiState(),
+            uiState = uiState,
             onCustomerChange = {},
             onDeleteButton = {},
             onDateChanged = {},

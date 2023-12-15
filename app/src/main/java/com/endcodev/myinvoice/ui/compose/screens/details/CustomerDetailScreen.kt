@@ -155,6 +155,7 @@ fun CustomerDetailScreen(
                 MyBottomBar(
                     enableDelete = uiState.isAcceptEnabled,
                     enableSave = true,
+                    addItemVisible = false,
                     onDeleteClick = onAcceptButton,
                     onAddItemClick = {}, //todo
                     onAcceptClick = onDeleteClick

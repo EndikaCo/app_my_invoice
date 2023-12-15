@@ -73,13 +73,22 @@ class InvoiceInfoViewModel @Inject constructor(
     }
 
     fun addSale(sale: SaleItem) {
+        _uiState.update { currentState ->
+            val currentSaleList = currentState.invoice.iSaleList
+            val existingSaleItemIndex = currentSaleList.indexOfFirst { it.sId == sale.sId }
 
-        //add sale item to SaleList
-        _uiState.update {
-            it.copy(
-                invoice = it.invoice.copy(
-                    iSaleList = it.invoice.iSaleList.plus(sale)
-                )
+            val newSaleList = if (existingSaleItemIndex != -1) {
+                // Update the existing SaleItem
+                currentSaleList.toMutableList().apply {
+                    this[existingSaleItemIndex] = sale
+                }
+            } else {
+                // Add the new SaleItem
+                currentSaleList.plus(sale)
+            }
+
+            currentState.copy(
+                invoice = currentState.invoice.copy(iSaleList = newSaleList)
             )
         }
     }

@@ -132,6 +132,7 @@ fun ProductsDetailScreen(
             MyBottomBar(
                 enableDelete =uiState.isAcceptEnabled,
                 enableSave = true,
+                addItemVisible = false,
                 onAcceptClick = onAcceptButton,
                 onAddItemClick = {}, //todo
                 onDeleteClick = onDeleteButton,
