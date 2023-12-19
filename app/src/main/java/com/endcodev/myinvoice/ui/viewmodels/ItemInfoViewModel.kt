@@ -78,7 +78,10 @@ class ItemInfoViewModel @Inject constructor(
                     iCode = iCode,
                     iName = iName,
                     iDescription = "", //todo,
-                    iType = "TYPE",
+                    iType = "",
+                    iPrice = iPrice,
+                    iStock = 0f,
+                    iCost = iCost
                 )
                 getSimpleItemUseCase.saveItem(item)
             }

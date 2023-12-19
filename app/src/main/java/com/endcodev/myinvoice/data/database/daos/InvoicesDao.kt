@@ -9,7 +9,7 @@ import com.endcodev.myinvoice.data.database.entities.InvoicesEntity
 
 @Dao
 interface InvoicesDao {
-    //get all if post value is true
+
     @Query("SELECT * FROM invoices_table")
     suspend fun getAllInvoices(): List<InvoicesEntity>
 

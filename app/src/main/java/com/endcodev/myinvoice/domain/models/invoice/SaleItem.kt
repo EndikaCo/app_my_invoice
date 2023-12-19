@@ -7,6 +7,6 @@ data class SaleItem(
     val sId: Int = 0,
     val sProduct: Product,
     val sPrice: Float = 0f,
-    val sQuantity: Float = 0f,
+    val sQuantity: Float = 1f,
     val sDiscount : Int = 0,
 )

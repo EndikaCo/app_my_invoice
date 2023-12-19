@@ -272,7 +272,7 @@ fun LoginButton(text: String, loginEnabled: Boolean, onLoginClick: () -> Unit) {
     ) {
         Text(
             text = text,
-            fontSize = 20.sp,
+            fontSize = 21.sp,
         )
     }
 }

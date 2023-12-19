@@ -155,7 +155,7 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: Invoice) {
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = "00${invoice.iId}",
+                text = String.format("%03d", invoice.iId),
                 modifier = Modifier
                     .height(25.dp)
             )
@@ -165,13 +165,6 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: Invoice) {
                 modifier = Modifier
                     .height(25.dp)
                     .weight(1f)
-            )
-            Text(
-                text = "ref:",
-                modifier = Modifier
-                    .height(25.dp),
-                color = Color.Gray,
-                fontSize = 16.sp
             )
             Text(
                 text = invoice.iReference,

@@ -182,9 +182,10 @@ fun ItemsInfoContent(
         )
         Row(
             modifier = Modifier.padding(start = pPadding, end = pPadding),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(
-                modifier = Modifier.width(240.dp),
+                modifier = Modifier.width(230.dp),
                 verticalArrangement = Arrangement.Center
             ) {
                 IdNum(
@@ -257,7 +258,7 @@ fun ItemInfoImage(
 
     Box(
         modifier = Modifier
-            .size(130.dp) // Size of the Box (background)
+            .size(120.dp) // Size of the Box (background)
             .border(
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
                 shape = RoundedCornerShape(5.dp)
@@ -274,8 +275,8 @@ fun ItemInfoImage(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
                 }
-                .height(120.dp)
-                .width(120.dp)
+                .height(130.dp)
+                .width(130.dp)
                 .clip(RoundedCornerShape(5.dp)),
             contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter,

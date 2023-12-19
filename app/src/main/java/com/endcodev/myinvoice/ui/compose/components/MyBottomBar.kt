@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,23 +34,23 @@ fun MyBottomBar(
     onAddItemClick: () -> Unit,
     onAcceptClick: () -> Unit,
 ) {
-
-    BottomAppBar {
+    BottomAppBar(contentColor = MaterialTheme.colorScheme.onSurface) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-
+            //DELETE
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 IconButton(
                     onClick = { onDeleteClick() },
-                    enabled = enableSave,
+                    enabled = enableDelete,
                     modifier = Modifier.size(30.dp)
                 ) {
                     Icon(Icons.Default.Delete, contentDescription = "Action delete")
                 }
                 Text("Delete", fontSize = 10.sp)
             }
+            //ADD ITEM
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 IconButton(
                     onClick = { onAddItemClick() },
@@ -62,9 +63,9 @@ fun MyBottomBar(
                         modifier = Modifier.alpha(if (addItemVisible) 1f else 0f)
                     )
                 }
-                Text("Add Product", fontSize = 10.sp)
-
+                Text("Add Product", fontSize = 10.sp, modifier = Modifier.alpha(if (addItemVisible) 1f else 0f))
             }
+            //SAVE
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 IconButton(
                     onClick = { onAcceptClick() },

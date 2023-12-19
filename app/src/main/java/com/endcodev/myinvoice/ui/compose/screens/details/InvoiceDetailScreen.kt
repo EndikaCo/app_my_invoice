@@ -19,9 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -41,9 +39,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -61,6 +62,7 @@ import com.endcodev.myinvoice.domain.models.invoice.getDate
 import com.endcodev.myinvoice.ui.compose.components.MyDatePicker
 import com.endcodev.myinvoice.ui.compose.components.DocSelection
 import com.endcodev.myinvoice.ui.compose.components.MyBottomBar
+import com.endcodev.myinvoice.ui.compose.components.filteredImage
 import com.endcodev.myinvoice.ui.compose.dialogs.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.ui.compose.dialogs.InvoiceProductAddDialogActions
 import com.endcodev.myinvoice.ui.compose.dialogs.ProductDialog
@@ -135,8 +137,8 @@ fun InvoiceInfoScreen(
                     SaleItem(
                         sId = productDialog.intValue,
                         sProduct = product,
-                        sPrice = 0F,
-                        sQuantity = 0F,
+                        sPrice = product.iPrice,
+                        sQuantity = 1F,
                         sDiscount = 0
                     )
                 )
@@ -156,8 +158,12 @@ fun InvoiceInfoScreen(
                     "PRO-3121",
                     "233",
                     "das",
-                    ""
-                ),
+                    "",
+                    12.00F,
+                    12.00F,
+                    12.00F,
+
+                    ),
                 31F,
                 sQuantity = 12F,
                 sDiscount = 10
@@ -230,7 +236,7 @@ fun InvoiceInfoContent(
         ) {
             InvoiceNum(invoiceId = uiState.invoice.iId.toString())
             Spacer(modifier = Modifier.width(8.dp))
-            InvoiceDate(uiState.invoice.iDate, onClick = { onDateClick() }) //todo
+            InvoiceDate(uiState.invoice.iDate, onClick = { onDateClick() })
             Spacer(modifier = Modifier.width(8.dp))
             DocSelection(onSelection = { }, docs = listOf("Invoice", "Receipt"))
         }
@@ -251,8 +257,8 @@ fun InvoiceItemsList(
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
         content = {
             itemsIndexed(salesList) { index, sale ->
-                InvoiceProduct(
-                    onCustomerClick = {
+                InvoiceProduct2(
+                    onProductClick = {
                         onProductClick(index + 1)
                     },
                     onPricesClick = {
@@ -265,68 +271,73 @@ fun InvoiceItemsList(
 }
 
 @Composable
-fun InvoiceProduct(
-    onCustomerClick: () -> Unit,
+fun InvoiceProduct2(
+    onProductClick: () -> Unit,
     onPricesClick: () -> Unit,
     itemSaleItem: SaleItem?
 ) {
+    val image = filteredImage(itemSaleItem?.sProduct?.iImage)
+    val total =
+        (itemSaleItem!!.sQuantity * itemSaleItem.sPrice) * (1 - itemSaleItem.sDiscount / 100)
 
-    Row() {
-        Row(
-            modifier = Modifier
-                .clickable { onCustomerClick() } //todo
-                .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
-                .height(40.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-
-            //todo first box
-            val colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
-            val image = painterResource(id = R.drawable.filter_24)
-
-            Spacer(modifier = Modifier.width(16.dp))
-            ListImage(
-                image = image,
-                colorFilter = colorFilter
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk(itemSaleItem!!.sProduct.iCode, "ref") //Todo
-        }
-
-        //todo second box
-        Row(
-            modifier = Modifier
-                .clickable { onPricesClick() } //todo
-                .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
-                .height(40.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk(itemSaleItem!!.sQuantity.toString(), "pc")
-            Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk(itemSaleItem.sPrice.toString(), "(eur)")
-            Spacer(modifier = Modifier.width(16.dp))
-            ColumnDesk(itemSaleItem.sDiscount.toString(), "%")
-            Spacer(modifier = Modifier.width(16.dp))
-
-            val total =
-                (itemSaleItem.sPrice * itemSaleItem.sQuantity) * (1 - itemSaleItem.sDiscount / 100)
-            ColumnDesk(total.toString(), "EUR")
-        }
-    }
-
-}
-
-@Composable
-fun ColumnDesk(topText: String, bottomDesc: String) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(text = topText, textAlign = TextAlign.Center, fontSize = 16.sp)
-        Text(text = bottomDesc, textAlign = TextAlign.Center, fontSize = 9.sp)
+        Box(modifier = Modifier.clickable { onProductClick() }) {
+            ListImage(
+                image = image.image,
+                colorFilter = image.filter
+            )
+        }
+
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onPricesClick() }) {
+            Row(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = itemSaleItem.sProduct.iName, maxLines = 1, fontSize = 12.sp)
+
+
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = itemSaleItem.sProduct.iCode,
+                    modifier = Modifier.width(100.dp),
+                    textAlign = TextAlign.Right,
+                    maxLines = 1,
+                    fontSize = 12.sp
+                )
+            }
+            Row(modifier = Modifier.padding(start = 8.dp)) {
+                Text(
+                    text = "${itemSaleItem.sQuantity}u",
+                    modifier = Modifier.width(80.dp),
+                    textAlign = TextAlign.Left
+                )
+                Text(
+                    text = "${itemSaleItem.sPrice}€",
+                    modifier = Modifier.width(80.dp),
+                    textAlign = TextAlign.Left
+                )
+                Text(
+                    text = "${itemSaleItem.sDiscount}%",
+                    modifier = Modifier.width(60.dp),
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "${total}€",
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Right,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
 }
 
@@ -337,7 +348,7 @@ fun ListImage(image: Painter, colorFilter: ColorFilter?) {
             .size(35.dp) // Size of the Box (background)
             .border(
                 border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
-                shape = CircleShape
+                shape = RectangleShape
             ), contentAlignment = Alignment.Center // Center content in the Box
     ) {
         Image(
@@ -346,7 +357,7 @@ fun ListImage(image: Painter, colorFilter: ColorFilter?) {
             modifier = Modifier
                 .height(35.dp)
                 .width(35.dp)
-                .clip(CircleShape),
+                .clip(RectangleShape),
             contentScale = ContentScale.Crop,
             colorFilter = colorFilter
         )
@@ -359,7 +370,8 @@ fun InvoiceNum(invoiceId: String) {
         value = invoiceId,
         onValueChange = { },
         label = { Text(text = "invoice") },
-        modifier = Modifier.width(85.dp)
+        modifier = Modifier.width(85.dp),
+        readOnly = true
     )
 }
 
@@ -378,7 +390,8 @@ fun InvoiceDate(date: String, onClick: () -> Unit, dateChanged: (String) -> Unit
         value = date,
         onValueChange = { dateChanged(it) },
         label = { Text(text = "date") },
-        modifier = Modifier.width(160.dp)
+        modifier = Modifier.width(160.dp),
+        readOnly = true
     )
 }
 
@@ -387,29 +400,34 @@ fun SelectCustomer(
     customer: Customer,
     onIconClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(20)
+    val shape = RoundedCornerShape(10)
     Row(
         modifier = Modifier
+            .clickable { onIconClick() }
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp)
             .border(shape = shape, width = 1.dp, color = MaterialTheme.colorScheme.onBackground)
             .background(MaterialTheme.colorScheme.surfaceVariant),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-
-        ) {
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
         Image(
             painter = painterResource(id = R.drawable.image_search_24),
             contentDescription = "",
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
-            modifier = Modifier.clickable { onIconClick() }
+            modifier = Modifier.padding(start = 16.dp)
         )
+
+        Spacer(Modifier.weight(0.6f))
 
         Text(
             text = customer.cFiscalName,
-            fontWeight = FontWeight.W300,
+            fontWeight = FontWeight.W400,
             modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
+            textAlign = TextAlign.Center
         )
+
+        Spacer(Modifier.weight(1f))
     }
 }
 
@@ -420,18 +438,32 @@ fun PreviewInvoiceInfoScreen() {
     MyInvoiceTheme {
 
         val uiState = InvoiceUiState(
+            false,
             Invoice(
                 iId = null,
                 iDate = getDate(),
-                iCustomer = Customer(null, "Select Customer", "0"),
+                iCustomer = Customer(null, "Select Customer", "Select Customer"),
                 iReference = "",
                 iTotal = 0f,
                 iSaleList = listOf(
-                    SaleItem(0,Product(null, "LSD1", "", "", ""), 0f, 0f, 0),
-                    )
+                    SaleItem(
+                        0,
+                        Product(null, "AE3235", "LED GU10 6W", "", "", 12F, 1F, 12.00F),
+                        222.45f,
+                        54f,
+                        10
+                    ),
+                    SaleItem(
+                        1,
+                        Product(null, "HH324", "HT-05 263123", "", "", 6F, 8F, 4.10F),
+                        12.5f,
+                        3f,
+                        0
+                    ),
                 )
             )
         )
+
         InvoiceInfoScreen(
             onAcceptButton = {},
             uiState = uiState,

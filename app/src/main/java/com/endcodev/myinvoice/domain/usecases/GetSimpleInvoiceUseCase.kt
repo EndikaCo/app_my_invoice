@@ -32,12 +32,12 @@ class GetSimpleInvoiceUseCase @Inject constructor(
 
     suspend fun saveInvoice(invoice: Invoice) {
             repository.insertInvoice(invoice)
-            Log.v(GetCustomersUseCase.TAG, "customer ${invoice.iId} inserted")
+            Log.v(GetCustomersUseCase.TAG, "invoice ${invoice.iId} inserted")
     }
 
     suspend fun updateInvoice(invoice: Invoice) {
             repository.updateInvoice(invoice)
-            Log.v(GetCustomersUseCase.TAG, "customer ${invoice.iId} updated")
+            Log.v(GetCustomersUseCase.TAG, "invoice ${invoice.iId} updated")
 
     }
 }

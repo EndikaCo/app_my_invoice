@@ -30,6 +30,7 @@ data class Invoice(
             iId = iId ?: 0,
             iCustomer = Converters().customerEntityToJson(iCustomer.toEntity()) ?: "error",
             iDate = iDate,
+            iSaleList = Converters().saleListToJson(iSaleList) ?: "error",
         )
     }
 }

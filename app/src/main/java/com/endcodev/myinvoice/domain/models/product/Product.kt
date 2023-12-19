@@ -8,6 +8,9 @@ data class Product(
     val iName: String,
     val iDescription: String,
     val iType: String,
+    val iPrice: Float,
+    val iCost: Float,
+    val iStock: Float,
 ) {
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(

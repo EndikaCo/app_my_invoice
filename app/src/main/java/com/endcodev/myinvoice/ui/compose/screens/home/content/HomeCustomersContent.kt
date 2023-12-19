@@ -106,7 +106,7 @@ fun HomeCustomersContent(
     {
         MySearchBar(searchText, onSearchTextChange, onFilterClick)
         Spacer(Modifier.size(11.dp))
-        FiltersView(onFiltersChanged, filters)
+        FiltersView(onFiltersChanged, filters) //todo not implemented yet
         Spacer(Modifier.size(11.dp))
 
         if (isLoading)

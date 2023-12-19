@@ -14,6 +14,9 @@ data class ItemsEntity(
     @ColumnInfo(name = "iName") val iName: String,
     @ColumnInfo(name = "iDescription") val iDescription: String,
     @ColumnInfo(name = "iType") val iType: String,
+    @ColumnInfo(name = "iPrice") val iPrice: Float,
+    @ColumnInfo(name = "iCost") val iCost: Float,
+    @ColumnInfo(name = "iStock") val iStock: Float,
 ){
     val iImageUri: Uri?
         get() = iImage?.let { Uri.parse(it) }
@@ -25,4 +28,7 @@ fun ItemsEntity.toDomain() = Product(
     iName = iName,
     iDescription = iDescription,
     iType = iType,
+    iPrice = iPrice,
+    iCost = iCost,
+    iStock = iStock,
 )

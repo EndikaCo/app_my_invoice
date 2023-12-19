@@ -36,21 +36,30 @@ class GetItemsUseCase @Inject constructor(
                     iDescription = "40V 800mA 300MHz",
                     iName = "Transistor 2N2222A",
                     iImage = null,
-                    iType = "Transistor NPN"
+                    iType = "Transistor NPN",
+                    iPrice = 0.5f,
+                    iCost = 0.3f,
+                    iStock = 100f
                 ),
                 ItemsEntity(
                     iCode = "2449-A61C",
                     iDescription = "Relay automotive SPDT 30A 12V",
                     iName = "30A 12V Relay",
                     iImage = null,
-                    iType = "12VCC Relay"
+                    iType = "12VCC Relay",
+                    iPrice = 4.5f,
+                    iCost = 3.5f,
+                    iStock = 50f
                 ),
                 ItemsEntity(
                     iCode = "PRC-231DDD",
                     iDescription = "230VAC 8W 90CRI 2700K",
                     iName = "Led GU10 2K7",
                     iImage = null,
-                    iType = "AC Led Lamp"
+                    iType = "AC Led Lamp",
+                    iPrice = 10.5f,
+                    iCost = 8.5f,
+                    iStock = 100f
                 ),
             )
         }
