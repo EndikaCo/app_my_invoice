@@ -39,7 +39,7 @@ class CustomersViewModel @Inject constructor(
     }
 
 
-    fun changeFilters(filters : List<FilterModel>) {
+    fun changeFilters(filters: List<FilterModel>) {
         _uiState.update { it.copy(filters = filters) }
     }
 

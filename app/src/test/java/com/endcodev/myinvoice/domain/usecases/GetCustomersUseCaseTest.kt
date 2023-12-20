@@ -36,7 +36,13 @@ class GetCustomersUseCaseTest {
             Customer(null, "Toyota Motor Corporation", "KDJ9576852", "+81 623213276", "Japan"),
             Customer(null, "Alibaba Group Holding Limited", "08876623VT", "+86 732132133", "China"),
             Customer(null, "Vodafone Group plc", "HJ3145125212", "+44 624223213", "United Kingdom"),
-            Customer(null, "Samsung Electronics Co., Ltd.", "HSG23145112F", "+82 624223213", "South Korea")
+            Customer(
+                null,
+                "Samsung Electronics Co., Ltd.",
+                "HSG23145112F",
+                "+82 624223213",
+                "South Korea"
+            )
         )
         coEvery { mockRepository.getAllCustomersFromDB() } returns expectedCustomers
 

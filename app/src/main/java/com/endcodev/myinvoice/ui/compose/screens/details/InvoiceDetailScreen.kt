@@ -40,11 +40,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -142,6 +140,7 @@ fun InvoiceInfoScreen(
                         sDiscount = 0
                     )
                 )
+                productDialog.intValue = -1
             },
             onDialogCancel = {
                 productDialog.intValue = -1
@@ -168,7 +167,7 @@ fun InvoiceInfoScreen(
                 sQuantity = 12F,
                 sDiscount = 10
             ),
-            onDialogAccept = {},
+            onDialogAccept = {}, //todo
             onDialogCancel = { priceDialog.value = false },
         )
 
@@ -276,7 +275,8 @@ fun InvoiceProduct2(
     onPricesClick: () -> Unit,
     itemSaleItem: SaleItem?
 ) {
-    val image = filteredImage(itemSaleItem?.sProduct?.iImage)
+    val image =
+        filteredImage(itemSaleItem?.sProduct?.iImage, painterResource(id = R.drawable.no_photo_24))
     val total =
         (itemSaleItem!!.sQuantity * itemSaleItem.sPrice) * (1 - itemSaleItem.sDiscount / 100)
 
@@ -400,21 +400,23 @@ fun SelectCustomer(
     customer: Customer,
     onIconClick: () -> Unit
 ) {
-    val shape = RoundedCornerShape(10)
     Row(
         modifier = Modifier
             .clickable { onIconClick() }
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp)
-            .border(shape = shape, width = 1.dp, color = MaterialTheme.colorScheme.onBackground)
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+            .border(
+                shape = RoundedCornerShape(10),
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.background
+            )
+            .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(10)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Image(
             painter = painterResource(id = R.drawable.image_search_24),
             contentDescription = "",
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground),
             modifier = Modifier.padding(start = 16.dp)
         )
 
@@ -424,7 +426,8 @@ fun SelectCustomer(
             text = customer.cFiscalName,
             fontWeight = FontWeight.W400,
             modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.background
         )
 
         Spacer(Modifier.weight(1f))

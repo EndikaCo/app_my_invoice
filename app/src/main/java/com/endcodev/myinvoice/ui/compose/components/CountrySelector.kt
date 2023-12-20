@@ -1,5 +1,6 @@
 package com.endcodev.myinvoice.ui.compose.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,8 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.endcodev.myinvoice.domain.models.common.allCountriesList
+import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
 
 @Composable
 fun CountrySelection(modifier: Modifier, onSelection: (String) -> Unit) {
@@ -68,7 +71,7 @@ fun DropDownList(
     selectedString: (String) -> Unit
 ) {
     DropdownMenu(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.wrapContentWidth(),
         expanded = requestToOpen,
         onDismissRequest = { request(false) },
     ) {
@@ -88,5 +91,16 @@ fun DropDownList(
                 }
             )
         }
+    }
+}
+
+
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun CountrySelectionPreview() {
+
+    MyInvoiceTheme {
+        CountrySelection(onSelection = {}, modifier = Modifier)
     }
 }

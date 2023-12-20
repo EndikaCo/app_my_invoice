@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -49,6 +50,7 @@ import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.product.ProductUiState
 import com.endcodev.myinvoice.ui.compose.components.MyBottomBar
+import com.endcodev.myinvoice.ui.compose.components.filteredImage
 import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
@@ -130,11 +132,11 @@ fun ProductsDetailScreen(
         bottomBar = {
 
             MyBottomBar(
-                enableDelete =uiState.isAcceptEnabled,
+                enableDelete = uiState.isAcceptEnabled,
                 enableSave = true,
                 addItemVisible = false,
                 onAcceptClick = onAcceptButton,
-                onAddItemClick = {}, //todo
+                onAddItemClick = {},
                 onDeleteClick = onDeleteButton,
             )
         }
@@ -178,7 +180,7 @@ fun ItemsInfoContent(
         Text(
             text = "Product Info",
             modifier = Modifier.padding(start = pPadding, end = pPadding, top = pPadding),
-            fontSize = 24.sp
+            fontSize = 20.sp
         )
         Row(
             modifier = Modifier.padding(start = pPadding, end = pPadding),
@@ -249,25 +251,17 @@ fun ItemInfoImage(
     cImage: Uri?,
     defaultImage: Painter
 ) {
-    var colorFilter: ColorFilter? = null
-    var image = uriToPainterImage(cImage)
-    if (image == null) {
-        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
-        image = defaultImage
-    }
+    val image = filteredImage(cImage, defaultImage)
 
     Box(
         modifier = Modifier
-            .size(120.dp) // Size of the Box (background)
-            .border(
-                border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
-                shape = RoundedCornerShape(5.dp)
-            ),
+            .height(130.dp) // Size of the Box (background)
+            .width(150.dp),
         contentAlignment = Alignment.Center, // Center content in the Box
 
     ) {
         Image(
-            painter = image,
+            painter = image.image,
             contentDescription = "customer Image",
             modifier = Modifier
                 .clickable {
@@ -275,12 +269,11 @@ fun ItemInfoImage(
                         PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                     )
                 }
-                .height(130.dp)
-                .width(130.dp)
+                .fillMaxSize()
                 .clip(RoundedCornerShape(5.dp)),
             contentScale = ContentScale.Crop,
-            alignment = Alignment.TopCenter,
-            colorFilter = colorFilter
+            alignment = Alignment.Center,
+            colorFilter = image.filter
         )
     }
 }

@@ -56,7 +56,15 @@ fun ProductDialog(
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
             image = painterResource(id = R.drawable.no_photo_24)
         }
-        Column (Modifier.border(1.dp, MaterialTheme.colorScheme.onBackground, MaterialTheme.shapes.medium).padding(8.dp)){
+        Column(
+            Modifier
+                .border(
+                    1.dp,
+                    MaterialTheme.colorScheme.onBackground,
+                    MaterialTheme.shapes.medium
+                )
+                .padding(8.dp)
+        ) {
             Row(
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
@@ -94,19 +102,20 @@ fun ProductDialog(
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
             ) {
                 Button(onClick = { onDialogCancel() }) {
                     Text(text = "Cancel")
                 }
-                Button(onClick = {  }) {
+                Button(onClick = { }) {
                     Text(text = "Accept")
                 }
             }
         }
     }
 }
-
 
 
 @Preview(name = "Light Mode")

@@ -101,7 +101,8 @@ fun HomeCustomersContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues).padding(10.dp)
+            .padding(paddingValues)
+            .padding(10.dp)
     )
     {
         MySearchBar(searchText, onSearchTextChange, onFilterClick)

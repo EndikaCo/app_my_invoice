@@ -44,13 +44,18 @@ class CustomerInfoViewModel @Inject constructor(
                 cCountry = customer.cCountry,
                 cImage = customer.cImage,
                 isLoading = false,
-                isAcceptEnabled = enableAccept(customer.cIdentifier, customer.cFiscalName)
+                isSaveEnabled = enableAccept(customer.cIdentifier, customer.cFiscalName)
             )
         }
     }
 
-
-    fun onDataChanged(identifier: String, fiscalName: String, telephone: String, country: String, email: String) {
+    fun onDataChanged(
+        identifier: String,
+        fiscalName: String,
+        telephone: String,
+        country: String,
+        email: String
+    ) {
         _uiState.update { currentState ->
             currentState.copy(
                 cIdentifier = identifier,
@@ -58,15 +63,15 @@ class CustomerInfoViewModel @Inject constructor(
                 cTelephone = telephone,
                 cCountry = country,
                 cEmail = email,
-                isAcceptEnabled = enableAccept(identifier, fiscalName))
+                isSaveEnabled = enableAccept(identifier, fiscalName)
+            )
         }
     }
 
     private fun enableAccept(identifier: String, fiscalName: String) =
         identifier.isNotEmpty() && fiscalName.isNotEmpty()
 
-
-    fun saveCustomer( ) {
+    fun saveCustomer() {
         viewModelScope.launch {
             with(_uiState.value) {
                 val customer = CustomersEntity(
@@ -90,7 +95,9 @@ class CustomerInfoViewModel @Inject constructor(
     }
 
     fun deleteCustomer() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            //getSimpleCustomerUseCase.deleteCustomer(_uiState.value.cIdentifier)
+        }
     }
 }
 

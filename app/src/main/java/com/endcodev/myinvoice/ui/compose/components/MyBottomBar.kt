@@ -48,7 +48,11 @@ fun MyBottomBar(
                 ) {
                     Icon(Icons.Default.Delete, contentDescription = "Action delete")
                 }
-                Text("Delete", fontSize = 10.sp)
+                Text(
+                    "Delete",
+                    fontSize = 10.sp,
+                    modifier = Modifier.alpha(if (enableDelete) 1f else 0.5f)
+                )
             }
             //ADD ITEM
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -60,10 +64,14 @@ fun MyBottomBar(
                     Icon(
                         Icons.Default.PlaylistAdd,
                         contentDescription = "Action add item",
-                        modifier = Modifier.alpha(if (addItemVisible) 1f else 0f)
+                        modifier = Modifier.alpha(if (addItemVisible) 1f else 0.0f)
                     )
                 }
-                Text("Add Product", fontSize = 10.sp, modifier = Modifier.alpha(if (addItemVisible) 1f else 0f))
+                Text(
+                    "Add Product",
+                    fontSize = 10.sp,
+                    modifier = Modifier.alpha(if (addItemVisible) 1f else 0f)
+                )
             }
             //SAVE
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -74,7 +82,11 @@ fun MyBottomBar(
                 ) {
                     Icon(Icons.Default.Save, contentDescription = "Action Save")
                 }
-                Text("Save", fontSize = 10.sp)
+                Text(
+                    "Save",
+                    fontSize = 10.sp,
+                    modifier = Modifier.alpha(if (enableSave) 1f else 0.5f)
+                )
             }
         }
     }

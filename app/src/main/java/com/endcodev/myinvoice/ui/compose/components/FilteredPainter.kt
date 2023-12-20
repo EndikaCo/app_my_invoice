@@ -14,13 +14,13 @@ data class FilteredImageModel(
 )
 
 @Composable
-fun filteredImage(image: Uri?): FilteredImageModel {
+fun filteredImage(image: Uri?, defaultImage: Painter): FilteredImageModel {
     var colorFilter: ColorFilter? = null
     var painter: Painter? = uriToPainterImage(image)
 
     if (painter == null) {
         colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
-        painter = painterResource(id = R.drawable.no_photo_24)
+        painter = defaultImage
 
     }
     return FilteredImageModel(image = painter, filter = colorFilter)

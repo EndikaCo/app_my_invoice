@@ -6,25 +6,26 @@ import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.data.repository.ItemsRepository
 import javax.inject.Inject
 
-    class GetSimpleItemsUseCase @Inject constructor(
-        private val itemsRepository: ItemsRepository
-    ) {
+class GetSimpleItemsUseCase @Inject constructor(
+    private val itemsRepository: ItemsRepository
+) {
+    companion object {
+        const val TAG = "GetSimpleItemsUseCase"
+    }
 
-        companion object { const val TAG = "GetSimpleItemsUseCase"}
+    operator fun invoke(itemId: String?): Product? {
 
-        operator fun invoke(itemId : String ?): Product? {
+        var item: Product? = null
 
-            var item: Product? = null
-
-            if (itemId == null)
-                return null
-            try {
-                item = itemsRepository.getItemById(itemId)
-            } catch (e: Exception) {
-                Log.e(TAG, "No items found, $e")
-            }
-            return item
+        if (itemId == null)
+            return null
+        try {
+            item = itemsRepository.getItemById(itemId)
+        } catch (e: Exception) {
+            Log.e(TAG, "No items found, $e")
         }
+        return item
+    }
 
     suspend fun saveItem(item: ItemsEntity?) {
         if (item != null) {

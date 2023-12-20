@@ -68,13 +68,19 @@ fun InvoiceProductAddDialog(
                 itemList,
                 onDialogAccept
             )
-            Box(modifier = Modifier.clickable { onDialogCancel() }.align(Alignment.CenterHorizontally)) {
-                Icon(Icons.Default.Cancel, contentDescription = "", Modifier.size(30.dp)) // todo content desc
+            Spacer(modifier = Modifier.height(16.dp))
+            Box(modifier = Modifier
+                .clickable { onDialogCancel() }
+                .align(Alignment.CenterHorizontally)) {
+                Icon(
+                    Icons.Default.Cancel,
+                    contentDescription = "",
+                    Modifier.size(50.dp)
+                ) // todo content desc
             }
         }
     }
 }
-
 
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)

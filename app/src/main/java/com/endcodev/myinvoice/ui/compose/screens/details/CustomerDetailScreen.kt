@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,15 +34,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,9 +47,9 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.customer.CustomerUiState
 import com.endcodev.myinvoice.ui.compose.components.CountrySelection
 import com.endcodev.myinvoice.ui.compose.components.MyBottomBar
+import com.endcodev.myinvoice.ui.compose.components.filteredImage
 import com.endcodev.myinvoice.ui.compose.screens.home.content.ProgressBar
 import com.endcodev.myinvoice.ui.theme.MyInvoiceTheme
-import com.endcodev.myinvoice.ui.compose.components.uriToPainterImage
 import com.endcodev.myinvoice.ui.navigation.Routes
 import com.endcodev.myinvoice.ui.viewmodels.CustomerInfoViewModel
 
@@ -94,11 +90,10 @@ fun CustomerDetailActions(
     }
 
     CustomerDetailScreen(
-        onAcceptButton = {
+        onSaveClick = {
             viewModel.saveCustomer()
             navController.navigate(Routes.CustomerContent.routes)
         },
-        onCancelButton = { navController.navigate(Routes.CustomerContent.routes) },
         uiState,
         onUriChanged = { viewModel.updateUri(it) },
         onFiscalNameChange = { onUpdateData(fiscalName = it) },
@@ -114,8 +109,7 @@ val pPadding = 20.dp
 /**
  * Composable function that represents the screen for displaying customer details.
  *
- * @param onAcceptButton Callback function to be called when the accept button is clicked.
- * @param onCancelButton Callback function to be called when the cancel button is clicked.
+ * @param onSaveClick Callback function to be called when the accept button is clicked.
  * @param uiState The current state of the customer information UI.
  * @param onUriChanged Callback function to be called when the URI is changed.
  * @param onFiscalNameChange Callback function to be called when the fiscal name is changed.
@@ -125,8 +119,7 @@ val pPadding = 20.dp
  */
 @Composable
 fun CustomerDetailScreen(
-    onAcceptButton: () -> Unit,
-    onCancelButton: () -> Unit,
+    onSaveClick: () -> Unit,
     uiState: CustomerUiState,
     onUriChanged: (Uri?) -> Unit,
     onFiscalNameChange: (String) -> Unit,
@@ -153,12 +146,12 @@ fun CustomerDetailScreen(
             },
             bottomBar = {
                 MyBottomBar(
-                    enableDelete = uiState.isAcceptEnabled,
-                    enableSave = true,
+                    enableDelete = false,
+                    enableSave = uiState.isSaveEnabled,
                     addItemVisible = false,
-                    onDeleteClick = onAcceptButton,
-                    onAddItemClick = {}, //todo
-                    onAcceptClick = onDeleteClick
+                    onDeleteClick = onDeleteClick,
+                    onAddItemClick = {},
+                    onAcceptClick = onSaveClick
                 )
             }
         )
@@ -213,9 +206,9 @@ fun CustomerInfoContent(
             Column(Modifier.weight(0.5F)) {
                 Text(
                     text = "Customer Info",
-                    modifier = Modifier,
-                    fontSize = 24.sp
+                    fontSize = 20.sp
                 )
+                Spacer(modifier = Modifier.height(10.dp))
                 CompanyIdNum(
                     idNum = uiState.cIdentifier,
                     onTextChanged = { onIdentifierChange(it) },
@@ -251,12 +244,7 @@ fun CustomerInfoImage(
     defaultImage: Painter
 ) {
 
-    var colorFilter: ColorFilter? = null
-    var image = uriToPainterImage(cImage)
-    if (image == null) {
-        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
-        image = defaultImage
-    }
+    val image = filteredImage(cImage, defaultImage)
 
     Box(
         modifier = Modifier
@@ -267,7 +255,7 @@ fun CustomerInfoImage(
             ), contentAlignment = Alignment.Center // Center content in the Box
     ) {
         Image(
-            painter = image,
+            painter = image.image,
             contentDescription = "customer Image",
             modifier = Modifier
                 .clickable {
@@ -280,7 +268,7 @@ fun CustomerInfoImage(
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
             alignment = Alignment.TopCenter,
-            colorFilter = colorFilter
+            colorFilter = image.filter
         )
     }
 }
@@ -294,19 +282,6 @@ fun CompanyIdNum(idNum: String, onTextChanged: (String) -> Unit) {
         value = idNum,
         onValueChange = { onTextChanged(it) },
         label = { Text("Company ID") }
-    )
-}
-
-@Composable
-fun InfoTitle(text: String, modifier: Modifier) {
-    Text(
-        modifier = modifier.fillMaxWidth(),
-        text = text,
-        color = Color.Black,
-        fontSize = 24.sp,
-        textAlign = TextAlign.Start,
-        fontFamily = FontFamily.Serif,
-        fontWeight = FontWeight.Bold
     )
 }
 
@@ -343,8 +318,7 @@ fun CompanyEmail(cEmail: String, onEmailChanged: (String) -> Unit) {
 fun PreviewCustomerDetailScreen() {
     MyInvoiceTheme {
         CustomerDetailScreen(
-            onAcceptButton = {},
-            onCancelButton = {},
+            onSaveClick = {},
             CustomerUiState(),
             onUriChanged = {},
             onFiscalNameChange = {},

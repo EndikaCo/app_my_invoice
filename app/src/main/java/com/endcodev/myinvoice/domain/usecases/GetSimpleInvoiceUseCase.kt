@@ -7,7 +7,7 @@ import com.endcodev.myinvoice.data.repository.InvoicesRepository
 import javax.inject.Inject
 
 class GetSimpleInvoiceUseCase @Inject constructor(
-    private val repository : InvoicesRepository
+    private val repository: InvoicesRepository
 ) : ViewModel() {
 
     companion object {
@@ -16,9 +16,9 @@ class GetSimpleInvoiceUseCase @Inject constructor(
 
     operator fun invoke(invoiceId: String?): Invoice? {
 
-        var invoice : Invoice? = null
+        var invoice: Invoice? = null
 
-        if(invoiceId == null)
+        if (invoiceId == null)
             return null
 
         try {
@@ -29,15 +29,14 @@ class GetSimpleInvoiceUseCase @Inject constructor(
         return invoice
     }
 
-
     suspend fun saveInvoice(invoice: Invoice) {
-            repository.insertInvoice(invoice)
-            Log.v(GetCustomersUseCase.TAG, "invoice ${invoice.iId} inserted")
+        repository.insertInvoice(invoice)
+        Log.v(GetCustomersUseCase.TAG, "invoice ${invoice.iId} inserted")
     }
 
     suspend fun updateInvoice(invoice: Invoice) {
-            repository.updateInvoice(invoice)
-            Log.v(GetCustomersUseCase.TAG, "invoice ${invoice.iId} updated")
+        repository.updateInvoice(invoice)
+        Log.v(GetCustomersUseCase.TAG, "invoice ${invoice.iId} updated")
 
     }
 }

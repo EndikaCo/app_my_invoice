@@ -91,7 +91,7 @@ fun SignUpScreen(
     onEmailChanged: (String) -> Unit,
     onPassChanged: (String) -> Unit,
     onVerifyChanged: (String) -> Unit,
-    ) {
+) {
 
     if (success) {
         onSignUpClick()

@@ -69,8 +69,15 @@ fun ChooseCustomerDialog(
                         })
                     }
                 }
-                Box(modifier = Modifier.clickable { onDismissRequest() }.align(Alignment.CenterHorizontally)) {
-                    Icon(Icons.Default.Cancel, contentDescription = "", Modifier.size(30.dp)) // todo content desc
+                Spacer(modifier = Modifier.height(16.dp))
+                Box(modifier = Modifier
+                    .clickable { onDismissRequest() }
+                    .align(Alignment.CenterHorizontally)) {
+                    Icon(
+                        Icons.Default.Cancel,
+                        contentDescription = "",
+                        Modifier.size(50.dp)
+                    ) // todo content desc
                 }
             }
         }

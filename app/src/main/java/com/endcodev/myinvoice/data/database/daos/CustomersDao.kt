@@ -4,7 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.endcodev.myinvoice.data.database.entities.CustomersEntity
+import com.endcodev.myinvoice.data.database.entities.InvoicesEntity
 
 @Dao
 interface CustomersDao {
@@ -17,6 +19,9 @@ interface CustomersDao {
 
     @Query("DELETE FROM customer_table")
     suspend fun deleteAllCustomers()
+
+    @Update
+    suspend fun updateCustomer(customer: CustomersEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCustomer(player: CustomersEntity)

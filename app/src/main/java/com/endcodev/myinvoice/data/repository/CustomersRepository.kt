@@ -8,14 +8,14 @@ import javax.inject.Inject
 
 class CustomersRepository @Inject constructor(
     private val customersDao: CustomersDao,
-    ) {
+) {
     suspend fun getAllCustomersFromDB(): List<Customer> {
         val customersList: List<CustomersEntity> = customersDao.getAllCustomers()
         return customersList.map { it.toDomain() }
     }
 
-    fun getCustomerById(id : String) : Customer {
-        val customer : CustomersEntity = customersDao.getCustomerById(id)
+    fun getCustomerById(id: String): Customer {
+        val customer: CustomersEntity = customersDao.getCustomerById(id)
         return customer.toDomain()
     }
 
@@ -27,6 +27,7 @@ class CustomersRepository @Inject constructor(
         customersDao.insertCustomer(customer)
     }
 
-    fun deleteCustomer(name: String) {
+    fun deleteCustomer(id: String) {
+        customersDao.deleteCustomer(id)
     }
 }

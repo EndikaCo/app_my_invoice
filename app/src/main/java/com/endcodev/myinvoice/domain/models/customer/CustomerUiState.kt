@@ -10,6 +10,6 @@ data class CustomerUiState (
     val cEmail : String = "",
     val cCountry : String = "",
     val isLoading : Boolean = false,
-    val isAcceptEnabled : Boolean = false,
+    val isSaveEnabled : Boolean = false,
     val errorMessage : String? = null,
 )

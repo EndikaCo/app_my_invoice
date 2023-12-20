@@ -17,9 +17,9 @@ class GetSimpleCustomerUseCase @Inject constructor(
 
     operator fun invoke(customerIdentifier: String?): Customer? {
 
-        var customer : Customer? = null
+        var customer: Customer? = null
 
-        if(customerIdentifier == null)
+        if (customerIdentifier == null)
             return null
 
         try {

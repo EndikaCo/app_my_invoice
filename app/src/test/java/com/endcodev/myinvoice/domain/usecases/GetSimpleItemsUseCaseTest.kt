@@ -33,7 +33,16 @@ class GetSimpleItemsUseCaseTest {
     @Test
     fun `invoke function should call getItemById when itemId is not null`() {
         val itemId = "123"
-        val expectedItem = Product(iImage = null ,iCode = itemId, iName = "Test Item", iType = "type", iDescription = "description" )
+        val expectedItem = Product(
+            iImage = null,
+            iCode = itemId,
+            iName = "Test Item",
+            iType = "type",
+            iDescription = "description",
+            iPrice = 10.0f,
+            iStock = 21.0f,
+            iCost = 10.0f,
+        )
 
         // Use MockK's every function to stub the method
         every { itemsRepository.getItemById(itemId) } returns expectedItem

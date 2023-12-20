@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddProductViewModel @Inject constructor(
     private val getProductsUseCase: GetItemsUseCase,
-    ) : ViewModel(){
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProductListUiState())
     val uiState: StateFlow<ProductListUiState> = _uiState.asStateFlow()

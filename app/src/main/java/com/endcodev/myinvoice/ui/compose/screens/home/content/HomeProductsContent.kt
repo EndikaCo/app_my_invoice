@@ -156,7 +156,7 @@ fun ProductList(
 @Composable
 fun ProductItem(product: Product, onProductClick: () -> Unit) {
 
-    val image = filteredImage(product.iImage)
+    val image = filteredImage(product.iImage, painterResource(id = R.drawable.no_photo_24))
 
     ElevatedCard(
         modifier = Modifier

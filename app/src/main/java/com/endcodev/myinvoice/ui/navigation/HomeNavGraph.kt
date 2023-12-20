@@ -28,7 +28,7 @@ fun HomeNavGraph(navController: NavHostController, paddingValues: PaddingValues)
     NavHost(
         navController = navController,
         route = Graph.HOME,
-        startDestination = Routes.InvoicesContent.routes
+        startDestination = Routes.CustomerContent.routes
     ) {
         //HOME
         composable(route = Routes.InvoicesContent.routes) {
@@ -52,7 +52,7 @@ sealed class DetailsScreen(val route: String) {
     object Item : DetailsScreen(route = "ITEM")
 }
 
-fun NavGraphBuilder.detailsNavGraph(navController: NavHostController, ) {
+fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
     navigation(
         route = Graph.DETAILS,
         startDestination = DetailsScreen.Customer.route

@@ -48,7 +48,7 @@ class GetSimpleCustomerUseCaseTest {
     fun `test saveCustomer`() = runBlocking {
 
         //Given
-        val customer = CustomersEntity( "1", null, "name", "694","Spain")
+        val customer = CustomersEntity("1", null, "name", "694", "Spain")
 
         // Act
         getSimpleCustomerUseCase.saveCustomer(customer)

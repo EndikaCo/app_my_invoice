@@ -98,7 +98,7 @@ fun LoginActions(navController: NavHostController) {
         onPassChanged = {
             viewModel.onLoginChanged(password = it, email = email)
         },
-        onExitClick = {activity.finish()}
+        onExitClick = { activity.finish() }
     )
 }
 
@@ -135,7 +135,12 @@ fun LoginScreen(
 @Composable
 fun LoginHeader(onExitClick: () -> Unit) {
     androidx.compose.material3.TopAppBar(
-        title = { Text(text = "EXIT",fontSize = 15.sp, modifier = Modifier.clickable { onExitClick() }) },
+        title = {
+            Text(
+                text = "EXIT",
+                fontSize = 15.sp,
+                modifier = Modifier.clickable { onExitClick() })
+        },
     )
 }
 
@@ -259,17 +264,22 @@ fun LoginButton(text: String, loginEnabled: Boolean, onLoginClick: () -> Unit) {
     Button(
         onClick = { onLoginClick() },
         enabled = loginEnabled,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        shape = RoundedCornerShape(5.dp),
+        border = BorderStroke(
+            width = 1.dp,
+            color = if (loginEnabled) MaterialTheme.colorScheme.primary else Color.White,
+        ),
         colors = ButtonDefaults.buttonColors(
             disabledContainerColor = Color.Transparent,
             disabledContentColor = MaterialTheme.colorScheme.onBackground,
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.Black
-            ),
+        ),
 
-    ) {
+        ) {
         Text(
             text = text,
             fontSize = 21.sp,
