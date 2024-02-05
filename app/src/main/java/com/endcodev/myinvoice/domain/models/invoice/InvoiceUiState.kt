@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter
 data class InvoiceUiState(
 
     val isLoading : Boolean = false,
-
     val invoice: Invoice = Invoice(
         iId = 0,
         iDate = getDate(),

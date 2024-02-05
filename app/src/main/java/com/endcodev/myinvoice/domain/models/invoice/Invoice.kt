@@ -9,10 +9,21 @@ data class Invoice(
     val iDate : String = getDate(),//todo
     val iCustomer: Customer,
     val iReference: String = "",
-    val iTotal: Float = 0f,
     val iSaleList : List<SaleItem> = emptyList(),
     )
 {
+    val iSubtotal: Float
+        get() = iSaleList.sumOf { it.sPrice.toDouble() * it.sQuantity }.toFloat()
+
+    val iTaxes :Float
+        get() = iSaleList.sumOf{it.sTax.toDouble() * it.sQuantity }.toFloat()
+
+    val iDiscount: Float
+        get() = iSaleList.sumOf{it.sDiscount.toDouble() * it.sQuantity }.toFloat()
+
+    val iTotal: Float
+        get() = iSubtotal + iTaxes - iDiscount
+
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
             iId.toString(),

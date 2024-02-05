@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
-import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -45,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.customer.CustomerUiState
+import com.endcodev.myinvoice.domain.utils.App
 import com.endcodev.myinvoice.presentation.compose.components.CountrySelection
 import com.endcodev.myinvoice.presentation.compose.components.MyBottomBar
 import com.endcodev.myinvoice.presentation.compose.components.filteredImage
@@ -177,24 +177,6 @@ fun CustomerInfoContent(
     onCountryChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
 ) {
-    val context = LocalContext.current
-
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-
-            if (uri == null) {
-                Log.e("SinglePhotoPickerLauncher", "Image not valid")
-                onUriChanged(null)
-            } else {
-                // Grant read permission to the obtained URI
-                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                context.contentResolver.takePersistableUriPermission(uri, flag)
-                onUriChanged(uri)
-            }
-        }
-    )
-
     Column(
         modifier = Modifier
             .padding(innerPadding)
@@ -215,7 +197,7 @@ fun CustomerInfoContent(
                 )
             }
             CustomerInfoImage(
-                singlePhotoPickerLauncher = singlePhotoPickerLauncher,
+                onUriChanged,
                 cImage = uiState.cImage,
                 defaultImage = painterResource(id = R.drawable.person_24)
             )
@@ -232,19 +214,29 @@ fun CustomerInfoContent(
     }
 }
 
-/**
- * Displays a customer's image or new image from photo picker launcher.
- * @param singlePhotoPickerLauncher The launcher used to pick a visual media (image) from the device.
- * @param cImage The current image URI of the customer.
- */
 @Composable
 fun CustomerInfoImage(
-    singlePhotoPickerLauncher: ManagedActivityResultLauncher<PickVisualMediaRequest, Uri?>,
+    onUriChanged: (Uri?) -> Unit,
     cImage: Uri?,
     defaultImage: Painter
 ) {
-
     val image = filteredImage(cImage, defaultImage)
+    val context = LocalContext.current
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            if (uri == null) {
+                Log.e(App.tag, "Image not valid")
+                onUriChanged(null)
+            } else {
+                // Grant read permission to the obtained URI
+                val flag = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                context.contentResolver.takePersistableUriPermission(uri, flag)
+                onUriChanged(uri)
+            }
+        }
+    )
 
     Box(
         modifier = Modifier
@@ -272,7 +264,6 @@ fun CustomerInfoImage(
         )
     }
 }
-
 
 @Composable
 fun CompanyIdNum(idNum: String, onTextChanged: (String) -> Unit) {

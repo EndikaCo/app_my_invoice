@@ -210,7 +210,6 @@ fun InvoicesContentPreview() {
                 Invoice(
                     iId = 1,
                     iCustomer = customer,
-                    iTotal = 125.54f,
                     iDate = getDate(),
                     iReference = "HK4325"
                 )

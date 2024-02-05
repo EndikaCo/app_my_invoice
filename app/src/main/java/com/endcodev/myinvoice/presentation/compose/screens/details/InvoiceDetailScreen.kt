@@ -194,6 +194,7 @@ fun InvoiceInfoScreen(
             },
             bottomBar = {
                 Column {
+                    TotalsRow(uiState.invoice)
                     Divider(
                         modifier = Modifier
                             .background(Color(R.color.transparent))
@@ -340,6 +341,36 @@ fun InvoiceProduct2(
         }
     }
 }
+@Composable
+fun TotalsRow(invoice : Invoice) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally // Add this line
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(text = "Subtotal", fontSize = 12.sp, textAlign = TextAlign.Center)
+                Text(text = "${invoice.iSubtotal}€", fontSize = 16.sp, textAlign = TextAlign.Center)
+            }
+            Column {
+                Text(text = "Tax", fontSize = 12.sp, textAlign = TextAlign.Center)
+                Text(text = "${invoice.iTaxes}€", fontSize = 16.sp, textAlign = TextAlign.Center)
+            }
+            Column {
+                Text(text = "Discount", fontSize = 12.sp, textAlign = TextAlign.Center)
+                Text(text = "${invoice.iDiscount}€", fontSize = 16.sp, textAlign = TextAlign.Center)
+            }
+            Column {
+                Text(text = "Total", fontSize = 12.sp, textAlign = TextAlign.Center)
+                Text(text = "${invoice.iTotal}€", fontSize = 16.sp, textAlign = TextAlign.Center)
+            }
+        }
+    }
+}
 
 @Composable
 fun ListImage(image: Painter, colorFilter: ColorFilter?) {
@@ -427,7 +458,7 @@ fun SelectCustomer(
             fontWeight = FontWeight.W400,
             modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.background
+            color = Color.Black
         )
 
         Spacer(Modifier.weight(1f))
@@ -447,7 +478,6 @@ fun PreviewInvoiceInfoScreen() {
                 iDate = getDate(),
                 iCustomer = Customer(null, "Select Customer", "Select Customer"),
                 iReference = "",
-                iTotal = 0f,
                 iSaleList = listOf(
                     SaleItem(
                         0,

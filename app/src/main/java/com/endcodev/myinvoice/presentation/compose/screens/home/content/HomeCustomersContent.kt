@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -131,13 +129,7 @@ fun CustomersList(
     customers: List<Customer>,
     onItemClick: (String) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier
-    ) {
-        items(customers) { customer ->
-            CustomerItem(customer, onItemClick = { onItemClick(customer.cIdentifier) })
-        }
-    }
+
 }
 
 @Composable

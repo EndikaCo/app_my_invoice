@@ -88,7 +88,8 @@ class InvoiceInfoViewModel @Inject constructor(
             }
 
             currentState.copy(
-                invoice = currentState.invoice.copy(iSaleList = newSaleList)
+                invoice = currentState.invoice.copy(iSaleList = newSaleList),
+
             )
         }
     }
