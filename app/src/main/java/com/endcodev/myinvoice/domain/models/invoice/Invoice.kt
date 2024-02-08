@@ -6,20 +6,19 @@ import com.endcodev.myinvoice.domain.models.customer.Customer
 
 data class Invoice(
     val iId: Int? = null,
-    val iDate : String = getDate(),//todo
+    val iDate: String = getDate(),
     val iCustomer: Customer,
     val iReference: String = "",
-    val iSaleList : List<SaleItem> = emptyList(),
-    )
-{
+    val iSaleList: List<SaleItem> = emptyList(),
+) {
     val iSubtotal: Float
         get() = iSaleList.sumOf { it.sPrice.toDouble() * it.sQuantity }.toFloat()
 
-    val iTaxes :Float
-        get() = iSaleList.sumOf{it.sTax.toDouble() * it.sQuantity }.toFloat()
+    val iTaxes: Float
+        get() = iSaleList.sumOf { it.sTax.toDouble() * it.sQuantity }.toFloat()
 
     val iDiscount: Float
-        get() = iSaleList.sumOf{it.sDiscount.toDouble() * it.sQuantity }.toFloat()
+        get() = iSaleList.sumOf { it.sDiscount.toDouble() * it.sQuantity }.toFloat()
 
     val iTotal: Float
         get() = iSubtotal + iTaxes - iDiscount
@@ -28,7 +27,7 @@ data class Invoice(
         val matchingCombinations = listOf(
             iId.toString(),
             iCustomer.cFiscalName,
-            "${iCustomer.cFiscalName.first()}", //todo should be name also
+            "${iCustomer.cFiscalName.first()}",
         )
 
         return matchingCombinations.any {
@@ -41,7 +40,7 @@ data class Invoice(
             iId = iId ?: 0,
             iCustomer = Converters().customerEntityToJson(iCustomer.toEntity()) ?: "error",
             iDate = iDate,
-            iSaleList = Converters().saleListToJson(iSaleList) ?: "error",
+            iSaleList = Converters().saleListToJson(iSaleList.map { it.toEntity()!! }) ?: "error",
         )
     }
 }

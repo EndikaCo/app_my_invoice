@@ -31,5 +31,4 @@ data class Customer(
             cCountry = cCountry,
         )
     }
-
 }
