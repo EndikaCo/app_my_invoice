@@ -38,13 +38,13 @@ class CustomerInfoViewModel @Inject constructor(
     private fun updateUi(customer: Customer) {
         _uiState.update { currentState ->
             currentState.copy(
-                cIdentifier = customer.cIdentifier,
-                cFiscalName = customer.cFiscalName,
-                cTelephone = customer.cTelephone,
-                cCountry = customer.cCountry,
-                cImage = customer.cImage,
+                id = customer.id,
+                fiscalName = customer.fiscalName,
+                telephone = customer.telephone,
+                country = customer.country,
+                image = customer.image,
                 isLoading = false,
-                isSaveEnabled = enableAccept(customer.cIdentifier, customer.cFiscalName)
+                isSaveEnabled = enableAccept(customer.id, customer.fiscalName)
             )
         }
     }
@@ -58,11 +58,11 @@ class CustomerInfoViewModel @Inject constructor(
     ) {
         _uiState.update { currentState ->
             currentState.copy(
-                cIdentifier = identifier,
-                cFiscalName = fiscalName,
-                cTelephone = telephone,
-                cCountry = country,
-                cEmail = email,
+                id = identifier,
+                fiscalName = fiscalName,
+                telephone = telephone,
+                country = country,
+                email = email,
                 isSaveEnabled = enableAccept(identifier, fiscalName)
             )
         }
@@ -75,11 +75,11 @@ class CustomerInfoViewModel @Inject constructor(
         viewModelScope.launch {
             with(_uiState.value) {
                 val customer = CustomersEntity(
-                    cImage = cImage.toString(),
-                    cIdentifier = cIdentifier,
-                    cFiscalName = cFiscalName,
-                    cTelephone = cTelephone,
-                    cCountry = cCountry
+                    image = image.toString(),
+                    id = id,
+                    fiscalName = fiscalName,
+                    telephone = telephone,
+                    country = country
                 )
                 getSimpleCustomerUseCase.saveCustomer(customer)
             }
@@ -89,7 +89,7 @@ class CustomerInfoViewModel @Inject constructor(
     fun updateUri(uri: Uri?) {
         _uiState.update { currentState ->
             currentState.copy(
-                cImage = uri
+                image = uri
             )
         }
     }

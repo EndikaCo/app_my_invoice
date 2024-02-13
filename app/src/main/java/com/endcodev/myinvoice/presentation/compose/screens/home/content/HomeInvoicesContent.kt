@@ -121,7 +121,7 @@ fun InvoicesList(
         modifier = modifier
     ) {
         items(invoices) { invoice ->
-            InvoiceItem(invoice, onItemClick = { onItemClick(invoice.iId.toString()) })
+            InvoiceItem(invoice, onItemClick = { onItemClick(invoice.id.toString()) })
         }
     }
 }
@@ -154,19 +154,19 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: Invoice) {
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = String.format("%03d", invoice.iId),
+                text = String.format("%03d", invoice.id),
                 modifier = Modifier
                     .height(25.dp)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
-                text = invoice.iDate,
+                text = invoice.date,
                 modifier = Modifier
                     .height(25.dp)
                     .weight(1f)
             )
             Text(
-                text = invoice.iReference,
+                text = invoice.reference,
                 modifier = Modifier
                     .height(25.dp)
             )
@@ -176,7 +176,7 @@ fun InvoiceIdAndFiscal(modifier: Modifier, invoice: Invoice) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = invoice.iCustomer.cFiscalName,
+                text = invoice.customer.fiscalName,
                 modifier = Modifier
                     .height(25.dp)
                     .weight(1f), // Take up available space
@@ -208,10 +208,10 @@ fun InvoicesContentPreview() {
             searchText = "searchText",
             invoices = listOf(
                 Invoice(
-                    iId = 1,
-                    iCustomer = customer,
-                    iDate = getDate(),
-                    iReference = "HK4325"
+                    id = 1,
+                    customer = customer,
+                    date = getDate(),
+                    reference = "HK4325"
                 )
             ),
             isLoading = false,

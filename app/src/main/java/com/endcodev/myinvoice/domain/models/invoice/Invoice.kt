@@ -5,42 +5,43 @@ import com.endcodev.myinvoice.data.database.entities.InvoicesEntity
 import com.endcodev.myinvoice.domain.models.customer.Customer
 
 data class Invoice(
-    val iId: Int? = null,
-    val iDate: String = getDate(),
-    val iCustomer: Customer,
-    val iReference: String = "",
-    val iSaleList: List<SaleItem> = emptyList(),
+    val id: Int? = null,
+    val date: String = getDate(),
+    val customer: Customer,
+    val reference: String = "",
+    val saleList: MutableList<SaleItem> = mutableListOf(),
 ) {
     val iSubtotal: Float
-        get() = iSaleList.sumOf { it.sPrice.toDouble() * it.sQuantity }.toFloat()
+        get() = saleList.sumOf { it.price.toDouble() * it.quantity }.toFloat()
 
     val iTaxes: Float
-        get() = iSaleList.sumOf { it.sTax.toDouble() * it.sQuantity }.toFloat()
+        get() = saleList.sumOf { it.tax.toDouble() * it.quantity }.toFloat()
 
     val iDiscount: Float
-        get() = iSaleList.sumOf { it.sDiscount.toDouble() * it.sQuantity }.toFloat()
+        get() = saleList.sumOf { it.discount.toDouble() * it.quantity }.toFloat()
 
     val iTotal: Float
         get() = iSubtotal + iTaxes - iDiscount
 
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
-            iId.toString(),
-            iCustomer.cFiscalName,
-            "${iCustomer.cFiscalName.first()}",
+            id.toString(),
+            customer.fiscalName,
+            "${customer.fiscalName.first()}",
         )
 
         return matchingCombinations.any {
-            it.contains(query, ignoreCase = true) ?: false
+            it.contains(query, ignoreCase = true)
         }
     }
 
     fun toEntity(): InvoicesEntity {
         return InvoicesEntity(
-            iId = iId ?: 0,
-            iCustomer = Converters().customerEntityToJson(iCustomer.toEntity()) ?: "error",
-            iDate = iDate,
-            iSaleList = Converters().saleListToJson(iSaleList.map { it.toEntity()!! }) ?: "error",
+            id = id ?: 0,
+            customer = Converters().customerEntityToJson(customer.toEntity()) ?: "error",
+            date = date,
+            saleList = Converters().salesEntityToJson(saleList)
         )
     }
+
 }

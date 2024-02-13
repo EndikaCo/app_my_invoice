@@ -33,33 +33,33 @@ class GetCustomersUseCase @Inject constructor(
             return arrayListOf(
 
                 CustomersEntity(
-                    cImage = null,
-                    cFiscalName = "Toyota Motor Corporation",
-                    cIdentifier = "KDJ9576852",
-                    cTelephone = "+81 623213276",
-                    cCountry = "Japan"
+                    image = null,
+                    fiscalName = "Toyota Motor Corporation",
+                    id = "KDJ9576852",
+                    telephone = "+81 623213276",
+                    country = "Japan"
                 ),
                 CustomersEntity(
-                    cImage = null,
-                    cFiscalName = "Alibaba Group Holding Limited",
-                    cIdentifier = "08876623VT",
-                    cTelephone = "+86 732132133",
-                    cCountry = "China"
+                    image = null,
+                    fiscalName = "Alibaba Group Holding Limited",
+                    id = "08876623VT",
+                    telephone = "+86 732132133",
+                    country = "China"
 
                 ),
                 CustomersEntity(
-                    cImage = null,
-                    cFiscalName = "Vodafone Group plc",
-                    cIdentifier = "HJ3145125212",
-                    cTelephone = "+44 624223213",
-                    cCountry = "United Kingdom"
+                    image = null,
+                    fiscalName = "Vodafone Group plc",
+                    id = "HJ3145125212",
+                    telephone = "+44 624223213",
+                    country = "United Kingdom"
                 ),
                 CustomersEntity(
-                    cImage = null,
-                    cFiscalName = "Samsung Electronics Co., Ltd.",
-                    cIdentifier = "HSG23145112F",
-                    cTelephone = "+82 624223213",
-                    cCountry = "South Korea"
+                    image = null,
+                    fiscalName = "Samsung Electronics Co., Ltd.",
+                    id = "HSG23145112F",
+                    telephone = "+82 624223213",
+                    country = "South Korea"
                 )
             )
         }

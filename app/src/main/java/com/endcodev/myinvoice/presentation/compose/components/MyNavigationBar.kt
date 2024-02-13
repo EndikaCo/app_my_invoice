@@ -2,6 +2,8 @@ package com.endcodev.myinvoice.presentation.compose.components
 
 import android.content.res.Configuration
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Person
@@ -72,8 +74,8 @@ fun PreviewMyNavigationBar() {
         ),
         NavBarItem(
             route = Routes.ItemsContent.routes,
-            selectedIcon = Icons.Filled.List,
-            unselectedIcon = Icons.Outlined.List,
+            selectedIcon = Icons.AutoMirrored.Filled.List,
+            unselectedIcon = Icons.AutoMirrored.Outlined.List,
             hasNews = true,
         ),
     )

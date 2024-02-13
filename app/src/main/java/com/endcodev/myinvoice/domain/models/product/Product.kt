@@ -1,24 +1,24 @@
 package com.endcodev.myinvoice.domain.models.product
 
 import android.net.Uri
-import com.endcodev.myinvoice.data.database.entities.ItemsEntity
+import com.endcodev.myinvoice.data.database.entities.ProductEntity
 
 data class Product(
-    val iImage: Uri?,
-    val iCode: String,
-    val iName: String,
-    val iDescription: String,
-    val iType: String,
-    val iPrice: Float,
-    val iCost: Float,
-    val iStock: Float,
+    val image: Uri?,
+    val id: String,
+    val name: String,
+    val description: String,
+    val type: String,
+    val price: Float,
+    val cost: Float,
+    val stock: Float,
 ) {
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
-            iCode,
-            iName,
-            iDescription,
-            iType,
+            id,
+            name,
+            description,
+            type,
         )
 
         return matchingCombinations.any {
@@ -26,16 +26,16 @@ data class Product(
         }
     }
 
-    fun toEntity(): ItemsEntity {
-        return ItemsEntity(
-            iImage = iImage.toString(),
-            iCode = iCode,
-            iName = iName,
-            iDescription = iDescription,
-            iType = iType,
-            iPrice = iPrice,
-            iCost = iCost,
-            iStock = iStock,
+    fun toEntity(): ProductEntity {
+        return ProductEntity(
+            image = image.toString(),
+            id = id,
+            name = name,
+            description = description,
+            type = type,
+            price = price,
+            cost = cost,
+            stock = stock,
         )
     }
 }

@@ -33,7 +33,7 @@ class GetSimpleCustomerUseCase @Inject constructor(
     suspend fun saveCustomer(customer: CustomersEntity?) {
         if (customer != null) {
             repository.insertCustomer(customer)
-            Log.v(GetCustomersUseCase.TAG, "customer ${customer.cFiscalName} inserted")
+            Log.v(GetCustomersUseCase.TAG, "customer ${customer.fiscalName} inserted")
         }
     }
 

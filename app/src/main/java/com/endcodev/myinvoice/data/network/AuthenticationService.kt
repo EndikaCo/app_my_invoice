@@ -1,6 +1,7 @@
 package com.endcodev.myinvoice.data.network
 
 import android.util.Log
+import com.endcodev.myinvoice.domain.utils.App
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -18,21 +19,16 @@ sealed class AuthError (val error : Int){
 class AuthenticationService @Inject constructor(
     private val firebase: FirebaseClient
 ) {
-    private val authTag = "Authentication Service ***"
-
     fun createUser(email: String, pass: String, onCreateUser : (Int) -> Unit){
         val auth = firebase.auth
 
         auth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
             if (it.isSuccessful) {
                 sendMailVerification()
-                Log.v(authTag, "OK: createUserWithEmail:success ${auth.currentUser}")
                 onCreateUser(AuthError.NoError.error)
             } else if (it.isCanceled) {
-                Log.e(authTag, "Error: createUserWithEmail:canceled -->${it.exception}")
                 onCreateUser(AuthError.ErrorCreatingAccount.error)
             } else {
-                Log.e(authTag, "Error: createUserWithEmail:failure")
                 onCreateUser(AuthError.ErrorCreatingAccount.error)
             }
         }
@@ -42,9 +38,9 @@ class AuthenticationService @Inject constructor(
 
         Firebase.auth.currentUser?.sendEmailVerification()?.addOnCompleteListener {
              if (it.isSuccessful) {
-                Log.v(authTag, "OK: sendEmailVerification:Success")
+                Log.v(App.tag, "OK: sendEmailVerification:Success")
             } else {
-                Log.e(authTag, "Error: sendEmailVerification:fail")
+                Log.e(App.tag, "Error: sendEmailVerification:fail")
             }
         }
     }
@@ -55,14 +51,11 @@ class AuthenticationService @Inject constructor(
                 if (task.isSuccessful) {
                     if (!Firebase.auth.currentUser?.isEmailVerified!!) {
                         completionHandler(AuthError.MailNoVerification.error)
-                        Log.v(authTag, "Login success but mail no verification")
                     } else {
                         completionHandler(AuthError.NoError.error)
-                        Log.v(authTag, "Login success")
                     }
                 } else if (task.isCanceled || task.isComplete) {
                     completionHandler(AuthError.ErrorMailOrPass.error)
-                    Log.v(authTag, "Login failed")
                 }
             }
     }

@@ -10,12 +10,12 @@ data class InvoiceUiState(
 
     val isLoading : Boolean = false,
     val invoice: Invoice = Invoice(
-        iId = 0,
-        iDate = getDate(),
-        iCustomer = Customer(
-            cImage = null,
-            cFiscalName = "Select Customer",
-            cIdentifier = "0"
+        id = 0,
+        date = getDate(),
+        customer = Customer(
+            image = null,
+            fiscalName = "Select Customer",
+            id = "0"
         )
     )
 )

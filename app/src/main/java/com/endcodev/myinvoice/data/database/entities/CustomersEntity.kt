@@ -1,7 +1,6 @@
 package com.endcodev.myinvoice.data.database.entities
 
 import android.net.Uri
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.endcodev.myinvoice.domain.models.customer.Customer
@@ -9,20 +8,20 @@ import com.endcodev.myinvoice.domain.models.customer.Customer
 @Entity(tableName = "customer_table")
 data class CustomersEntity(
     @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "cIdentifier") val cIdentifier: String,
-    @ColumnInfo(name = "cImage") val cImage: String?,
-    @ColumnInfo(name = "cFiscalName") val cFiscalName: String,
-    @ColumnInfo(name = "cTelephone") val cTelephone: String,
-    @ColumnInfo(name = "cCountry") val cCountry: String
+    val id: String,
+    val image: String?,
+    val fiscalName: String,
+    val telephone: String,
+    val country: String
 ){
-    val cImageUri: Uri?
-        get() = cImage?.let { Uri.parse(it) }
+    val imageUri: Uri?
+        get() = image?.let { Uri.parse(it) }
 }
 
 fun CustomersEntity.toDomain() = Customer(
-    cImage = cImageUri,
-    cIdentifier = cIdentifier,
-    cFiscalName = cFiscalName,
-    cTelephone = cTelephone,
-    cCountry = cCountry
+    image = imageUri,
+    id = id,
+    fiscalName = fiscalName,
+    telephone = telephone,
+    country = country
 )

@@ -3,7 +3,7 @@ package com.endcodev.myinvoice.data.converters
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.endcodev.myinvoice.data.database.entities.CustomersEntity
-import com.endcodev.myinvoice.data.database.entities.ItemsEntity
+import com.endcodev.myinvoice.data.database.entities.ProductEntity
 import com.endcodev.myinvoice.data.database.entities.SaleEntity
 import com.endcodev.myinvoice.domain.models.invoice.SaleItem
 import com.endcodev.myinvoice.domain.models.product.Product
@@ -22,18 +22,22 @@ class Converters {
     }
 
     @TypeConverter
-    fun productEntityToJson(items: Product?): String? {
+    fun productEntityToJson(items: ProductEntity?): String? {
         return Gson().toJson(items)
     }
 
     @TypeConverter
-    fun jsonToProductEntity(json: String?): ItemsEntity? {
-        return Gson().fromJson(json, ItemsEntity::class.java)
+    fun jsonToProductEntity(json: String?): ProductEntity? {
+        return Gson().fromJson(json, ProductEntity::class.java)
     }
 
     @TypeConverter
-    fun saleListToJson(saleList: List<SaleEntity>): String {
-        return Gson().toJson(saleList)
+    fun salesEntityToJson(saleList: List<SaleItem>): String {
+
+        val saleListWithJsonProduct = saleList.map {
+            it.toEntity()
+        }
+        return Gson().toJson(saleListWithJsonProduct)
     }
 
     @TypeConverter

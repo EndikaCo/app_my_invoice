@@ -4,7 +4,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.endcodev.myinvoice.data.database.entities.ItemsEntity
+import com.endcodev.myinvoice.data.database.entities.ProductEntity
 import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.models.product.ProductUiState
 import com.endcodev.myinvoice.domain.usecases.GetSimpleItemsUseCase
@@ -39,11 +39,11 @@ class ItemInfoViewModel @Inject constructor(
     private fun updateUi(item: Product) {
         _uiState.update { currentState ->
             currentState.copy(
-                iCode = item.iCode,
-                iName = item.iName,
-                iImage = item.iImage,
+                iCode = item.id,
+                iName = item.name,
+                iImage = item.image,
                 isLoading = false,
-                isAcceptEnabled = enableAccept(item.iCode, item.iName)
+                isAcceptEnabled = enableAccept(item.id, item.name)
             )
         }
     }
@@ -73,15 +73,15 @@ class ItemInfoViewModel @Inject constructor(
         viewModelScope.launch {
             with(_uiState.value) {
                 Log.v("ItemInfoViewModel", "saveItem: ${iImage.toString()}")
-                val item = ItemsEntity(
-                    iImage = iImage.toString(),
-                    iCode = iCode,
-                    iName = iName,
-                    iDescription = "", //todo,
-                    iType = "",
-                    iPrice = iPrice,
-                    iStock = 0f,
-                    iCost = iCost
+                val item = ProductEntity(
+                    image = iImage.toString(),
+                    id = iCode,
+                    name = iName,
+                    description = "", //todo,
+                    type = "",
+                    price = iPrice,
+                    stock = 0f,
+                    cost = iCost
                 )
                 getSimpleItemUseCase.saveItem(item)
             }

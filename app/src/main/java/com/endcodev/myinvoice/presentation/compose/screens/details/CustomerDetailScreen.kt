@@ -81,11 +81,11 @@ fun CustomerDetailActions(
         email: String? = null
     ) {
         viewModel.onDataChanged(
-            identifier = identifier ?: uiState.cIdentifier,
-            fiscalName = fiscalName ?: uiState.cFiscalName,
-            telephone = telephone ?: uiState.cTelephone,
-            country = country ?: uiState.cCountry,
-            email = email ?: uiState.cEmail
+            identifier = identifier ?: uiState.id,
+            fiscalName = fiscalName ?: uiState.fiscalName,
+            telephone = telephone ?: uiState.telephone,
+            country = country ?: uiState.country,
+            email = email ?: uiState.email
         )
     }
 
@@ -192,21 +192,21 @@ fun CustomerInfoContent(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 CompanyIdNum(
-                    idNum = uiState.cIdentifier,
+                    idNum = uiState.id,
                     onTextChanged = { onIdentifierChange(it) },
                 )
             }
             CustomerInfoImage(
                 onUriChanged,
-                cImage = uiState.cImage,
+                cImage = uiState.image,
                 defaultImage = painterResource(id = R.drawable.person_24)
             )
         }
         CompanyName(
-            cFiscalName = uiState.cFiscalName,
+            cFiscalName = uiState.fiscalName,
             onTextChanged = { onFiscalNameChange(it) }
         )
-        CompanyEmail(cEmail = uiState.cEmail, onEmailChanged = onEmailChange)
+        CompanyEmail(cEmail = uiState.email, onEmailChanged = onEmailChange)
         CountrySelection(
             modifier = Modifier.padding(start = pPadding, end = pPadding, top = 3.dp),
             onSelection = onCountryChange

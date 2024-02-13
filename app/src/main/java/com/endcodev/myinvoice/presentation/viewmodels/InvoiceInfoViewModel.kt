@@ -29,14 +29,14 @@ class InvoiceInfoViewModel @Inject constructor(
     fun setCustomer(customer: Customer) {
         _uiState.update {
             it.copy(
-                invoice = it.invoice.copy(iCustomer = customer)
+                invoice = it.invoice.copy(customer = customer)
             )
         }
     }
 
     fun setDate(date: String) {
         _uiState.update {
-            it.copy(invoice = it.invoice.copy(iDate = date ) )
+            it.copy(invoice = it.invoice.copy(date = date ) )
         }
     }
 
@@ -47,7 +47,7 @@ class InvoiceInfoViewModel @Inject constructor(
                 if (invoice != null)
                     updateUi(invoice)
                 else
-                    updateUi(Invoice(iCustomer = Customer(cImage = null, cFiscalName = "Select Customer", cIdentifier = "0")))
+                    updateUi(Invoice(customer = Customer(image = null, fiscalName = "Select Customer", id = "0")))
             }
         }
     }
@@ -74,27 +74,37 @@ class InvoiceInfoViewModel @Inject constructor(
 
     fun addSale(sale: SaleItem) {
         _uiState.update { currentState ->
-            val currentSaleList = currentState.invoice.iSaleList
-            val existingSaleItemIndex = currentSaleList.indexOfFirst { it.sId == sale.sId }
+            val currentSaleList = currentState.invoice.saleList
+            val existingSaleItemIndex = currentSaleList.indexOfFirst { it.id == sale.id }
 
-            val newSaleList = if (existingSaleItemIndex != -1) {
+            val newSaleList : MutableList<SaleItem> = if (existingSaleItemIndex != -1) {
                 // Update the existing SaleItem
                 currentSaleList.toMutableList().apply {
                     this[existingSaleItemIndex] = sale
                 }
             } else {
                 // Add the new SaleItem
-                currentSaleList.plus(sale)
+                currentSaleList.plus(sale).toMutableList()
             }
 
             currentState.copy(
-                invoice = currentState.invoice.copy(iSaleList = newSaleList),
-
+                invoice = currentState.invoice.copy(saleList = newSaleList)
             )
         }
     }
 
     fun setSaleProduct(product: Product) {
-        _uiState.value.invoice.iSaleList
+        _uiState.value.invoice.saleList
+    }
+
+    fun deleteSale(it: SaleItem) {
+        _uiState.update { currentState ->
+            val newSaleList = currentState.invoice.saleList.toMutableList().apply {
+                remove(it)
+            }
+            currentState.copy(
+                invoice = currentState.invoice.copy(saleList = newSaleList)
+            )
+        }
     }
 }

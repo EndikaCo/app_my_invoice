@@ -7,21 +7,17 @@ import com.endcodev.myinvoice.domain.models.invoice.Invoice
 import javax.inject.Inject
 
 class InvoicesRepository @Inject constructor(
-    private val invoicesDao: InvoicesDao
+    private val invoicesDao: InvoicesDao,
 ) {
 
     suspend fun getAllInvoicesFromDB(): List<Invoice> {
         val itemsList: List<InvoicesEntity> = invoicesDao.getAllInvoices()
-        return itemsList.map { it.toDomain()!! }
-    }
-
-    suspend fun insertAllItems(invoiceList: MutableList<InvoicesEntity>) {
-        invoicesDao.insertAllInvoices(invoiceList)
+        return itemsList.map { it.toDomain()}
     }
 
     fun getInvoiceById(invoiceId: String): Invoice {
         val invoice : InvoicesEntity = invoicesDao.getInvoiceById(invoiceId)
-        return invoice.toDomain()!!
+        return invoice.toDomain()
     }
 
     suspend fun insertInvoice(invoice: Invoice) {

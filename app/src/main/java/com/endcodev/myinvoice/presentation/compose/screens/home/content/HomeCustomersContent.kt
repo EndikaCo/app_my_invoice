@@ -135,7 +135,7 @@ fun CustomersList(
         modifier = modifier
     ) {
         items(customers) { customer ->
-            CustomerItem(customer, onItemClick = { onItemClick(customer.cIdentifier) })
+            CustomerItem(customer, onItemClick = { onItemClick(customer.id) })
         }
     }
 }
@@ -168,7 +168,7 @@ fun CustomerImage(image: Painter, colorFilter: ColorFilter?) {
 fun CustomerItem(customer: Customer, onItemClick: () -> Unit) {
 
     var colorFilter: ColorFilter? = null
-    var image = uriToPainterImage(customer.cImage)
+    var image = uriToPainterImage(customer.image)
     if (image == null) {
         colorFilter = ColorFilter.tint(color = colorScheme.onBackground)
         image = painterResource(id = R.drawable.person_24)
@@ -203,12 +203,12 @@ fun CustomerNameAndIdentifier(modifier: Modifier, customer: Customer) {
         modifier = modifier
     ) {
         Text(
-            text = customer.cFiscalName,
+            text = customer.fiscalName,
             modifier = Modifier
                 .height(25.dp)
         )
         Text(
-            text = customer.cIdentifier,
+            text = customer.id,
             modifier = Modifier
                 .height(25.dp)
         )

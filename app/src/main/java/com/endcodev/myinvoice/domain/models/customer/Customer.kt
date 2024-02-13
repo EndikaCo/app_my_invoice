@@ -4,17 +4,17 @@ import android.net.Uri
 import com.endcodev.myinvoice.data.database.entities.CustomersEntity
 
 data class Customer(
-    val cImage: Uri?,
-    val cIdentifier: String = "-",
-    val cFiscalName: String,
-    val cTelephone: String = "",
-    val cCountry: String = "",
+    val image: Uri?,
+    val id: String = "-",
+    val fiscalName: String,
+    val telephone: String = "",
+    val country: String = "",
 ){
     fun doesMatchSearchQuery(query: String): Boolean {
         val matchingCombinations = listOf(
-            cIdentifier,
-            cFiscalName,
-            cTelephone
+            id,
+            fiscalName,
+            telephone
         )
 
         return matchingCombinations.any {
@@ -24,11 +24,11 @@ data class Customer(
 
     fun toEntity(): CustomersEntity {
         return CustomersEntity(
-            cImage = cImage.toString(),
-            cIdentifier = cIdentifier,
-            cFiscalName = cFiscalName,
-            cTelephone = cTelephone,
-            cCountry = cCountry,
+            image = image.toString(),
+            id = id,
+            fiscalName = fiscalName,
+            telephone = telephone,
+            country = country,
         )
     }
 }

@@ -44,7 +44,7 @@ fun ProductDialog(
     ) {
 
         var colorFilter: ColorFilter? = null
-        var image = uriToPainterImage(sale.sProduct.iImage)
+        var image = uriToPainterImage(sale.product.image)
         if (image == null) {
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
             image = painterResource(id = R.drawable.no_photo_24)
@@ -67,7 +67,7 @@ fun ProductDialog(
                 ItemNameAndIdentifier(
                     Modifier
                         .padding(start = 12.dp)
-                        .weight(1f), sale.sProduct
+                        .weight(1f), sale.product
                 )
             }
             Row(
@@ -76,19 +76,19 @@ fun ProductDialog(
             ) {
                 ItemCost(
                     label = "price",
-                    amount = sale.sPrice,
+                    amount = sale.price,
                     onAmountChanged = {}
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 ItemCost(
                     label = "Quantity",
-                    amount = sale.sQuantity,
+                    amount = sale.quantity,
                     onAmountChanged = {}
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 ItemCost(
                     label = "Total",
-                    amount = sale.sQuantity * sale.sPrice,
+                    amount = sale.quantity * sale.price,
                     onAmountChanged = {}
                 )
 
@@ -120,7 +120,7 @@ fun SaleItemDialogDialogPreview() {
         val products = GetItemsUseCase.exampleProducts().map { it.toDomain() }
 
         ProductDialog(
-            SaleItem(sId = 1, products[1], 5F, 10F, 13),
+            SaleItem(id = 1, products[1], 5F, 10F, 13),
             {},
             {},
         )

@@ -1,13 +1,13 @@
 package com.endcodev.myinvoice.domain.usecases
 
 import android.util.Log
-import com.endcodev.myinvoice.data.database.entities.ItemsEntity
+import com.endcodev.myinvoice.data.database.entities.ProductEntity
 import com.endcodev.myinvoice.domain.models.product.Product
-import com.endcodev.myinvoice.data.repository.ItemsRepository
+import com.endcodev.myinvoice.data.repository.ProductsRepository
 import javax.inject.Inject
 
 class GetSimpleItemsUseCase @Inject constructor(
-    private val itemsRepository: ItemsRepository
+    private val productsRepository: ProductsRepository
 ) {
     companion object {
         const val TAG = "GetSimpleItemsUseCase"
@@ -20,17 +20,17 @@ class GetSimpleItemsUseCase @Inject constructor(
         if (itemId == null)
             return null
         try {
-            item = itemsRepository.getItemById(itemId)
+            item = productsRepository.getItemById(itemId)
         } catch (e: Exception) {
             Log.e(TAG, "No items found, $e")
         }
         return item
     }
 
-    suspend fun saveItem(item: ItemsEntity?) {
+    suspend fun saveItem(item: ProductEntity?) {
         if (item != null) {
-            itemsRepository.insertItem(item)
-            Log.e(GetCustomersUseCase.TAG, "customer ${item.iCode} inserted")
+            productsRepository.insertItem(item)
+            Log.e(GetCustomersUseCase.TAG, "customer ${item.id} inserted")
         }
     }
 }

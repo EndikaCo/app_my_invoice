@@ -117,7 +117,7 @@ fun HomeProductsContent(
             ProductList(
                 Modifier.weight(1f),
                 items,
-                onProductClick = { onListItemClick(it.iCode) }
+                onProductClick = { onListItemClick(it.id) }
             )
         if (showDialog)
             FiltersDialog(onFiltersChanged, filters, onDialogExit)
@@ -156,7 +156,7 @@ fun ProductList(
 @Composable
 fun ProductItem(product: Product, onProductClick: () -> Unit) {
 
-    val image = filteredImage(product.iImage, painterResource(id = R.drawable.no_photo_24))
+    val image = filteredImage(product.image, painterResource(id = R.drawable.no_photo_24))
 
     ElevatedCard(
         modifier = Modifier
@@ -178,7 +178,7 @@ fun ProductItem(product: Product, onProductClick: () -> Unit) {
             )
         }
         Text(
-            text = product.iName,
+            text = product.name,
             modifier = Modifier.padding(start = 8.dp, end = 8.dp),
             maxLines = 1
         )
@@ -213,13 +213,13 @@ fun ItemNameAndIdentifier(modifier: Modifier, item: Product) {
         modifier = modifier
     ) {
         Text(
-            text = item.iCode,
+            text = item.id,
             modifier = Modifier
                 .height(25.dp),
             maxLines = 1
         )
         Text(
-            text = item.iType,
+            text = item.type,
             modifier = Modifier
                 .height(25.dp),
             maxLines = 1

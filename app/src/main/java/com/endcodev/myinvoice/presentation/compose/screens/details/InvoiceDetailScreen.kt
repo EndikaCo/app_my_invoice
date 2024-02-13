@@ -20,8 +20,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -60,6 +61,7 @@ import com.endcodev.myinvoice.domain.models.invoice.getDate
 import com.endcodev.myinvoice.presentation.compose.components.MyDatePicker
 import com.endcodev.myinvoice.presentation.compose.components.DocSelection
 import com.endcodev.myinvoice.presentation.compose.components.MyBottomBar
+import com.endcodev.myinvoice.presentation.compose.components.SwipeToDeleteContainer
 import com.endcodev.myinvoice.presentation.compose.components.filteredImage
 import com.endcodev.myinvoice.presentation.compose.dialogs.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.presentation.compose.dialogs.InvoiceProductAddDialogActions
@@ -96,6 +98,7 @@ fun InvoiceDetailActions(
         onDeleteButton = { viewModel.deleteInvoice() },
         onDateChanged = { viewModel.setDate(it) },
         onSaleChanged = { viewModel.addSale(it) },
+        onSwipeDelete = { viewModel.deleteSale(it) }
     )
 }
 
@@ -108,6 +111,7 @@ fun InvoiceInfoScreen(
     onCustomerChange: (Customer) -> Unit,
     onDateChanged: (String) -> Unit,
     onSaleChanged: (SaleItem) -> Unit,
+    onSwipeDelete: (SaleItem) -> Unit
 ) {
 
     val state = rememberDatePickerState()
@@ -133,11 +137,11 @@ fun InvoiceInfoScreen(
             onDialogAccept = { product ->
                 onSaleChanged(
                     SaleItem(
-                        sId = productDialog.intValue,
-                        sProduct = product,
-                        sPrice = product.iPrice,
-                        sQuantity = 1F,
-                        sDiscount = 0
+                        id = productDialog.intValue,
+                        product = product,
+                        price = product.price,
+                        quantity = 1F,
+                        discount = 0
                     )
                 )
                 productDialog.intValue = -1
@@ -151,8 +155,8 @@ fun InvoiceInfoScreen(
     if (priceDialog.value)
         ProductDialog(
             sale = SaleItem(
-                sId = 1,
-                sProduct = Product(
+                id = 1,
+                product = Product(
                     null,
                     "PRO-3121",
                     "233",
@@ -164,8 +168,8 @@ fun InvoiceInfoScreen(
 
                     ),
                 31F,
-                sQuantity = 12F,
-                sDiscount = 10
+                quantity = 12F,
+                discount = 10
             ),
             onDialogAccept = {}, //todo
             onDialogCancel = { priceDialog.value = false },
@@ -189,15 +193,16 @@ fun InvoiceInfoScreen(
                     onCustomerClick = { customerDialog.value = true },
                     uiState = uiState,
                     onProductClick = { productDialog.intValue = it },
-                    onPricesClick = { priceDialog.value = true }
+                    onPricesClick = { priceDialog.value = true },
+                    onSwipeDelete = onSwipeDelete
                 )
             },
             bottomBar = {
                 Column {
                     TotalsRow(uiState.invoice)
-                    Divider(
+                    HorizontalDivider(
                         modifier = Modifier
-                            .background(Color(R.color.transparent))
+                            .background(colorResource(R.color.transparent))
                             .height(1.dp)
                             .fillMaxWidth()
                     )
@@ -207,7 +212,7 @@ fun InvoiceInfoScreen(
                         addItemVisible = true,
                         onAcceptClick = onAcceptButton,
                         onAddItemClick = {
-                            productDialog.intValue = uiState.invoice.iSaleList.size
+                            productDialog.intValue = uiState.invoice.saleList.size
                         },
                         onDeleteClick = onDeleteButton,
                     )
@@ -223,7 +228,8 @@ fun InvoiceInfoContent(
     onCustomerClick: () -> Unit,
     uiState: InvoiceUiState,
     onProductClick: (Int) -> Unit,
-    onPricesClick: () -> Unit
+    onPricesClick: () -> Unit,
+    onSwipeDelete: (SaleItem) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(innerPadding),
@@ -234,17 +240,17 @@ fun InvoiceInfoContent(
                 .padding(16.dp)
                 .fillMaxWidth(),
         ) {
-            InvoiceNum(invoiceId = uiState.invoice.iId.toString())
+            InvoiceNum(invoiceId = uiState.invoice.id.toString())
             Spacer(modifier = Modifier.width(8.dp))
-            InvoiceDate(uiState.invoice.iDate, onClick = { onDateClick() })
+            InvoiceDate(uiState.invoice.date, onClick = { onDateClick() })
             Spacer(modifier = Modifier.width(8.dp))
             DocSelection(onSelection = { }, docs = listOf("Invoice", "Receipt"))
         }
         SelectCustomer(
-            customer = uiState.invoice.iCustomer,
+            customer = uiState.invoice.customer,
             onIconClick = { onCustomerClick() })
         Spacer(modifier = Modifier.height(16.dp))
-        InvoiceItemsList(uiState.invoice.iSaleList, onProductClick, onPricesClick)
+        InvoiceItemsList(uiState.invoice.saleList, onProductClick, onPricesClick, onSwipeDelete )
     }
 }
 
@@ -252,20 +258,29 @@ fun InvoiceInfoContent(
 fun InvoiceItemsList(
     salesList: List<SaleItem>,
     onProductClick: (Int) -> Unit,
-    onPricesClick: () -> Unit
+    onPricesClick: () -> Unit,
+    onSwipeDelete: (SaleItem) -> Unit
 ) {
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
         content = {
             itemsIndexed(salesList) { index, sale ->
-                InvoiceProduct2(
-                    onProductClick = {
-                        onProductClick(index + 1)
-                    },
-                    onPricesClick = {
-                        onPricesClick()
-                    },
-                    sale
-                )
+
+                SwipeToDeleteContainer(
+                    item = sale,
+                    onDelete = {
+                        onSwipeDelete(it)
+                    }
+                ) {
+                    InvoiceProduct2(
+                        onProductClick = {
+                            onProductClick(index + 1)
+                        },
+                        onPricesClick = {
+                            onPricesClick()
+                        },
+                        sale
+                    )
+                }
             }
         })
 }
@@ -277,9 +292,9 @@ fun InvoiceProduct2(
     itemSaleItem: SaleItem?
 ) {
     val image =
-        filteredImage(itemSaleItem?.sProduct?.iImage, painterResource(id = R.drawable.no_photo_24))
+        filteredImage(itemSaleItem?.product?.image, painterResource(id = R.drawable.no_photo_24))
     val total =
-        (itemSaleItem!!.sQuantity * itemSaleItem.sPrice) * (1 - itemSaleItem.sDiscount / 100)
+        (itemSaleItem!!.quantity * itemSaleItem.price) * (1 - itemSaleItem.discount / 100)
 
     Row(
         modifier = Modifier
@@ -303,12 +318,12 @@ fun InvoiceProduct2(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = itemSaleItem.sProduct.iName, maxLines = 1, fontSize = 12.sp)
+                Text(text = itemSaleItem.product.name, maxLines = 1, fontSize = 12.sp)
 
 
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = itemSaleItem.sProduct.iCode,
+                    text = itemSaleItem.product.id,
                     modifier = Modifier.width(100.dp),
                     textAlign = TextAlign.Right,
                     maxLines = 1,
@@ -317,17 +332,17 @@ fun InvoiceProduct2(
             }
             Row(modifier = Modifier.padding(start = 8.dp)) {
                 Text(
-                    text = "${itemSaleItem.sQuantity}u",
+                    text = "${itemSaleItem.quantity}u",
                     modifier = Modifier.width(80.dp),
                     textAlign = TextAlign.Left
                 )
                 Text(
-                    text = "${itemSaleItem.sPrice}€",
+                    text = "${itemSaleItem.price}€",
                     modifier = Modifier.width(80.dp),
                     textAlign = TextAlign.Left
                 )
                 Text(
-                    text = "${itemSaleItem.sDiscount}%",
+                    text = "${itemSaleItem.discount}%",
                     modifier = Modifier.width(60.dp),
                     textAlign = TextAlign.Center
                 )
@@ -454,7 +469,7 @@ fun SelectCustomer(
         Spacer(Modifier.weight(0.6f))
 
         Text(
-            text = customer.cFiscalName,
+            text = customer.fiscalName,
             fontWeight = FontWeight.W400,
             modifier = Modifier.padding(horizontal = 30.dp, vertical = 10.dp),
             textAlign = TextAlign.Center,
@@ -474,11 +489,11 @@ fun PreviewInvoiceInfoScreen() {
         val uiState = InvoiceUiState(
             false,
             Invoice(
-                iId = null,
-                iDate = getDate(),
-                iCustomer = Customer(null, "Select Customer", "Select Customer"),
-                iReference = "",
-                iSaleList = listOf(
+                id = null,
+                date = getDate(),
+                customer = Customer(null, "Select Customer", "Select Customer"),
+                reference = "",
+                saleList = mutableListOf(
                     SaleItem(
                         0,
                         Product(null, "AE3235", "LED GU10 6W", "", "", 12F, 1F, 12.00F),
@@ -504,6 +519,7 @@ fun PreviewInvoiceInfoScreen() {
             onDeleteButton = {},
             onDateChanged = {},
             onSaleChanged = {},
+            onSwipeDelete = {}
         )
     }
 }

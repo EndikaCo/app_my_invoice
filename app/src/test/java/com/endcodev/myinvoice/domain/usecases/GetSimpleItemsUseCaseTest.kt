@@ -1,6 +1,6 @@
 package com.endcodev.myinvoice.domain.usecases
 
-import com.endcodev.myinvoice.data.repository.ItemsRepository
+import com.endcodev.myinvoice.data.repository.ProductsRepository
 import com.endcodev.myinvoice.domain.models.product.Product
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -13,14 +13,14 @@ import org.junit.Test
  */
 class GetSimpleItemsUseCaseTest {
     @RelaxedMockK
-    private lateinit var itemsRepository: ItemsRepository
+    private lateinit var productsRepository: ProductsRepository
 
     private lateinit var getSimpleItemsUseCase: GetSimpleItemsUseCase
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        getSimpleItemsUseCase = GetSimpleItemsUseCase(itemsRepository)
+        getSimpleItemsUseCase = GetSimpleItemsUseCase(productsRepository)
     }
 
     @Test
@@ -34,18 +34,18 @@ class GetSimpleItemsUseCaseTest {
     fun `invoke function should call getItemById when itemId is not null`() {
         val itemId = "123"
         val expectedItem = Product(
-            iImage = null,
-            iCode = itemId,
-            iName = "Test Item",
-            iType = "type",
-            iDescription = "description",
-            iPrice = 10.0f,
-            iStock = 21.0f,
-            iCost = 10.0f,
+            image = null,
+            id = itemId,
+            name = "Test Item",
+            type = "type",
+            description = "description",
+            price = 10.0f,
+            stock = 21.0f,
+            cost = 10.0f,
         )
 
         // Use MockK's every function to stub the method
-        every { itemsRepository.getItemById(itemId) } returns expectedItem
+        every { productsRepository.getItemById(itemId) } returns expectedItem
 
         val result = getSimpleItemsUseCase.invoke(itemId)
 
@@ -56,7 +56,7 @@ class GetSimpleItemsUseCaseTest {
     fun `invoke function should return null when getItemById throws an exception`() {
         val itemId = "123"
 
-        every { itemsRepository.getItemById(itemId) } throws Exception("Test Exception")
+        every { productsRepository.getItemById(itemId) } throws Exception("Test Exception")
 
         val result = getSimpleItemsUseCase.invoke(itemId)
 

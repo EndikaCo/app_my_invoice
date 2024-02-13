@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Save
@@ -61,7 +62,7 @@ fun MyBottomBar(
                     modifier = Modifier.size(30.dp)
                 ) {
                     Icon(
-                        Icons.Default.PlaylistAdd,
+                        Icons.AutoMirrored.Filled.PlaylistAdd,
                         contentDescription = "Action add item",
                         modifier = Modifier.alpha(if (addItemVisible) 1f else 0.0f)
                     )
