@@ -14,6 +14,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -42,6 +46,8 @@ fun ProductDialog(
         onDismissRequest = { onDialogCancel() },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true)
     ) {
+        var price by remember { mutableFloatStateOf(sale.price) }
+        var quantity by remember { mutableFloatStateOf(sale.quantity) }
 
         var colorFilter: ColorFilter? = null
         var image = uriToPainterImage(sale.product.image)
@@ -74,16 +80,19 @@ fun ProductDialog(
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp, top = 5.dp, bottom = 5.dp)
             ) {
+
                 ItemCost(
-                    label = "price",
-                    amount = sale.price,
-                    onAmountChanged = {}
+                    label = "Quantity",
+                    amount = quantity,
+                    onAmountChanged = { newQuantity ->
+                        quantity = newQuantity
+                    }
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 ItemCost(
-                    label = "Quantity",
-                    amount = sale.quantity,
-                    onAmountChanged = {}
+                    label = "price",
+                    amount = price,
+                    onAmountChanged = { newPrice -> price = newPrice }
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 ItemCost(
@@ -91,7 +100,6 @@ fun ProductDialog(
                     amount = sale.quantity * sale.price,
                     onAmountChanged = {}
                 )
-
             }
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -102,7 +110,14 @@ fun ProductDialog(
                 Button(onClick = { onDialogCancel() }) {
                     Text(text = "Cancel")
                 }
-                Button(onClick = { }) {
+                Button(onClick = {
+                    onDialogAccept(
+                        sale.copy(
+                            price = price,
+                            quantity = quantity
+                        )
+                    )
+                }) {
                     Text(text = "Accept")
                 }
             }

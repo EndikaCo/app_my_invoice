@@ -27,7 +27,6 @@ import com.endcodev.myinvoice.domain.models.common.FilterModel
 @Composable
 fun FiltersView(onFiltersChanged: (List<FilterModel>) -> Unit, filters: List<FilterModel>) {
 
-
     LazyRow(Modifier.fillMaxWidth()) {
         items(filters) {
             FilterItem(it, onFilterClick = {

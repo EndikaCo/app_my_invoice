@@ -66,6 +66,7 @@ import com.endcodev.myinvoice.presentation.compose.components.filteredImage
 import com.endcodev.myinvoice.presentation.compose.dialogs.ChooseCustomerDialogActions
 import com.endcodev.myinvoice.presentation.compose.dialogs.InvoiceProductAddDialogActions
 import com.endcodev.myinvoice.presentation.compose.dialogs.ProductDialog
+import com.endcodev.myinvoice.presentation.compose.screens.details.MyObject.NULL_ITEM
 import com.endcodev.myinvoice.presentation.navigation.Routes
 import com.endcodev.myinvoice.presentation.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.presentation.viewmodels.InvoiceInfoViewModel
@@ -73,6 +74,10 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+
+object MyObject {
+    const val NULL_ITEM = -1
+}
 
 @Composable
 fun InvoiceDetailActions(
@@ -117,11 +122,12 @@ fun InvoiceInfoScreen(
     onSwipeDelete: (SaleItem) -> Unit
 ) {
 
+
     val state = rememberDatePickerState()
     val dateDialog = remember { mutableStateOf(false) } //show DatePicker dialog
     val customerDialog = remember { mutableStateOf(false) } //show CustomerSelect dialog
     val productDialog = remember { mutableIntStateOf(-1) }
-    val priceDialog = remember { mutableStateOf(false) }
+    val priceDialog = remember { mutableIntStateOf(-1) }
 
     if (dateDialog.value)
         MyDatePicker(
@@ -135,7 +141,8 @@ fun InvoiceInfoScreen(
             }
         )
 
-    if (productDialog.intValue != -1) {
+
+    if (productDialog.intValue != NULL_ITEM) {
         InvoiceProductAddDialogActions(
             onDialogAccept = { product ->
                 onSaleChanged(
@@ -155,27 +162,16 @@ fun InvoiceInfoScreen(
         )
     }
 
-    if (priceDialog.value)
+    if (priceDialog.intValue != -1)
         ProductDialog(
-            sale = SaleItem(
-                id = 1,
-                product = Product(
-                    null,
-                    "PRO-3121",
-                    "233",
-                    "das",
-                    "",
-                    12.00F,
-                    12.00F,
-                    12.00F,
-
-                    ),
-                31F,
-                quantity = 12F,
-                discount = 10
-            ),
-            onDialogAccept = {}, //todo
-            onDialogCancel = { priceDialog.value = false },
+            sale = uiState.invoice.saleList[priceDialog.intValue],
+            onDialogAccept = {
+                onSaleChanged(it)
+                priceDialog.intValue = NULL_ITEM
+            },
+            onDialogCancel = {
+                priceDialog.intValue = NULL_ITEM
+                             },
         )
 
     if (customerDialog.value)
@@ -196,7 +192,7 @@ fun InvoiceInfoScreen(
                     onCustomerClick = { customerDialog.value = true },
                     uiState = uiState,
                     onProductClick = { productDialog.intValue = it },
-                    onPricesClick = { priceDialog.value = true },
+                    onPricesClick = { priceDialog.intValue = it },
                     onSwipeDelete = onSwipeDelete
                 )
             },
@@ -231,7 +227,7 @@ fun InvoiceInfoContent(
     onCustomerClick: () -> Unit,
     uiState: InvoiceUiState,
     onProductClick: (Int) -> Unit,
-    onPricesClick: () -> Unit,
+    onPricesClick: (Int) -> Unit,
     onSwipeDelete: (SaleItem) -> Unit
 ) {
     Column(
@@ -261,7 +257,7 @@ fun InvoiceInfoContent(
 fun InvoiceItemsList(
     salesList: List<SaleItem>,
     onProductClick: (Int) -> Unit,
-    onPricesClick: () -> Unit,
+    onPricesClick: (Int) -> Unit,
     onSwipeDelete: (SaleItem) -> Unit
 ) {
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
@@ -276,10 +272,10 @@ fun InvoiceItemsList(
                 ) {
                     InvoiceProduct2(
                         onProductClick = {
-                            onProductClick(index + 1)
+                            onProductClick(index)
                         },
                         onPricesClick = {
-                            onPricesClick()
+                            onPricesClick(index)
                         },
                         sale
                     )
