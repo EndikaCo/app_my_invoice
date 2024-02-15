@@ -44,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.product.ProductUiState
+import com.endcodev.myinvoice.domain.utils.App
 import com.endcodev.myinvoice.presentation.compose.components.MyBottomBar
 import com.endcodev.myinvoice.presentation.compose.components.filteredImage
 import com.endcodev.myinvoice.presentation.navigation.Routes
@@ -52,13 +53,17 @@ import com.endcodev.myinvoice.presentation.viewmodels.ItemInfoViewModel
 
 @Composable
 fun ProductsDetailScreenActions(
-    itemId: String?,
+    id: String?,
     navController: NavHostController,
 ) {
     val viewModel: ItemInfoViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
-    itemId?.let { LaunchedEffect(it) { viewModel.getItem(it) } }
+    if (id != null) {
+        LaunchedEffect(id) {
+            viewModel.getItem(id)
+        }
+    }
 
     fun onUpdateData(
         code: String? = null,
@@ -66,15 +71,17 @@ fun ProductsDetailScreenActions(
         image: Uri? = null,
         type: String? = null,
         cost: Float? = null,
-        price: Float? = null
+        price: Float? = null,
+        stock: Float? = null
     ) {
         viewModel.onDataChanged(
-            code = code ?: uiState.iCode,
-            name = name ?: uiState.iName,
-            image = image ?: uiState.iImage,
-            type = type ?: uiState.iType,
-            cost = cost ?: uiState.iCost,
-            price = price ?: uiState.iPrice
+            code = code ?: uiState.id,
+            name = name ?: uiState.name,
+            image = image ?: uiState.image,
+            type = type ?: uiState.type,
+            cost = cost ?: uiState.cost,
+            price = price ?: uiState.price,
+            stock = stock ?: uiState.stock
         )
     }
 
@@ -90,10 +97,11 @@ fun ProductsDetailScreenActions(
         onTypeChanged = { onUpdateData(type = it) },
         onCostChanged = { onUpdateData(cost = it) },
         onPriceChanged = { onUpdateData(price = it) },
+        onStockChanged = { onUpdateData(stock = it) },
         onDeleteButton = {
             viewModel.deleteItem()
             navController.navigate(Routes.ItemsContent.routes)
-        }
+        },
     )
 }
 
@@ -108,6 +116,7 @@ fun ProductsDetailScreen(
     onTypeChanged: (String) -> Unit,
     onCostChanged: (Float) -> Unit,
     onPriceChanged: (Float) -> Unit,
+    onStockChanged: (Float) -> Unit
 ) {
     Scaffold(
         topBar = { },
@@ -120,14 +129,15 @@ fun ProductsDetailScreen(
                 onUriChanged,
                 onTypeChanged,
                 onCostChanged,
-                onPriceChanged
+                onPriceChanged,
+                onStockChanged
             )
         },
         bottomBar = {
 
             MyBottomBar(
-                enableDelete = uiState.isAcceptEnabled,
-                enableSave = true,
+                enableDelete = uiState.isDeleteEnabled,
+                enableSave = uiState.isAcceptEnabled,
                 addItemVisible = false,
                 onAcceptClick = onAcceptButton,
                 onAddItemClick = {},
@@ -147,6 +157,7 @@ fun ItemsInfoContent(
     onTypeChanged: (String) -> Unit,
     onCostChanged: (Float) -> Unit,
     onPriceChanged: (Float) -> Unit,
+    onAmountChanged: (Float) -> Unit,
 ) {
 
     val context = LocalContext.current
@@ -188,12 +199,12 @@ fun ItemsInfoContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 10.dp),
-                    idNum = uiState.iCode,
+                    idNum = uiState.id,
                     onTextChanged = { onCodeChanged(it) },
                 )
                 ItemName(
                     label = "Item type",
-                    cFiscalName = uiState.iType,
+                    cFiscalName = uiState.type,
                     onTextChanged = { onTypeChanged(it) },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -202,7 +213,7 @@ fun ItemsInfoContent(
             }
             ItemInfoImage(
                 singlePhotoPickerLauncher = singlePhotoPickerLauncher,
-                cImage = uiState.iImage,
+                cImage = uiState.image,
                 defaultImage = painterResource(id = R.drawable.no_photo_24)
             )
         }
@@ -210,25 +221,25 @@ fun ItemsInfoContent(
 
             ItemName(
                 label = "Item name",
-                cFiscalName = uiState.iName,
+                cFiscalName = uiState.name,
                 onTextChanged = { onNameChanged(it) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             ItemCost(
                 label = "Item cost",
-                amount = uiState.iCost,
+                amount = uiState.cost,
                 onAmountChanged = { onCostChanged(it) }
             )
             ItemCost(
                 label = "Item price",
-                amount = uiState.iPrice,
+                amount = uiState.price,
                 onAmountChanged = { onPriceChanged(it) }
             )
             ItemStock(
                 label = "Item stock",
-                amount = uiState.iStock,
-                onAmountChanged = { onPriceChanged(it) }
+                amount = uiState.stock,
+                onAmountChanged = { onAmountChanged(it) }
             )
         }
     }
@@ -302,7 +313,14 @@ fun ItemCost(label: String, amount: Float, onAmountChanged: (Float) -> Unit) {
     OutlinedTextField(
         modifier = Modifier.width(100.dp),
         value = amount.toString(),
-        onValueChange = { onAmountChanged(it.toFloat()) },
+        onValueChange = {
+            try {
+                onAmountChanged(it.toFloat())
+            } catch (e: NumberFormatException) {
+                Log.e(App.tag, e.message.toString() )
+                onAmountChanged(0f)
+            }
+        },
         label = { Text(label) },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
     )
@@ -313,7 +331,12 @@ fun ItemStock(label: String, amount: Float, onAmountChanged: (Float) -> Unit) {
     OutlinedTextField(
         modifier = Modifier.width(100.dp),
         value = amount.toString(),
-        onValueChange = { onAmountChanged(it.toFloat()) },
+        onValueChange = {  try {
+            onAmountChanged(it.toFloat())
+        } catch (e: NumberFormatException) {
+            Log.e(App.tag, e.message.toString() )
+            onAmountChanged(0f)
+        } },
         label = { Text(label) },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Decimal),
     )
@@ -334,6 +357,7 @@ fun PreviewCustomerInfoScreen() {
             onTypeChanged = {},
             onCostChanged = {},
             onPriceChanged = {},
+            onStockChanged = {}
         )
     }
 }

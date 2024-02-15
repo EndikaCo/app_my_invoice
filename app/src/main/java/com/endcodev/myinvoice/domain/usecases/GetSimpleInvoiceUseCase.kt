@@ -39,4 +39,8 @@ class GetSimpleInvoiceUseCase @Inject constructor(
         Log.v(GetCustomersUseCase.TAG, "invoice ${invoice.id} updated")
 
     }
+
+    suspend fun deleteInvoice(id: Int?) {
+        repository.deleteInvoice(id)
+    }
 }

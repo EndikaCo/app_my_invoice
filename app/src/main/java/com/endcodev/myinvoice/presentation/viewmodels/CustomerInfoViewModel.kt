@@ -1,12 +1,14 @@
 package com.endcodev.myinvoice.presentation.viewmodels
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.data.database.entities.CustomersEntity
 import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.domain.models.customer.CustomerUiState
 import com.endcodev.myinvoice.domain.usecases.GetSimpleCustomerUseCase
+import com.endcodev.myinvoice.domain.utils.App
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,10 +29,14 @@ class CustomerInfoViewModel @Inject constructor(
 
     fun getCustomer(customerId: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            val customer = getSimpleCustomerUseCase.invoke(customerId)
-            withContext(Dispatchers.Main) {
-                if (customer != null)
-                    updateUi(customer)
+            try {
+                val customer = getSimpleCustomerUseCase.invoke(customerId)
+                withContext(Dispatchers.Main) {
+                    if (customer != null)
+                        updateUi(customer)
+                }
+            } catch (e: Exception) {
+                Log.e(App.tag, e.message.toString())
             }
         }
     }
@@ -44,7 +50,8 @@ class CustomerInfoViewModel @Inject constructor(
                 country = customer.country,
                 image = customer.image,
                 isLoading = false,
-                isSaveEnabled = enableAccept(customer.id, customer.fiscalName)
+                isSaveEnabled = enableAccept(customer.id, customer.fiscalName),
+                isDeleteEnabled = true
             )
         }
     }
@@ -72,17 +79,19 @@ class CustomerInfoViewModel @Inject constructor(
         identifier.isNotEmpty() && fiscalName.isNotEmpty()
 
     fun saveCustomer() {
+
         viewModelScope.launch {
-            with(_uiState.value) {
-                val customer = CustomersEntity(
-                    image = image.toString(),
-                    id = id,
-                    fiscalName = fiscalName,
-                    telephone = telephone,
-                    country = country
-                )
-                getSimpleCustomerUseCase.saveCustomer(customer)
-            }
+            val uiState = _uiState.value
+            val imageValue = uiState.image?.toString() ?: ""
+
+            val customer = CustomersEntity(
+                image = imageValue,
+                id = uiState.id,
+                fiscalName = uiState.fiscalName,
+                telephone = uiState.telephone,
+                country = uiState.country
+            )
+            getSimpleCustomerUseCase.saveCustomer(customer)
         }
     }
 
@@ -95,8 +104,12 @@ class CustomerInfoViewModel @Inject constructor(
     }
 
     fun deleteCustomer() {
-        viewModelScope.launch {
-            //getSimpleCustomerUseCase.deleteCustomer(_uiState.value.cIdentifier)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                getSimpleCustomerUseCase.deleteCustomer(_uiState.value.id)
+            } catch (e: Exception) {
+                Log.e(App.tag, e.message.toString())
+            }
         }
     }
 }

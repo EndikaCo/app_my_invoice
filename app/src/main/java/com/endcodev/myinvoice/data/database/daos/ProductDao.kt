@@ -21,9 +21,12 @@ interface ProductDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertItem(item: ProductEntity)
 
-    @Query("DELETE FROM product_table WHERE id = :code")
-    fun deleteItem(code: String)
+    @Query("DELETE FROM product_table WHERE id = :id")
+    fun deleteItem(id: String)
 
     @Query("SELECT * FROM product_table WHERE id = :itemId")
-     fun getItemById(itemId: String): ProductEntity
+    fun getItemById(itemId: String): ProductEntity
+
+    @Query("DELETE FROM product_table WHERE id = :id")
+    suspend fun deleteProductById(id: String)
 }

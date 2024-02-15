@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter
 
 data class InvoiceUiState(
 
-    val isLoading : Boolean = false,
     val invoice: Invoice = Invoice(
         id = 0,
         date = getDate(),
@@ -17,7 +16,10 @@ data class InvoiceUiState(
             fiscalName = "Select Customer",
             id = "0"
         )
-    )
+    ),
+    val isLoading : Boolean = false,
+    val isSaveEnabled : Boolean = false,
+    val isDeleteEnabled: Boolean = false
 )
 
 fun getDate(): String {

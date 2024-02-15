@@ -27,4 +27,8 @@ class InvoicesRepository @Inject constructor(
     suspend fun updateInvoice(invoice: Invoice) {
         invoicesDao.updateInvoice(invoice.toEntity())
     }
+
+    suspend fun deleteInvoice(id: Int?) {
+        invoicesDao.deleteInvoice(id.toString())
+    }
 }

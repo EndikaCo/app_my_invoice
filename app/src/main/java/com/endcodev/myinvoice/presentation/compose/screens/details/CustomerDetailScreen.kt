@@ -49,27 +49,27 @@ import com.endcodev.myinvoice.presentation.compose.components.CountrySelection
 import com.endcodev.myinvoice.presentation.compose.components.MyBottomBar
 import com.endcodev.myinvoice.presentation.compose.components.filteredImage
 import com.endcodev.myinvoice.presentation.compose.screens.home.content.ProgressBar
-import com.endcodev.myinvoice.presentation.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.presentation.navigation.Routes
+import com.endcodev.myinvoice.presentation.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.presentation.viewmodels.CustomerInfoViewModel
 
 /**
  * Handles actions related to customer details.
- * @param customerIdentifier The identifier of the customer.
+ * @param id The identifier of the customer.
  * @param navController The navigation controller used for navigation.
  */
 @Composable
 fun CustomerDetailActions(
-    customerIdentifier: String?,
+    id: String?,
     navController: NavHostController
 ) {
 
     val viewModel: CustomerInfoViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
-    if (customerIdentifier != null) {
-        LaunchedEffect(customerIdentifier) {
-            viewModel.getCustomer(customerIdentifier)
+    if (id != null) {
+        LaunchedEffect(id) {
+            viewModel.getCustomer(id)
         }
     }
 
@@ -94,13 +94,16 @@ fun CustomerDetailActions(
             viewModel.saveCustomer()
             navController.navigate(Routes.CustomerContent.routes)
         },
-        uiState,
+        uiState = uiState,
         onUriChanged = { viewModel.updateUri(it) },
         onFiscalNameChange = { onUpdateData(fiscalName = it) },
         onIdentifierChange = { onUpdateData(identifier = it) },
         onCountryChange = { onUpdateData(country = it) },
         onEmailChange = { onUpdateData(email = it) },
-        onDeleteClick = { viewModel.deleteCustomer() }
+        onDeleteClick = {
+            viewModel.deleteCustomer()
+            navController.navigate(Routes.CustomerContent.routes)
+        }
     )
 }
 
@@ -146,7 +149,7 @@ fun CustomerDetailScreen(
             },
             bottomBar = {
                 MyBottomBar(
-                    enableDelete = false,
+                    enableDelete = uiState.isDeleteEnabled,
                     enableSave = uiState.isSaveEnabled,
                     addItemVisible = false,
                     onDeleteClick = onDeleteClick,

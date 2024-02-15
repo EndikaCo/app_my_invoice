@@ -77,13 +77,12 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("cIdentifier") { type = NavType.StringType })
         ) { backStackEntry ->
             val customerIdentifier = backStackEntry.arguments?.getString("cIdentifier")
-            CustomerDetailActions(customerIdentifier = customerIdentifier, navController)
+            CustomerDetailActions(id = customerIdentifier, navController)
         }
         // CUSTOMER SCREEN (Without Arguments)
         composable(
-            route = DetailsScreen.Customer.route,
-        ) {
-            CustomerDetailActions(customerIdentifier = null, navController)
+            route = DetailsScreen.Customer.route) {
+            CustomerDetailActions(id = null, navController)
         }
 
         // ITEMS SCREEN
@@ -92,15 +91,12 @@ fun NavGraphBuilder.detailsNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("iCode") { type = NavType.StringType })
         ) { backStackEntry ->
             val itemCode = backStackEntry.arguments?.getString("iCode")
-            ProductsDetailScreenActions(itemId = itemCode, navController)
+            ProductsDetailScreenActions(id = itemCode, navController)
         }
         //ITEMS SCREEN (Without Arguments)
-        composable(route = DetailsScreen.Item.route) {
-            ProductsDetailScreenActions(itemId = null, navController = navController)
-            navController.popBackStack( //todo: check this
-                route = DetailsScreen.Item.route,
-                inclusive = false
-            )
+        composable(
+            route = DetailsScreen.Item.route) {
+            ProductsDetailScreenActions(id = null, navController = navController)
         }
     }
 }

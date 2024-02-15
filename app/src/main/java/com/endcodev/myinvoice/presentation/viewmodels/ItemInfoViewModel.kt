@@ -8,6 +8,7 @@ import com.endcodev.myinvoice.data.database.entities.ProductEntity
 import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.models.product.ProductUiState
 import com.endcodev.myinvoice.domain.usecases.GetSimpleItemsUseCase
+import com.endcodev.myinvoice.domain.utils.App
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,10 +29,14 @@ class ItemInfoViewModel @Inject constructor(
 
     fun getItem(itemId: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            val item = getSimpleItemUseCase.invoke(itemId)
-            withContext(Dispatchers.Main) {
-                if (item != null)
-                    updateUi(item)
+            try {
+                val item = getSimpleItemUseCase.invoke(itemId)
+                withContext(Dispatchers.Main) {
+                    if (item != null)
+                        updateUi(item)
+                }
+            } catch (e: Exception) {
+                Log.e(App.tag, e.message.toString())
             }
         }
     }
@@ -39,11 +44,16 @@ class ItemInfoViewModel @Inject constructor(
     private fun updateUi(item: Product) {
         _uiState.update { currentState ->
             currentState.copy(
-                iCode = item.id,
-                iName = item.name,
-                iImage = item.image,
+                id = item.id,
+                name = item.name,
+                image = item.image,
+                type = item.type,
+                price = item.price,
+                cost = item.cost,
+                stock = item.stock,
                 isLoading = false,
-                isAcceptEnabled = enableAccept(item.id, item.name)
+                isAcceptEnabled = enableAccept(item.id, item.name),
+                isDeleteEnabled = true
             )
         }
     }
@@ -51,51 +61,54 @@ class ItemInfoViewModel @Inject constructor(
     fun onDataChanged(
         code: String,
         name: String,
-        image : Uri?,
+        image: Uri?,
         type: String,
         cost: Float,
-        price : Float,
+        price: Float,
+        stock: Float
     ) {
         _uiState.update { currentState ->
             currentState.copy(
-                iName = name,
-                iCode = code,
-                iImage = image,
-                iType = type,
-                iPrice = price,
-                iCost = cost,
+                name = name,
+                id = code,
+                image = image,
+                type = type,
+                price = price,
+                cost = cost,
+                stock = stock,
                 isAcceptEnabled = enableAccept(code, name)
             )
         }
     }
 
-    fun saveItem( ) {
-        viewModelScope.launch {
-            with(_uiState.value) {
-                Log.v("ItemInfoViewModel", "saveItem: ${iImage.toString()}")
-                val item = ProductEntity(
-                    image = iImage.toString(),
-                    id = iCode,
-                    name = iName,
-                    description = "", //todo,
-                    type = "",
-                    price = iPrice,
-                    stock = 0f,
-                    cost = iCost
-                )
-                getSimpleItemUseCase.saveItem(item)
-            }
-        }
-    }
-
-    private fun enableDelete(itemId: String?) : Boolean{
-        return itemId != null
-    }
-
     private fun enableAccept(code: String, name: String) =
         code.isNotEmpty() && name.isNotEmpty()
 
+    fun saveItem() {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val uiStateValue = _uiState.value
+            val item = ProductEntity(
+                image = uiStateValue.image.toString(),
+                id = uiStateValue.id,
+                name = uiStateValue.name,
+                description = "-",
+                type = uiStateValue.type,
+                price = uiStateValue.price,
+                stock = uiStateValue.stock,
+                cost = uiStateValue.cost
+            )
+            getSimpleItemUseCase.saveItem(item)
+        }
+    }
+
     fun deleteItem() {
-        TODO("Not yet implemented")
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                getSimpleItemUseCase.deleteProduct(_uiState.value.id)
+            } catch (e: Exception) {
+                Log.e(App.tag, e.message.toString())
+            }
+        }
     }
 }

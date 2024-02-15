@@ -55,12 +55,12 @@ import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.domain.models.customer.Customer
 import com.endcodev.myinvoice.domain.models.invoice.Invoice
 import com.endcodev.myinvoice.domain.models.invoice.InvoiceUiState
-import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.domain.models.invoice.SaleItem
 import com.endcodev.myinvoice.domain.models.invoice.getDate
-import com.endcodev.myinvoice.presentation.compose.components.MyDatePicker
+import com.endcodev.myinvoice.domain.models.product.Product
 import com.endcodev.myinvoice.presentation.compose.components.DocSelection
 import com.endcodev.myinvoice.presentation.compose.components.MyBottomBar
+import com.endcodev.myinvoice.presentation.compose.components.MyDatePicker
 import com.endcodev.myinvoice.presentation.compose.components.SwipeToDeleteContainer
 import com.endcodev.myinvoice.presentation.compose.components.filteredImage
 import com.endcodev.myinvoice.presentation.compose.dialogs.ChooseCustomerDialogActions
@@ -94,8 +94,11 @@ fun InvoiceDetailActions(
             navController.navigate(Routes.InvoicesContent.routes)
         },
         uiState = uiState,
-        onCustomerChange = viewModel::setCustomer,
-        onDeleteButton = { viewModel.deleteInvoice() },
+        onCustomerChange = viewModel::updateCustomer,
+        onDeleteButton = {
+            viewModel.deleteInvoice()
+            navController.navigate(Routes.InvoicesContent.routes)
+        },
         onDateChanged = { viewModel.setDate(it) },
         onSaleChanged = { viewModel.addSale(it) },
         onSwipeDelete = { viewModel.deleteSale(it) }
@@ -123,7 +126,7 @@ fun InvoiceInfoScreen(
     if (dateDialog.value)
         MyDatePicker(
             openDialog = { dateDialog.value = it },
-            state,
+            state = state,
             newDate = {
                 val instant = Instant.ofEpochMilli(it.selectedDateMillis ?: (0L))
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -207,8 +210,8 @@ fun InvoiceInfoScreen(
                             .fillMaxWidth()
                     )
                     MyBottomBar(
-                        enableDelete = true,
-                        enableSave = true,
+                        enableDelete = uiState.isDeleteEnabled,
+                        enableSave = uiState.isSaveEnabled,
                         addItemVisible = true,
                         onAcceptClick = onAcceptButton,
                         onAddItemClick = {
@@ -250,7 +253,7 @@ fun InvoiceInfoContent(
             customer = uiState.invoice.customer,
             onIconClick = { onCustomerClick() })
         Spacer(modifier = Modifier.height(16.dp))
-        InvoiceItemsList(uiState.invoice.saleList, onProductClick, onPricesClick, onSwipeDelete )
+        InvoiceItemsList(uiState.invoice.saleList, onProductClick, onPricesClick, onSwipeDelete)
     }
 }
 
@@ -356,8 +359,9 @@ fun InvoiceProduct2(
         }
     }
 }
+
 @Composable
-fun TotalsRow(invoice : Invoice) {
+fun TotalsRow(invoice: Invoice) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally // Add this line
     ) {
@@ -485,10 +489,8 @@ fun SelectCustomer(
 @Composable
 fun PreviewInvoiceInfoScreen() {
     MyInvoiceTheme {
-
         val uiState = InvoiceUiState(
-            false,
-            Invoice(
+            invoice = Invoice(
                 id = null,
                 date = getDate(),
                 customer = Customer(null, "Select Customer", "Select Customer"),
@@ -509,7 +511,7 @@ fun PreviewInvoiceInfoScreen() {
                         0
                     ),
                 )
-            )
+            ),
         )
 
         InvoiceInfoScreen(
