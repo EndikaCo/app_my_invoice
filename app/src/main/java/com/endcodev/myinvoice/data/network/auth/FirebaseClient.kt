@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.data.network
+package com.endcodev.myinvoice.data.network.auth
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database

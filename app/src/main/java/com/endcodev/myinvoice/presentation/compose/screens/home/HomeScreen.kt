@@ -90,7 +90,6 @@ fun NavigationBar(navController: NavHostController) {
  * @param index The index of the NavBarItem in the list of navigation bar items.
  * @param selectedItemIndex The index of the currently selected NavBarItem in the navigation bar.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ItemBadge(item: NavBarItem, index: Int, selectedItemIndex: Int) {
     BadgedBox(

@@ -1,8 +1,15 @@
 package com.endcodev.myinvoice.presentation.compose.screens.auth
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,8 +29,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,6 +49,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -55,10 +63,17 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.endcodev.myinvoice.R
+import com.endcodev.myinvoice.domain.utils.App
 import com.endcodev.myinvoice.presentation.navigation.AuthScreen
 import com.endcodev.myinvoice.presentation.navigation.Graph
 import com.endcodev.myinvoice.presentation.theme.MyInvoiceTheme
 import com.endcodev.myinvoice.presentation.viewmodels.LoginViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 
 @Composable
 fun LoginActions(navController: NavHostController) {
@@ -67,8 +82,21 @@ fun LoginActions(navController: NavHostController) {
     val email by viewModel.email.observeAsState(initial = "")
     val password by viewModel.password.observeAsState(initial = "")
     val isLoginEnabled by viewModel.isLoginEnabled.observeAsState(initial = false)
+    val userLogged by viewModel.userLogged.observeAsState(initial = false)
 
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { gLoginInit(it) }
+    )
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = userLogged) {
+        if (userLogged) {
+            navController.popBackStack() // clear nav history
+            navController.navigate(Graph.HOME)
+        }
+    }
+
     LaunchedEffect(key1 = viewModel) {
         viewModel.errors.collect { error ->
             error.asString(context)
@@ -83,8 +111,6 @@ fun LoginActions(navController: NavHostController) {
         isLoginEnables = isLoginEnabled,
         onLoginClick = {
             viewModel.login()
-            navController.popBackStack() // clear nav history
-            navController.navigate(Graph.HOME)
         },
         onSignUpClick = {
             navController.navigate(AuthScreen.SignUp.route)
@@ -98,8 +124,58 @@ fun LoginActions(navController: NavHostController) {
         onPassChanged = {
             viewModel.onLoginChanged(password = it, email = email)
         },
-        onExitClick = { activity.finish() }
+        onExitClick = { activity.finish() },
+        onGoogleLoginClick = {
+            googleLogin(context, launcher)
+        }
     )
+}
+
+private fun gLoginInit(result: ActivityResult?) {
+
+    if (result != null) {
+
+        if (result.resultCode == Activity.RESULT_OK) {
+
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+
+            try {
+                val account = task.getResult(ApiException::class.java)
+                if (account != null)
+                    gLogin(account)
+            } catch (e: ApiException) {
+                Log.e(App.tag, "gLoginInit: error", )
+            }
+        }
+    }
+    //binding.progress.visibility = View.GONE
+}
+
+private fun gLogin(account: GoogleSignInAccount) {
+    val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+    val auth = FirebaseAuth.getInstance()
+    auth.signInWithCredential(credential)
+        .addOnCompleteListener {
+            if (it.isSuccessful) {
+                Log.v(App.tag, "gLogin: Login success", )
+            } else {
+                Log.v(App.tag, "gLogin: Login fail", )
+            }
+        }
+}
+
+private fun googleLogin(
+    context: Context,
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>
+) {
+    val googleConf = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(context.getString(R.string.default_web_client_id))
+        .requestEmail()
+        .build()
+
+    val googleClient = GoogleSignIn.getClient(context, googleConf)
+    val signInIntent = Intent(googleClient.signInIntent)
+    launcher.launch(signInIntent)
 }
 
 @Composable
@@ -112,7 +188,8 @@ fun LoginScreen(
     onForgotClick: () -> Unit,
     onEmailChanged: (String) -> Unit,
     onPassChanged: (String) -> Unit,
-    onExitClick: () -> Unit
+    onExitClick: () -> Unit,
+    onGoogleLoginClick: () -> Unit
 ) {
     Scaffold(
         topBar = { LoginHeader(onExitClick) },
@@ -124,7 +201,8 @@ fun LoginScreen(
                 onLoginClick,
                 onForgotClick,
                 onEmailChanged,
-                onPassChanged
+                onPassChanged,
+                onGoogleLoginClick
             )
         },
         bottomBar = { LoginFooter(onSignUpClick) }
@@ -153,7 +231,8 @@ fun LoginBody(
     onLoginClick: () -> Unit,
     onForgotClick: () -> Unit,
     onLoginChanged: (String) -> Unit,
-    onPassChanged: (String) -> Unit
+    onPassChanged: (String) -> Unit,
+    onGoogleLoginClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -174,16 +253,16 @@ fun LoginBody(
         Spacer(modifier = Modifier.size(16.dp))
         OrDivider(Modifier.align(CenterHorizontally))
         Spacer(modifier = Modifier.size(16.dp))
-        SocialLogin(Modifier.align(CenterHorizontally))
+        SocialLogin(Modifier.align(CenterHorizontally), onGoogleLoginClick)
     }
 }
 
 @Composable
 fun LoginFooter(onSignUpClick: () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
-                .background(Color(R.color.transparent))
+                .background(colorResource(id = R.color.transparent))
                 .height(1.dp)
                 .fillMaxWidth()
         )
@@ -293,10 +372,11 @@ fun OrDivider(modifier: Modifier) {
 }
 
 @Composable
-fun SocialLogin(modifier: Modifier) {
+fun SocialLogin(modifier: Modifier, onGoogleLoginClick: () -> Unit) {
     Row(
         modifier = modifier
             .height(36.dp)
+            .clickable { onGoogleLoginClick() }
             .border(
                 BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.onBackground),
                 shape = RoundedCornerShape(16.dp)
@@ -355,7 +435,8 @@ fun LoginScreenPreview() {
             onForgotClick = {},
             onEmailChanged = {},
             onPassChanged = {},
-            onExitClick = {}
+            onExitClick = {},
+            onGoogleLoginClick = {}
         )
     }
 }
@@ -374,7 +455,8 @@ fun LoginScreenPreview2() {
             onForgotClick = {},
             onEmailChanged = {},
             onPassChanged = {},
-            onExitClick = {}
+            onExitClick = {},
+            onGoogleLoginClick = {}
         )
     }
 }

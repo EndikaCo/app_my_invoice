@@ -188,7 +188,7 @@ fun SignUpBody(
             Spacer(modifier = Modifier.size(16.dp))
             OrDivider(Modifier.align(CenterHorizontally))
             Spacer(modifier = Modifier.size(16.dp))
-            SocialLogin(Modifier.align(CenterHorizontally))
+            SocialLogin(Modifier.align(CenterHorizontally), onGoogleLoginClick = {})
         }
 }
 
@@ -227,6 +227,30 @@ fun SignUpPreview() {
             "Password",
             "Repeat password",
             true,
+            onEmailChanged = {},
+            onPassChanged = {},
+            onVerifyChanged = {},
+        )
+    }
+}
+
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun SignUpPreview2() {
+    MyInvoiceTheme {
+
+        val success = false
+        val isLoading = false
+
+        SignUpScreen(
+            onSignUpClick = {},
+            success,
+            isLoading,
+            "Email",
+            "Password",
+            "Repeat password",
+            false,
             onEmailChanged = {},
             onPassChanged = {},
             onVerifyChanged = {},

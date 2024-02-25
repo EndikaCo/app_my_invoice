@@ -72,6 +72,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3-android:1.2.0")
+    implementation("com.google.firebase:firebase-auth:22.3.1")
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
 
     //Testing
 
@@ -113,7 +115,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
     //observeAsState (liveData)
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.1")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.2")
 
     //dagger hilt
     implementation("com.google.dagger:hilt-android:2.50")
@@ -135,5 +137,5 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.10.1")
 
     //extended icons
-    implementation("androidx.compose.material:material-icons-extended:1.6.1")
+    implementation("androidx.compose.material:material-icons-extended:1.6.2")
 }

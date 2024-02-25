@@ -6,7 +6,6 @@ import com.endcodev.myinvoice.data.database.entities.CustomersEntity
 import com.endcodev.myinvoice.data.database.entities.ProductEntity
 import com.endcodev.myinvoice.data.database.entities.SaleEntity
 import com.endcodev.myinvoice.domain.models.invoice.SaleItem
-import com.endcodev.myinvoice.domain.models.product.Product
 import com.google.gson.Gson
 
 @ProvidedTypeConverter

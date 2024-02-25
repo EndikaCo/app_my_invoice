@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.endcodev.myinvoice.R
 import com.endcodev.myinvoice.presentation.compose.components.UiText
-import com.endcodev.myinvoice.data.network.AuthError.*
-import com.endcodev.myinvoice.data.network.AuthenticationService
-import com.endcodev.myinvoice.data.network.FirebaseClient
+import com.endcodev.myinvoice.data.network.auth.AuthError.*
+import com.endcodev.myinvoice.data.network.auth.AuthenticationService
+import com.endcodev.myinvoice.data.network.auth.FirebaseClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow

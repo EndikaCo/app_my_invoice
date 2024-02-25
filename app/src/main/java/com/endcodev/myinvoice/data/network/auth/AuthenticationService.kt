@@ -1,4 +1,4 @@
-package com.endcodev.myinvoice.data.network
+package com.endcodev.myinvoice.data.network.auth
 
 import android.util.Log
 import com.endcodev.myinvoice.domain.utils.App
@@ -58,5 +58,9 @@ class AuthenticationService @Inject constructor(
                     completionHandler(AuthError.ErrorMailOrPass.error)
                 }
             }
+    }
+
+    fun disconnectUser() {
+        Firebase.auth.signOut()
     }
 }
